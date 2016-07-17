@@ -12,16 +12,16 @@ find_package(Threads)
 add_subdirectory(../cpp/driver driver)
 
 
-add_executable(test_imu test_imu.cpp)
-set_property(TARGET test_imu PROPERTY CXX_STANDARD 11)
-target_link_libraries(test_imu matrix_creator_hal)
-target_link_libraries(test_imu ${CMAKE_THREAD_LIBS_INIT})
+add_executable(imu_demo imu_demo.cpp)
+set_property(TARGET imu_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(imu_demo matrix_creator_hal)
+target_link_libraries(imu_demo ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(test_everloop test_everloop.cpp)
-set_property(TARGET test_everloop PROPERTY CXX_STANDARD 11)
-target_link_libraries(test_everloop matrix_creator_hal)
-target_link_libraries(test_everloop ${CMAKE_THREAD_LIBS_INIT})
+add_executable(everloop_demo everloop_demo.cpp)
+set_property(TARGET everloop_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(everloop_demo matrix_creator_hal)
+target_link_libraries(everloop_demo ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(arc_demo arc_demo.cpp)
