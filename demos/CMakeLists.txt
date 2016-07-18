@@ -30,4 +30,9 @@ target_link_libraries(arc_demo matrix_creator_hal)
 target_link_libraries(arc_demo ${CMAKE_THREAD_LIBS_INIT})
 
 
+add_executable(mic_demo mic_demo.cpp)
+set_property(TARGET mic_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(mic_demo matrix_creator_hal)
+target_link_libraries(mic_demo ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mic_demo wiringPi)
 

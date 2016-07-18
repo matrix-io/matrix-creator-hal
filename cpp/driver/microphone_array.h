@@ -39,7 +39,7 @@ class MicrophoneArray : public MatrixDriver {
 
   bool Read();
 
-  int16_t NumberOfSamples() { return kMicarrayBufferSize / kChannels; }
+  uint32_t NumberOfSamples() { return kMicarrayBufferSize / kChannels; }
 
   int16_t& At(int16_t sample, int16_t channel) {
     return raw_data_[sample * kChannels + channel];
