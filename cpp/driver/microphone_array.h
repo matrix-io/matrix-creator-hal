@@ -15,15 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_PRESSURE_DATA_H_
-#define CPP_DRIVER_PRESSURE_DATA_H_
+#ifndef CPP_DRIVER_MICROPHONE_ARRAY_H_
+#define CPP_DRIVER_MICROPHONE_ARRAY_H_
+
+#include <string>
+#include <valarray>
+#include "./matrix_driver.h"
+#include "./pressure_data.h"
 
 namespace matrix_hal {
 
-class PressureData {
+const uint16_t kMicarrayBufferSize = 1024;
+const uint32_t kMicrophoneArrayIRQ = 6;
+const uint32_t kChannels = 8;
+
+class MicrophoneArray : public MatrixDriver {
  public:
-  float pressure;
-  float temperature;
+  MicrophoneArray();
+
+  ~MicrophoneArray();
+
+  void Setup(WishboneBus* wishbone);
+
+  bool Read();
+
+  int16_t NumberOfSamples() { return kMicarrayBufferSize / kChannels; }
+
+  int16_t& At(int16_t sample, int16_t channel) {
+    return raw_data_[sample * kChannels + channel];
+  }
+
+ private:
+  std::valarray<int16_t> raw_data_;
 };
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_PRESSURE_DATA_H_
+#endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_

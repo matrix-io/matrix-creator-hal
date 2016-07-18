@@ -14,6 +14,7 @@ include_directories(
 )
 
 set(matrix_creator_hal_src
+    microphone_array.cpp
     matrix_driver.cpp
     humidity_sensor.cpp
     imu_sensor.cpp

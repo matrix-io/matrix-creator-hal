@@ -3,8 +3,8 @@
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
- * MATRIX Creator HAL is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * MATRIX Creator HAL is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  * This program is distributed in the hope that it will be useful, but
@@ -23,6 +23,7 @@
 namespace matrix_hal {
 
 /* FPGA Wishbone address map */
+const uint32_t kMicrophoneArrayBaseAddress = 0x1800;
 const uint32_t kEverloopBaseAddress = 0x2000;
 const uint32_t kGPIOBaseAddress = 0x2800;
 const uint16_t kMCUBaseAddress = 0x3800;

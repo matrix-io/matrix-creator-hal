@@ -15,18 +15,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <wiringPi.h>
 #include <string>
-#include "cpp/driver/imu_sensor.h"
+#include <cstdlib>
+
+#include "cpp/driver/microphone_array.h"
 #include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
 
-bool IMUSensor::Read(IMUData* data) {
+MicrophoneArray::MicrophoneArray() { raw_data_.resize(kMicarrayBufferSize); }
+
+MicrophoneArray::~MicrophoneArray() {}
+
+void MicrophoneArray::Setup(WishboneBus* wishbone) {
+  MatrixDriver::Setup(wishbone);
+
+  // TODO(andres.calderon@admobilize.com): avoid systems calls
+  std::system("gpio edge 6 both");
+
+  wiringPiSetupSys();
+
+  pinMode(kMicrophoneArrayIRQ, INPUT);
+}
+
+bool MicrophoneArray::Read() {
   if (!wishbone_) return false;
 
-  // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetIMU >> 1),
-                     (unsigned char*)data, sizeof(IMUData));
+  if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
+    if (!wishbone_->SpiRead(kMicrophoneArrayBaseAddress,
+                            reinterpret_cast<unsigned char*>(&raw_data_[0]),
+                            sizeof(int16_t) * kMicarrayBufferSize)) {
+      return false;
+    }
+
+    for (int16_t& data : raw_data_) {
+      data = data << 8 | data >> 8;
+    }
+  }
 
   return true;
 }
