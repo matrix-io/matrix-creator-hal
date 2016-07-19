@@ -43,27 +43,29 @@ int main() {
   while (true) {
     for (hal::LedValue& led : image1d.leds) {
       led.red = 0;
-      led.white = 0;
+      led.blue = 0;
     }
 
     imu_sensor.Read(&imu_data);
 
-    int pin = imu_data.yaw * 35.0 / 360.0;
-    pin = pin >= 0 ? pin : 35 - pin;
+    int pin;
+    if (imu_data.yaw < 0.0)
+      pin = (360.0 + imu_data.yaw) * 35.0 / 360.0;
+    else
+      pin = imu_data.yaw * 35.0 / 360.0;
 
-    image1d.leds[pin].white = 20;
+    image1d.leds[pin].blue = 50;
 
-    pin = (imu_data.yaw - 180.0) * 35.0 / 360.0;
-    pin = pin >= 0 ? pin : 35 - pin;
+    pin = (pin + 17) % 34; /* opposite led */
 
-    image1d.leds[pin].red = 30;
+    image1d.leds[pin].red = 50;
 
     everloop.Write(&image1d);
 
     std::cout << "yaw = " << imu_data.yaw << "\t";
     std::cout << "roll = " << imu_data.roll << "\t";
     std::cout << "pitch = " << imu_data.pitch << std::endl;
-    usleep(500000);
+    usleep(200000);
   }
 
   return 0;

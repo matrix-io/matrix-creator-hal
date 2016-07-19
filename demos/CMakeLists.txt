@@ -12,10 +12,10 @@ find_package(Threads)
 add_subdirectory(../cpp/driver driver)
 
 
-add_executable(imu_demo imu_demo.cpp)
-set_property(TARGET imu_demo PROPERTY CXX_STANDARD 11)
-target_link_libraries(imu_demo matrix_creator_hal)
-target_link_libraries(imu_demo ${CMAKE_THREAD_LIBS_INIT})
+add_executable(compass_demo compass_demo.cpp)
+set_property(TARGET compass_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(compass_demo matrix_creator_hal)
+target_link_libraries(compass_demo ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(everloop_demo everloop_demo.cpp)
