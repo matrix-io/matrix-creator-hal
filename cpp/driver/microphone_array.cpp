@@ -24,7 +24,9 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() { raw_data_.resize(kMicarrayBufferSize); }
+MicrophoneArray::MicrophoneArray() : gain_(8) {
+  raw_data_.resize(kMicarrayBufferSize);
+}
 
 MicrophoneArray::~MicrophoneArray() {}
 
@@ -43,15 +45,14 @@ bool MicrophoneArray::Read() {
   if (!wishbone_) return false;
 
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
-    if (!wishbone_->SpiRead(kMicrophoneArrayBaseAddress,
-                            reinterpret_cast<unsigned char*>(&raw_data_[0]),
-                            sizeof(int16_t) * kMicarrayBufferSize)) {
+    if (!wishbone_->SpiReadBurst(
+            kMicrophoneArrayBaseAddress,
+            reinterpret_cast<unsigned char*>(&raw_data_[0]),
+            sizeof(int16_t) * kMicarrayBufferSize)) {
       return false;
     }
 
-    for (int16_t& data : raw_data_) {
-      data = data << 8 | data >> 8;
-    }
+    for (auto& data : raw_data_) data = data * gain_;
   }
 
   return true;

@@ -31,13 +31,13 @@ int main() {
 
   std::valarray<int> lookup = {23, 27, 32, 1, 6, 10, 14, 19};
 
-  std::valarray<float> magnitude(hal::kChannels);
+  std::valarray<float> magnitude(mics.Channels());
 
   while (true) {
     mics.Read();
     magnitude = 0.0;
     for (unsigned int s = 0; s < mics.NumberOfSamples(); s++) {
-      for (unsigned int c = 0; c < hal::kChannels; c++) {
+      for (unsigned int c = 0; c < mics.Channels(); c++) {
         magnitude[c] += mics.At(s, c) * mics.At(s, c);
       }
     }
@@ -46,7 +46,7 @@ int main() {
       m = std::sqrt(1.0 / (float)mics.NumberOfSamples() * m);
     }
 
-    for (unsigned int c = 0; c < hal::kChannels; c++) {
+    for (unsigned int c = 0; c < mics.Channels(); c++) {
       image1d.leds[lookup[c]].red = magnitude[c] / 255;
       std::cout << image1d.leds[lookup[c]].red << "\t";
     }

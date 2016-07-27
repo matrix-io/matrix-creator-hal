@@ -36,3 +36,11 @@ target_link_libraries(mic_demo matrix_creator_hal)
 target_link_libraries(mic_demo ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(mic_demo wiringPi)
 
+
+add_executable(micarray_recorder micarray_recorder.cpp)
+set_property(TARGET micarray_recorder PROPERTY CXX_STANDARD 11)
+target_link_libraries(micarray_recorder matrix_creator_hal)
+target_link_libraries(micarray_recorder ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(micarray_recorder wiringPi)
+
+

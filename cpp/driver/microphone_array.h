@@ -26,8 +26,9 @@
 namespace matrix_hal {
 
 const uint16_t kMicarrayBufferSize = 1024;
-const uint32_t kMicrophoneArrayIRQ = 6;
-const uint32_t kChannels = 8;
+const uint16_t kMicrophoneArrayIRQ = 6;
+const uint16_t kMicrophoneChannels = 8;
+const uint32_t kSamplingRate = 16000;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -39,14 +40,22 @@ class MicrophoneArray : public MatrixDriver {
 
   bool Read();
 
-  uint32_t NumberOfSamples() { return kMicarrayBufferSize / kChannels; }
+  void SetGain(int16_t gain) { gain_ = gain; }
+  uint16_t Channels() { return kMicrophoneChannels; }
+
+  uint32_t SamplingRate() { return kSamplingRate; }
+
+  uint32_t NumberOfSamples() {
+    return kMicarrayBufferSize / kMicrophoneChannels;
+  }
 
   int16_t& At(int16_t sample, int16_t channel) {
-    return raw_data_[sample * kChannels + channel];
+    return raw_data_[sample * kMicrophoneChannels + channel];
   }
 
  private:
   std::valarray<int16_t> raw_data_;
+  int16_t gain_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_
