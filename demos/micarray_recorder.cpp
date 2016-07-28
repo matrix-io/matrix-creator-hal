@@ -10,6 +10,8 @@
 #include <iostream>
 #include <valarray>
 
+#include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/everloop.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
@@ -21,6 +23,17 @@ int main() {
 
   hal::MicrophoneArray mics;
   mics.Setup(bus);
+
+
+  hal::Everloop everloop;
+  everloop.Setup(bus);
+
+  hal::EverloopImage image1d;
+
+  for( auto& led: image1d.leds)
+    led.red=10;
+  
+  everloop.Write(&image1d);
 
   uint16_t seconds_to_record = 10;
 
@@ -48,6 +61,12 @@ int main() {
 
     os.close();
   }
+  
+  for( auto& led: image1d.leds){
+    led.red=0;
+    led.green=10;
+  }
+  everloop.Write(&image1d);
 
   return 0;
 }
