@@ -23,23 +23,27 @@
 
 namespace matrix_hal {
 
-class GPIO : public MatrixDriver {
+class GPIOBank : public MatrixDriver {
  public:
-  uint16_t mem_offset_;
-  uint16_t control_;
-  uint16_t prescaler_;
-  uint16_t counter_;
+  bool SetPeriod(uint16_t period);
+  bool SetDuty(uint16_t channel, uint16_t duty);
 
-  bool EnablePWM(int prescaler);
-  bool SetPeriod(int period);
-  bool SetPrescaler(int prescaler);
+  uint16_t mem_offset_;
 };
 
 class GPIOControl : public MatrixDriver {
  public:
+  GPIOControl();
   void Setup(WishboneBus* wishbone);
+  bool SetMode(uint16_t pin, uint16_t prescaler);
+  bool SetFunction(uint16_t pin, uint16_t function);
+  bool SetPrescaler(uint16_t bank, uint16_t prescaler);
+  GPIOBank& Bank(uint16_t bank) { return banks_[bank]; }
 
-  std::vector<GPIO> gpios_;
+  std::vector<GPIOBank> banks_;
+  uint16_t mode_;
+  uint16_t function_;
+  uint16_t prescaler_;
 };
 
 };      // namespace matrix_hal

@@ -48,4 +48,9 @@ target_link_libraries(micarray_recorder matrix_creator_hal)
 target_link_libraries(micarray_recorder ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(micarray_recorder wiringPi)
 
+add_executable(servo_demo servo_demo.cpp)
+set_property(TARGET servo_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(servo_demo matrix_creator_hal)
+target_link_libraries(servo_demo ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(servo_demo wiringPi)
 

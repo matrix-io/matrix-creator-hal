@@ -30,6 +30,8 @@ class WishboneBus {
 
   bool SpiInit();
   bool SpiWrite(uint16_t add, unsigned char* data, unsigned char inc);
+  bool SpiWrite16(uint16_t add, uint16_t data);
+
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
   void SpiClose();
