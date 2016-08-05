@@ -46,16 +46,22 @@ int main() {
   hal::GPIOControl gpio;
   gpio.Setup(bus);
 
-  gpio.SetMode(0, 1); /* pin 0, output */
+  gpio.SetMode(4, 1); /* pin 4, output */
+  gpio.SetMode(0, 0); /* pin 0, input */
 
-  gpio.SetFunction(0, 1); /* pin 0, PWM output */
+  gpio.SetFunction(4, 1); /* pin 4, PWM output */
+  gpio.SetFunction(0, 1); /* pin 0, Timer output */
 
   gpio.SetPrescaler(0, 0x5); /* set prescaler bank 0 */
+  gpio.SetPrescaler(1, 0x5); /* set prescaler bank 1 */
+
+  gpio.Bank(0).SetupTimer(0, 1, 1); /* set timer event */
 
   uint16_t period_counter = (0.02 * CLK_FRQ) / ((1 << 5) * 2);
   int16_t duty_counter = 0;
 
-  gpio.Bank(0).SetPeriod(period_counter);
+  gpio.Bank(1).SetPeriod(period_counter);
+  std::cout << " Period counter : " << period_counter << "\t";
 
   while (true) {
     for (hal::LedValue& led : image1d.leds) {
@@ -78,13 +84,16 @@ int main() {
     image1d.leds[pin].red = 50;
     duty_counter = (2.75 * (imu_data.yaw + 170) + 20) * (period_counter / 1000);
     std::cout << duty_counter << std::endl;
-    gpio.Bank(0).SetDuty(0, duty_counter);
+    gpio.Bank(1).SetDuty(0, duty_counter);
 
     everloop.Write(&image1d);
 
-    std::cout << "yaw = " << imu_data.yaw << "\t";
+    std::cout << " Duty counter : " << duty_counter << "\t";
 
     usleep(300000);
+    uint16_t result;
+    result = gpio.Bank(0).GetTimerCounter(0);
+    std::cout << "Timer Counter : 0" << result << std::endl;
   }
 
   return 0;

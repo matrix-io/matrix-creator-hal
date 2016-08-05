@@ -22,17 +22,40 @@
 
 namespace matrix_hal {
 
+GPIOBank::GPIOBank() : mem_offset_(0x0),timer_setup_(0x0) {}
+
+bool GPIOBank::SetupTimer(uint16_t channel, uint16_t init_event, uint16_t final_event) {
+  if (!wishbone_) return false;
+  uint32_t mask = 1 << channel;
+  timer_setup_ = init_event << channel | (timer_setup_ & ~mask);
+  mask = 1 << (channel+4);
+  timer_setup_ = final_event << channel | (timer_setup_ & ~mask);
+  
+  wishbone_->SpiWrite16(mem_offset_, timer_setup_);
+  return true;
+}
+
 bool GPIOBank::SetPeriod(uint16_t period) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(mem_offset_, period);
+  wishbone_->SpiWrite16(mem_offset_+1, period);
   return true;
 }
 
 bool GPIOBank::SetDuty(uint16_t channel, uint16_t duty) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(mem_offset_ + 1 + channel, duty);
+  wishbone_->SpiWrite16(mem_offset_ + 2 + channel, duty);
   return true;
 }
+
+
+uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
+  if (!wishbone_) return false;
+  uint16_t counter;
+  wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char*) &counter);
+  return counter; 
+}
+
+
 
 GPIOControl::GPIOControl() : mode_(0x0), function_(0x0), prescaler_(0x0) {}
 
@@ -42,7 +65,6 @@ bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
   uint32_t mask = 1 << pin;
 
   mode_ = mode << pin | (mode_ & ~mask);
-  std::cout << "mode=" << mode_ << std::endl;
   wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
   return true;
 }
@@ -54,9 +76,7 @@ bool GPIOControl::SetFunction(uint16_t pin, uint16_t function) {
 
   function_ = function << pin | (function_ & ~mask);
 
-  std::cout << "function_=" << function_ << std::endl;
-
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 3, function_);
+  wishbone_->SpiWrite16(kGPIOBaseAddress + 2, function_);
   return true;
 }
 
@@ -66,22 +86,20 @@ bool GPIOControl::SetPrescaler(uint16_t bank, uint16_t prescaler) {
 
   prescaler_ = prescaler << (4 * bank) | (prescaler_ & ~mask);
 
-  std::cout << "prescaler_=" << prescaler_ << std::endl;
-
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 4, prescaler_);
+  wishbone_->SpiWrite16(kGPIOBaseAddress + 3, prescaler_);
   return true;
 }
 
 void GPIOControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
-  uint32_t gpio_base_addr = kGPIOBaseAddress + 5;
+  uint32_t gpio_base_addr = kGPIOBaseAddress + 4;
 
   banks_.resize(4);
   for (GPIOBank &bank : banks_) {
     bank.Setup(wishbone);
     bank.mem_offset_ = gpio_base_addr;
-    gpio_base_addr = gpio_base_addr + 5;
+    gpio_base_addr = gpio_base_addr + 6;
   }
 }
 
-};  // namespace matrix_hal
+}; // namespace matrix_hal

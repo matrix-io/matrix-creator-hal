@@ -34,13 +34,13 @@ class WishboneBus {
 
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
+  bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
 
  private:
   bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
                    unsigned int size);
 
-  bool SpiRead16(uint16_t add, unsigned char* data);
 
  private:
   std::string device_name_;

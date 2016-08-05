@@ -42,4 +42,4 @@ class FIR {
   std::valarray<float> coeff_;
 };
 
-#endif // CPP_MATRIX_HAL_FIR_H_
+#endif  // CPP_MATRIX_HAL_FIR_H_
