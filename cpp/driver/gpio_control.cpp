@@ -22,22 +22,23 @@
 
 namespace matrix_hal {
 
-GPIOBank::GPIOBank() : mem_offset_(0x0),timer_setup_(0x0) {}
+GPIOBank::GPIOBank() : mem_offset_(0x0), timer_setup_(0x0) {}
 
-bool GPIOBank::SetupTimer(uint16_t channel, uint16_t init_event, uint16_t final_event) {
+bool GPIOBank::SetupTimer(uint16_t channel, uint16_t init_event,
+                          uint16_t final_event) {
   if (!wishbone_) return false;
   uint32_t mask = 1 << channel;
   timer_setup_ = init_event << channel | (timer_setup_ & ~mask);
-  mask = 1 << (channel+4);
+  mask = 1 << (channel + 4);
   timer_setup_ = final_event << channel | (timer_setup_ & ~mask);
-  
+
   wishbone_->SpiWrite16(mem_offset_, timer_setup_);
   return true;
 }
 
 bool GPIOBank::SetPeriod(uint16_t period) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(mem_offset_+1, period);
+  wishbone_->SpiWrite16(mem_offset_ + 1, period);
   return true;
 }
 
@@ -47,17 +48,15 @@ bool GPIOBank::SetDuty(uint16_t channel, uint16_t duty) {
   return true;
 }
 
-
 uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
   if (!wishbone_) return false;
   uint16_t counter;
-  wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char*) &counter);
-  return counter; 
+  wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char *)&counter);
+  return counter;
 }
 
-
-
-GPIOControl::GPIOControl() : mode_(0x0), function_(0x0), prescaler_(0x0) {}
+GPIOControl::GPIOControl()
+    : mode_(0x0), value_(0x0), function_(0x0), prescaler_(0x0) {}
 
 bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
   if (!wishbone_) return false;
@@ -90,6 +89,27 @@ bool GPIOControl::SetPrescaler(uint16_t bank, uint16_t prescaler) {
   return true;
 }
 
+bool GPIOControl::SetGPIOValue(uint16_t pin, uint16_t value) {
+  if (!wishbone_) return false;
+  uint32_t mask = 0x1 << pin;
+  value_ = value << pin | (value_ & ~mask);
+  wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
+
+  return true;
+}
+
+uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
+  if (!wishbone_) return false;
+
+  uint32_t mask = 0x1 << pin;
+  uint16_t value;
+
+  wishbone_->SpiRead16(kGPIOBaseAddress + 1, (unsigned char *)&value);
+  value = (value & mask) >> pin;
+
+  return value;
+}
+
 void GPIOControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
   uint32_t gpio_base_addr = kGPIOBaseAddress + 4;
@@ -102,4 +122,4 @@ void GPIOControl::Setup(WishboneBus *wishbone) {
   }
 }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal

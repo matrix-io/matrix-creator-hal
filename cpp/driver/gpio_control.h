@@ -29,8 +29,8 @@ class GPIOBank : public MatrixDriver {
   bool SetupTimer(uint16_t channel, uint16_t init_event, uint16_t final_event);
   bool SetPeriod(uint16_t period);
   bool SetDuty(uint16_t channel, uint16_t duty);
-  
-  uint16_t  GetTimerCounter(uint16_t channel);  
+
+  uint16_t GetTimerCounter(uint16_t channel);
   uint16_t mem_offset_;
   uint16_t timer_setup_;
 };
@@ -41,11 +41,15 @@ class GPIOControl : public MatrixDriver {
   void Setup(WishboneBus* wishbone);
   bool SetMode(uint16_t pin, uint16_t mode);
   bool SetFunction(uint16_t pin, uint16_t function);
+  uint16_t GetGPIOValue(uint16_t pin);
+  bool SetGPIOValue(uint16_t pin, uint16_t value);
+
   bool SetPrescaler(uint16_t bank, uint16_t prescaler);
   GPIOBank& Bank(uint16_t bank) { return banks_[bank]; }
 
   std::vector<GPIOBank> banks_;
   uint16_t mode_;
+  uint16_t value_;
   uint16_t function_;
   uint16_t prescaler_;
 };
