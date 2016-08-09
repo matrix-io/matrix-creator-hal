@@ -29,6 +29,18 @@ namespace hal = matrix_hal;
 
 #define CLK_FRQ 200000000
 
+#define INPUT 0
+#define OUTPUT 1
+
+#define PIN_0 0
+#define PIN_4 4
+
+#define TIMER 1
+#define PWM 1
+
+#define RISING_EDGE 0
+#define FALLING_EDGE 1
+
 int main() {
   hal::WishboneBus* bus = new hal::WishboneBus();
   bus->SpiInit();
@@ -46,22 +58,22 @@ int main() {
   hal::GPIOControl gpio;
   gpio.Setup(bus);
 
-  gpio.SetMode(4, 1); /* pin 4, output */
-  gpio.SetMode(0, 0); /* pin 0, input */
+  gpio.SetMode(PIN_4, OUTPUT); /* pin 4, output */
+  gpio.SetMode(PIN_0, INPUT);  /* pin 0, input */
 
-  gpio.SetFunction(4, 1); /* pin 4, PWM output */
-  gpio.SetFunction(0, 1); /* pin 0, Timer output */
+  gpio.SetFunction(PIN_4, PWM);   /* pin 4, PWM output */
+  gpio.SetFunction(PIN_0, TIMER); /* pin 0, Timer input */
 
   gpio.SetPrescaler(0, 0x5); /* set prescaler bank 0 */
   gpio.SetPrescaler(1, 0x5); /* set prescaler bank 1 */
 
-  gpio.Bank(0).SetupTimer(0, 1, 1); /* set timer event */
+  gpio.Bank(0).SetupTimer(0, RISING_EDGE, FALLING_EDGE); /* set timer event */
 
   uint16_t period_counter = (0.02 * CLK_FRQ) / ((1 << 5) * 2);
   int16_t duty_counter = 0;
 
   gpio.Bank(1).SetPeriod(period_counter);
-  std::cout << " Period counter : " << period_counter << "\t";
+  std::cout << " Period counter : " << period_counter << "\t" << std::endl;
 
   while (true) {
     for (hal::LedValue& led : image1d.leds) {
@@ -83,17 +95,16 @@ int main() {
 
     image1d.leds[pin].red = 50;
     duty_counter = (2.75 * (imu_data.yaw + 170) + 20) * (period_counter / 1000);
-    std::cout << duty_counter << std::endl;
     gpio.Bank(1).SetDuty(0, duty_counter);
 
     everloop.Write(&image1d);
 
     std::cout << " Duty counter : " << duty_counter << "\t";
 
-    usleep(300000);
+    usleep(5000);
     uint16_t result;
     result = gpio.Bank(0).GetTimerCounter(0);
-    std::cout << "Timer Counter : 0" << result << std::endl;
+    std::cout << "Timer Counter : " << result << std::endl;
   }
 
   return 0;

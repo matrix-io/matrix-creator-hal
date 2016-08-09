@@ -30,8 +30,7 @@ bool GPIOBank::SetupTimer(uint16_t channel, uint16_t init_event,
   uint32_t mask = 1 << channel;
   timer_setup_ = init_event << channel | (timer_setup_ & ~mask);
   mask = 1 << (channel + 4);
-  timer_setup_ = final_event << channel | (timer_setup_ & ~mask);
-
+  timer_setup_ = final_event << (channel + 4) | (timer_setup_ & ~mask);
   wishbone_->SpiWrite16(mem_offset_, timer_setup_);
   return true;
 }
