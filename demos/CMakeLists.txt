@@ -17,18 +17,20 @@ set_property(TARGET compass_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(compass_demo matrix_creator_hal)
 target_link_libraries(compass_demo ${CMAKE_THREAD_LIBS_INIT})
 
-
 add_executable(everloop_demo everloop_demo.cpp)
 set_property(TARGET everloop_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(everloop_demo matrix_creator_hal)
 target_link_libraries(everloop_demo ${CMAKE_THREAD_LIBS_INIT})
-
 
 add_executable(arc_demo arc_demo.cpp)
 set_property(TARGET arc_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(arc_demo matrix_creator_hal)
 target_link_libraries(arc_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(sensors_demo sensors_demo.cpp)
+set_property(TARGET sensors_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(sensors_demo matrix_creator_hal)
+target_link_libraries(sensors_demo ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(mic_demo mic_demo.cpp)
 set_property(TARGET mic_demo PROPERTY CXX_STANDARD 11)
