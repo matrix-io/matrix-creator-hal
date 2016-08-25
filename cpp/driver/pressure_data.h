@@ -22,6 +22,7 @@ namespace matrix_hal {
 
 class PressureData {
  public:
+  float altitude;
   float pressure;
   float temperature;
 };
