@@ -19,6 +19,7 @@ set(matrix_creator_hal_src
     humidity_sensor.cpp
     imu_sensor.cpp
     pressure_sensor.cpp
+    uv_sensor.cpp
     dummy_sensor.cpp
     gpio_control.cpp
     everloop.cpp
@@ -35,6 +36,7 @@ set (matrix_creator_hal_headers
 creator_memory_map.h  everloop.h        humidity_data.h    imu_sensor.h        pressure_data.h
 dummy_data.h          everloop_image.h  humidity_sensor.h  matrix_driver.h     pressure_sensor.h
 dummy_sensor.h        gpio_control.h    imu_data.h         microphone_array.h  wishbone_bus.h
+uv_sensor.h
 )
 
 install (FILES ${matrix_creator_hal_headers} DESTINATION include/matrix_hal)

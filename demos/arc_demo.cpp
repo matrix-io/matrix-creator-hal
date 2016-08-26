@@ -40,8 +40,8 @@ int main() {
     for (hal::LedValue& led : image1d.leds) {
       led.red = 0;
       led.green = 0;
-      led.blue = static_cast<int>(std::sin(counter / 128.0) * 127.0) + 128;
-      led.white = led.blue / 4;
+      led.blue = static_cast<int>(std::sin(counter / 128.0) * 7.0) + 8;
+      led.white = 0;
     }
 
     everloop.Write(&image1d);

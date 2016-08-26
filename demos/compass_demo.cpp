@@ -22,6 +22,10 @@
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
+#include "../cpp/driver/humidity_data.h"
+#include "../cpp/driver/humidity_sensor.h"
+#include "../cpp/driver/pressure_data.h"
+#include "../cpp/driver/pressure_sensor.h"
 #include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
@@ -33,12 +37,20 @@ int main() {
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(bus);
 
+  hal::HumiditySensor humidity_sensor;
+  humidity_sensor.Setup(bus);
+
+  hal::PressureSensor pressure_sensor;
+  pressure_sensor.Setup(bus);
+
   hal::Everloop everloop;
   everloop.Setup(bus);
 
   hal::EverloopImage image1d;
 
   hal::IMUData imu_data;
+  hal::HumidityData humidity_data;
+  hal::PressureData pressure_data;
 
   while (true) {
     for (hal::LedValue& led : image1d.leds) {
@@ -47,6 +59,8 @@ int main() {
     }
 
     imu_sensor.Read(&imu_data);
+    humidity_sensor.Read(&humidity_data);
+    pressure_sensor.Read(&pressure_data);
 
     int pin;
     if (imu_data.yaw < 0.0)
@@ -65,6 +79,16 @@ int main() {
     std::cout << "yaw = " << imu_data.yaw << "\t";
     std::cout << "roll = " << imu_data.roll << "\t";
     std::cout << "pitch = " << imu_data.pitch << std::endl;
+
+    std::cout << "a " << imu_data.accel_x << ", " << imu_data.accel_y << ", "<< imu_data.accel_z << std::endl;
+    std::cout << "g " << imu_data.gyro_x << ", " << imu_data.gyro_y << ", "<< imu_data.gyro_z << std::endl;
+    std::cout << "m " << imu_data.mag_x << ", " << imu_data.mag_y  << ", "<< imu_data.mag_z << std::endl;
+    std::cout << std::endl << std::endl;
+    std::cout << "humidity=" << humidity_data.humidity << " temperature=" << humidity_data.temperature << std::endl;
+    std::cout << std::endl << std::endl;
+    std::cout << "pressure=" << pressure_data.pressure << " temperature=" << pressure_data.temperature << std::endl;
+    std::cout << std::endl << std::endl;
+
     usleep(200000);
   }
 
