@@ -41,30 +41,28 @@ int main() {
   hal::HumiditySensor humidity_sensor;
   humidity_sensor.Setup(bus);
 
-
   hal::IMUData imu_data;
   hal::PressureData pressure_data;
   hal::HumidityData humidity_data;
 
   while (true) {
-
     imu_sensor.Read(&imu_data);
     pressure_sensor.Read(&pressure_data);
     humidity_sensor.Read(&humidity_data);
 
+    std::cout << "yaw = " << imu_data.yaw << "°\t";
+    std::cout << "roll = " << imu_data.roll << "°\t";
+    std::cout << "pitch = " << imu_data.pitch << "°" << std::endl << std::endl;
 
-    std::cout << "yaw = " << imu_data.yaw << "\t";
-    std::cout << "roll = " << imu_data.roll << "\t";
-    std::cout << "pitch = " << imu_data.pitch << std::endl;
+    std::cout << "humidity = " << humidity_data.humidity << " %" << std::endl;
+    std::cout << "temperature (from humidity sensor) = "
+              << humidity_data.temperature << " °C" << std::endl << std::endl;
 
-    std::cout << "humidity = " << humidity_data.humidity << std::endl;
-    std::cout << "temperature = " << humidity_data.temperature << std::endl;
-
-    std::cout << "pressure = " << pressure_data.pressure << std::endl;
-    std::cout << "altitude = " << pressure_data.altitude << std::endl;
-    std::cout << "temperature = " << pressure_data.temperature << std::endl;
-
-    std::cout << std::endl << std::endl;
+    std::cout << "pressure = " << pressure_data.pressure << " kPa" << std::endl;
+    std::cout << "altitude = " << pressure_data.altitude << " meters"
+              << std::endl;
+    std::cout << "temperature (from altimeter) = " << pressure_data.temperature
+              << " °C" << std::endl << std::endl;
 
     usleep(200000);
   }
