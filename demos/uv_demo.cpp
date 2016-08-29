@@ -16,6 +16,7 @@
  */
 
 #include <unistd.h>
+#include <valarray>
 #include <cstdlib>
 #include <iostream>
 
@@ -25,9 +26,39 @@
 #include "../cpp/driver/uv_data.h"
 #include "../cpp/driver/wishbone_bus.h"
 
+/* UV Index
+
+  http://www.who.int/uv/intersunprogramme/activities/uv_index/en/
+  https://en.wikipedia.org/wiki/Ultraviolet_index#How_to_use_the_index
+
+    0-2.9  Green  "Low"
+    3-5.9  Yellow "Moderate"
+    6-7.9  Orange "High"
+    8-10.9 Red    "Very high"
+   11+     Violet "Extreme"
+*/
+
 namespace hal = matrix_hal;
 
+struct UVTable {
+  float limit;
+  struct Color {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t w;
+  } color;
+};
+
 int main() {
+  std::valarray<UVTable> who_uv_table = {
+      {11.0, {255, 0, 255, 0}}, /* Violet "Extreme" */
+      {8.0, {255, 0, 0, 0}},    /* Red    "Very high" */
+      {6.0, {255, 128, 0, 0}},  /* Orange "High" */
+      {3.0, {255, 255, 0, 0}},  /* Yellow "Moderate" */
+      {0.0, {0, 255, 0, 0}}     /* Green  "Low" */
+  };
+
   hal::WishboneBus* bus = new hal::WishboneBus();
   bus->SpiInit();
 
@@ -42,6 +73,17 @@ int main() {
 
   while (true) {
     uv_sensor.Read(&uv_data);
+    for (auto& uv_item : who_uv_table) {
+      if (uv_data.uv >= uv_item.limit) {
+        for (auto& led : image1d.leds) {
+          led.red = uv_item.color.r;
+          led.green = uv_item.color.g;
+          led.blue = uv_item.color.b;
+          led.white = uv_item.color.w;
+        }
+      }
+    }
+    everloop.Write(&image1d);
 
     std::cout << "UV = " << uv_data.uv << "  " << std::endl;
 
