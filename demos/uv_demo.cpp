@@ -81,6 +81,7 @@ int main() {
           led.blue = uv_item.color.b;
           led.white = uv_item.color.w;
         }
+        break;
       }
     }
     everloop.Write(&image1d);
