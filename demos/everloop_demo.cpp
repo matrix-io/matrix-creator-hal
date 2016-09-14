@@ -25,14 +25,14 @@
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus* bus = new hal::WishboneBus();
+  hal::WishboneBus bus;
 
-  bus->SpiInit();
+  bus.SpiInit();
 
   hal::Everloop everloop;
   hal::EverloopImage image1d;
 
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   unsigned counter = 0;
 

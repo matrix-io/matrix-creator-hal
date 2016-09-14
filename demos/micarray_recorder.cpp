@@ -18,14 +18,14 @@
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus* bus = new hal::WishboneBus();
-  bus->SpiInit();
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
   hal::MicrophoneArray mics;
-  mics.Setup(bus);
+  mics.Setup(&bus);
 
   hal::Everloop everloop;
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   hal::EverloopImage image1d;
 

@@ -31,20 +31,20 @@
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus* bus = new hal::WishboneBus();
-  bus->SpiInit();
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
   hal::IMUSensor imu_sensor;
-  imu_sensor.Setup(bus);
+  imu_sensor.Setup(&bus);
 
   hal::HumiditySensor humidity_sensor;
-  humidity_sensor.Setup(bus);
+  humidity_sensor.Setup(&bus);
 
   hal::PressureSensor pressure_sensor;
-  pressure_sensor.Setup(bus);
+  pressure_sensor.Setup(&bus);
 
   hal::Everloop everloop;
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   hal::EverloopImage image1d;
 

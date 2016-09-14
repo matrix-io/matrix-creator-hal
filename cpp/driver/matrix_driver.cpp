@@ -20,6 +20,6 @@
 
 namespace matrix_hal {
 
-void MatrixDriver::Setup(WishboneBus* wishbone) { wishbone_.reset(wishbone); }
+void MatrixDriver::Setup(WishboneBus* wishbone) {wishbone_=wishbone;}
 
 };  // namespace matrix_hal

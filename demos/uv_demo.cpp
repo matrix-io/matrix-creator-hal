@@ -59,14 +59,14 @@ int main() {
       {0.0, {0, 255, 0, 0}}     /* Green  "Low" */
   };
 
-  hal::WishboneBus* bus = new hal::WishboneBus();
-  bus->SpiInit();
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
   hal::UVSensor uv_sensor;
-  uv_sensor.Setup(bus);
+  uv_sensor.Setup(&bus);
 
   hal::Everloop everloop;
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   hal::EverloopImage image1d;
   hal::UVData uv_data;

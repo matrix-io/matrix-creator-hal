@@ -34,11 +34,11 @@ namespace hal = matrix_hal;
 #define CLK_FRQ 200000000
 
 int main() {
-  hal::WishboneBus* bus = new hal::WishboneBus();
-  bus->SpiInit();
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
   hal::GPIOControl gpio;
-  gpio.Setup(bus);
+  gpio.Setup(&bus);
 
   gpio.SetMode(PIN_0, INPUT);  /* pin 0, output */
   gpio.SetMode(PIN_1, OUTPUT); /* pin 1, input */

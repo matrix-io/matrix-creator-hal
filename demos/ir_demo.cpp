@@ -39,14 +39,14 @@ int main(int argc, char* argv[]) {
             << "Press \"u\" to Volume UP " << std::endl
             << "Press \"d\" to Volume Down" << std::endl;
 
-  hal::WishboneBus* bus = new hal::WishboneBus();
+  hal::WishboneBus bus;
 
-  bus->SpiInit();
+  bus.SpiInit();
 
   hal::Everloop everloop;
   hal::EverloopImage image1d;
 
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   uint32_t counter = 0;
 

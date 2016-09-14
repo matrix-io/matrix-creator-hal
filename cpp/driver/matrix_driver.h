@@ -29,7 +29,7 @@ class MatrixDriver {
   void Setup(WishboneBus* wishbone);
 
  protected:
-  std::unique_ptr<WishboneBus> wishbone_;
+  WishboneBus* wishbone_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MATRIX_DRIVER_H_

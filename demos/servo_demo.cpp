@@ -42,21 +42,21 @@ namespace hal = matrix_hal;
 #define FALLING_EDGE 1
 
 int main() {
-  hal::WishboneBus* bus = new hal::WishboneBus();
-  bus->SpiInit();
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
   hal::IMUSensor imu_sensor;
-  imu_sensor.Setup(bus);
+  imu_sensor.Setup(&bus);
 
   hal::Everloop everloop;
-  everloop.Setup(bus);
+  everloop.Setup(&bus);
 
   hal::EverloopImage image1d;
 
   hal::IMUData imu_data;
 
   hal::GPIOControl gpio;
-  gpio.Setup(bus);
+  gpio.Setup(&bus);
 
   gpio.SetMode(PIN_4, OUTPUT); /* pin 4, output */
   gpio.SetMode(PIN_0, INPUT);  /* pin 0, input */
