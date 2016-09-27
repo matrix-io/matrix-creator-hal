@@ -73,3 +73,9 @@ target_link_libraries(mic_energy matrix_creator_hal)
 target_link_libraries(mic_energy ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(mic_energy wiringPi)
 
+add_executable(micarray_alsa_pipes micarray_alsa_pipes.cpp)
+set_property(TARGET micarray_alsa_pipes PROPERTY CXX_STANDARD 11)
+target_link_libraries(micarray_alsa_pipes matrix_creator_hal)
+target_link_libraries(micarray_alsa_pipes ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(micarray_alsa_pipes wiringPi)
+
