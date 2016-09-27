@@ -36,27 +36,28 @@ int main() {
 
   everloop.Write(&image1d);
 
-  std::valarray<int> named_pipes_handle(mics.Channels());
-
   for (uint16_t c = 0; c < mics.Channels(); c++) {
     std::string name = "/tmp/matrix_micarray_channel_" + std::to_string(c);
 
     /* create the FIFO (named pipe) */
     if (mkfifo(name.c_str(), 0666) != 0) {
-      std::cerr << "unable to create " << name << " FIFO." << std::endl;
-      return -1;
+      /*std::cerr << "unable to create " << name << " FIFO." << std::endl;*/
     }
-
-    named_pipes_handle[c] = open(name.c_str(), O_WRONLY | O_NONBLOCK);
   }
-
+  int named_pipe_handle;
+  std::valarray<int16_t> buffer(mics.NumberOfSamples());
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
+    for (uint16_t c = 0; c < mics.Channels(); c++) {
+      std::string name = "/tmp/matrix_micarray_channel_" + std::to_string(c);
+      named_pipe_handle = open(name.c_str(), O_WRONLY | O_NONBLOCK);
 
-    for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
-      for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
-        write(named_pipes_handle[c], &mics.At(s, c), sizeof(int16_t));
-      }
+      for (uint32_t s = 0; s < mics.NumberOfSamples(); s++)
+        buffer[s] = mics.At(s, c);
+
+      write(named_pipe_handle, &buffer[0],
+            sizeof(int16_t) * mics.NumberOfSamples());
+      close(named_pipe_handle);
     }
   }
 
