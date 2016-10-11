@@ -33,10 +33,3 @@ Install the project...
 -- Installing: /usr/local/include/matrix_hal/microphone_array.h
 -- Installing: /usr/local/include/matrix_hal/wishbone_bus.h
 ```
-
-### Examples
-```
-cd demos
-./arc_demo
-...
-```
