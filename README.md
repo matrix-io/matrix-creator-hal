@@ -12,6 +12,9 @@ $ sudo apt-get install cmake g++ git
 ### Build
 To start working with HAL directly, you'll need to run `sudo make install` to get the build running. 
 ```
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make && sudo make install
 [100%] Built target matrix_creator_hal
 Install the project...
