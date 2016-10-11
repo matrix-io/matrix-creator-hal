@@ -6,13 +6,13 @@ HAL is the lowest-level abstraction for the MATRIX Creator drivers. You can inte
 It does have some package dependencies, so please make sure to install the pre-requisites.
 
 ```
-sudo apt-get install cmake g++ git
+$ sudo apt-get install cmake g++ git
 ```
 
 ### Build
 To start working with HAL directly, you'll need to run `sudo make install` to get the build running. 
 ```
-sudo make install
+$ sudo make install
 [100%] Built target matrix_creator_hal
 Install the project...
 -- Install configuration: ""
@@ -32,4 +32,11 @@ Install the project...
 -- Installing: /usr/local/include/matrix_hal/imu_data.h
 -- Installing: /usr/local/include/matrix_hal/microphone_array.h
 -- Installing: /usr/local/include/matrix_hal/wishbone_bus.h
+```
+
+### Examples
+```
+cd demos
+./arc_demo
+...
 ```
