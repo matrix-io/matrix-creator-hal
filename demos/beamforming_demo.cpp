@@ -18,12 +18,13 @@
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
-const int N = 128;
-
-class Correlation {
+/*
+Cross-correlation between signals implemented in requency domain.
+*/
+class CrossCorrelation {
  public:
-  Correlation(int N);
-  ~Correlation();
+  CrossCorrelation(int N);
+  ~CrossCorrelation();
 
   void Exec(int16_t* a, int16_t* b);
   float* Result();
@@ -43,7 +44,12 @@ class Correlation {
   fftwf_plan inverse_plan_;
 };
 
-Correlation::Correlation(int N) : order_(N) {
+CrossCorrelation::CrossCorrelation(int N) : order_(N) {
+  /*
+  fftwf_malloc function that behave identically to malloc, except that they
+  guarantee that the returned pointer obeys any special alignment restrictions
+  imposed by any algorithm in FFTW (e.g. for SIMD acceleration).
+  */
   in_ = (float*)fftwf_malloc(sizeof(float) * N);
   A_ = (float*)fftwf_malloc(sizeof(float) * N);
   B_ = (float*)fftwf_malloc(sizeof(float) * N);
@@ -55,7 +61,7 @@ Correlation::Correlation(int N) : order_(N) {
   inverse_plan_ = fftwf_plan_r2r_1d(N, C_, c_, FFTW_HC2R, FFTW_ESTIMATE);
 }
 
-Correlation::~Correlation() {
+CrossCorrelation::~CrossCorrelation() {
   fftwf_destroy_plan(forward_plan_a_);
   fftwf_destroy_plan(forward_plan_b_);
   fftwf_destroy_plan(inverse_plan_);
@@ -67,58 +73,31 @@ Correlation::~Correlation() {
   fftwf_free(c_);
 }
 
-float* Correlation::Result() { return c_; }
+float* CrossCorrelation::Result() { return c_; }
 
-void Correlation::Exec(int16_t* a, int16_t* b) {
-  for (int i = 0; i < order_; i++) in_[i] = a[i];
-
-  if (0) {
-    std::cout << std::endl << "a=[";
-    for (int i = 0; i < order_; i++) std::cout << in_[i] << ",";
-    std::cout << "]" << std::endl;
+void CrossCorrelation::Exec(int16_t* a, int16_t* b) {
+  for (int i = 0; i < order_; i++) {
+    in_[i] = a[i];
   }
+
   fftwf_execute(forward_plan_a_);
 
-  if (0) {
-    std::cout << std::endl << "A=[";
-    for (int i = 0; i < order_; i++) std::cout << A_[i] << ",";
-    std::cout << "]" << std::endl;
-  }
-
-  for (int i = 0; i < order_; i++) in_[i] = b[i];
-
-  if (0) {
-    std::cout << std::endl << "b=[";
-    for (int i = 0; i < order_; i++) std::cout << in_[i] << ",";
-    std::cout << "]" << std::endl;
+  for (int i = 0; i < order_; i++) {
+    in_[i] = b[i];
   }
 
   fftwf_execute(forward_plan_b_);
-  if (0) {
-    std::cout << std::endl << "B=[";
-    for (int i = 0; i < order_; i++) std::cout << B_[i] << ",";
-    std::cout << "]" << std::endl;
-  }
 
   Corr(C_, A_, B_);
-  if (0) {
-    std::cout << std::endl << "C=[";
-    for (int i = 0; i < order_; i++) std::cout << C_[i] << ",";
-    std::cout << "]" << std::endl;
-  }
 
   fftwf_execute(inverse_plan_);
 
-  for (int i = 0; i < order_; i++) c_[i] = c_[i] / order_;
-
-  if (0) {
-    std::cout << std::endl << "c=[";
-    for (int i = 0; i < order_; i++) std::cout << c_[i] / 128.0 << ",";
-    std::cout << "]" << std::endl;
+  for (int i = 0; i < order_; i++) {
+    c_[i] = c_[i] / order_;
   }
 }
 
-void Correlation::Corr(float* out, float* x, float* y) {
+void CrossCorrelation::Corr(float* out, float* x, float* y) {
   memset(reinterpret_cast<void*>(out), 0, order_ * sizeof(float));
 
   out[0] = x[0] * y[0];                             // r0
@@ -135,6 +114,8 @@ void Correlation::Corr(float* out, float* x, float* y) {
 }
 
 namespace hal = matrix_hal;
+
+const int N = 128;
 
 int main() {
   hal::WishboneBus bus;
@@ -154,7 +135,7 @@ int main() {
 
   int16_t buffer[mics.Channels()][mics.SamplingRate()];
 
-  Correlation corr(N);
+  CrossCorrelation corr(N);
   std::valarray<float> current_mag(4);
   std::valarray<float> current_index(4);
 
@@ -174,11 +155,19 @@ int main() {
 
       int index = 0;
       float m = c[0];
-      for (int i = 1; i < N; i++)
+      int max_tof = 6;
+      for (int i = 1; i < max_tof; i++)
         if (c[i] > m) {
           index = i;
           m = c[i];
         }
+
+      for (int i = N-max_tof; i < N; i++)
+        if (c[i] > m) {
+          index = i;
+          m = c[i];
+        }
+
       current_mag[channel] = m;
       current_index[channel] = index;
     }
@@ -190,11 +179,11 @@ int main() {
       if (mag < current_mag[channel]) {
         dir = channel;
         mag = current_mag[channel];
-        index  = current_index[channel];
+        index = current_index[channel];
       }
     }
-    if(mag>2e8)
-       std::cout << dir << "\t" << index << "\t" <<  mag << std::endl;
+    if (mag > 2e8)
+      std::cout << dir << "\t" << index << "\t" << mag << std::endl;
   }
 
   return 0;
