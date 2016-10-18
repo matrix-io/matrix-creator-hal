@@ -79,3 +79,8 @@ target_link_libraries(micarray_alsa_pipes matrix_creator_hal)
 target_link_libraries(micarray_alsa_pipes ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(micarray_alsa_pipes wiringPi)
 
+add_executable(ipaddress_demo ipaddress_demo.cpp)
+set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(ipaddress_demo matrix_creator_hal)
+target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
+
