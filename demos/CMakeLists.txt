@@ -8,9 +8,12 @@ include (../cmake/FatalWarnings.cmake)
 ADM_EXTRA_WARNINGS()
 
 find_package(Threads)
+find_package(PkgConfig)
+
+pkg_search_module(SPHINXBASE REQUIRED sphinxbase)
+pkg_search_module(POCKETSPHINX REQUIRED pocketsphinx)
 
 add_subdirectory(../cpp/driver driver)
-
 
 add_executable(compass_demo compass_demo.cpp)
 set_property(TARGET compass_demo PROPERTY CXX_STANDARD 11)
@@ -78,4 +81,25 @@ set_property(TARGET micarray_alsa_pipes PROPERTY CXX_STANDARD 11)
 target_link_libraries(micarray_alsa_pipes matrix_creator_hal)
 target_link_libraries(micarray_alsa_pipes ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(micarray_alsa_pipes wiringPi)
+
+add_executable(pocketsphinx_demo pocketsphinx_demo.cpp)
+set_property(TARGET pocketsphinx_demo PROPERTY CXX_STANDARD 11)
+target_include_directories(pocketsphinx_demo PUBLIC ${SPHINXBASE_INCLUDE_DIRS})
+target_include_directories(pocketsphinx_demo PUBLIC ${POCKETSPHINX_INCLUDE_DIRS})
+target_link_libraries(pocketsphinx_demo matrix_creator_hal)
+target_link_libraries(pocketsphinx_demo ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(pocketsphinx_demo ${SPHINXBASE_LIBRARIES})
+target_link_libraries(pocketsphinx_demo ${POCKETSPHINX_LIBRARIES})
+
+add_executable(clear_demo clear_demo.cpp)
+set_property(TARGET clear_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(clear_demo matrix_creator_hal)
+target_link_libraries(clear_demo ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(ipaddress_demo ipaddress_demo.cpp)
+set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(ipaddress_demo matrix_creator_hal)
+target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
+
+
 
