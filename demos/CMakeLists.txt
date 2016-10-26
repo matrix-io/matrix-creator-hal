@@ -9,6 +9,8 @@ ADM_EXTRA_WARNINGS()
 
 find_package(Threads)
 
+find_library (FFTW_LIBRARIES NAMES fftw3f )
+
 add_subdirectory(../cpp/driver driver)
 
 
@@ -78,4 +80,11 @@ set_property(TARGET micarray_alsa_pipes PROPERTY CXX_STANDARD 11)
 target_link_libraries(micarray_alsa_pipes matrix_creator_hal)
 target_link_libraries(micarray_alsa_pipes ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(micarray_alsa_pipes wiringPi)
+
+add_executable(beamforming_demo beamforming_demo.cpp)
+set_property(TARGET beamforming_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(beamforming_demo matrix_creator_hal)
+target_link_libraries(beamforming_demo ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(beamforming_demo wiringPi)
+target_link_libraries(beamforming_demo ${FFTW_LIBRARIES})
 
