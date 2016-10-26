@@ -12,13 +12,13 @@
 #include <fstream>
 #include <iostream>
 #include <valarray>
+#include <iomanip>
 
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 #include "../cpp/driver/beamforming.h"
-
 
 namespace hal = matrix_hal;
 
@@ -69,9 +69,9 @@ int main() {
           m = c[i];
         }
 
-      for (int i = N-max_tof; i < N; i++)
+      for (int i = N - max_tof; i < N; i++)
         if (c[i] > m) {
-          index = i;
+          index = i - N;
           m = c[i];
         }
 
@@ -89,8 +89,21 @@ int main() {
         index = current_index[channel];
       }
     }
-    if (mag > 2e8)
+    if (mag > 2e8) {
+      for (int channel = 0; channel < 4; channel++) {
+        std::cout << std::setprecision(5) << std::fixed
+                  << current_mag[channel] / mag << " ";
+      }
+
+      std::cout << " [";
+      for (int channel = 0; channel < 4; channel++) {
+        std::cout << std::setprecision(0) << current_index[channel] << " ";
+      }
+
+      std::cout << "]";
+
       std::cout << dir << "\t" << index << "\t" << mag << std::endl;
+    }
   }
 
   return 0;
