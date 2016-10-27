@@ -18,14 +18,17 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 
+#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/fw_data.h"
+#include "../cpp/driver/mcu_firmware.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
 #include "../cpp/driver/pressure_data.h"
 #include "../cpp/driver/pressure_sensor.h"
 #include "../cpp/driver/humidity_data.h"
 #include "../cpp/driver/humidity_sensor.h"
-#include "../cpp/driver/wishbone_bus.h"
 #include "../cpp/driver/uv_sensor.h"
 #include "../cpp/driver/uv_data.h"
 
@@ -47,12 +50,17 @@ int main() {
   hal::UVSensor uv_sensor;
   uv_sensor.Setup(&bus);
 
+  hal::MCUFirmware mcu_firmware;
+  mcu_firmware.Setup(&bus);
+
   hal::IMUData imu_data;
   hal::PressureData pressure_data;
   hal::HumidityData humidity_data;
   hal::UVData uv_data;
+  hal::MCUData mcu_data;
 
   while (true) {
+    mcu_firmware.Read(&mcu_data);
     imu_sensor.Read(&imu_data);
     pressure_sensor.Read(&pressure_data);
     humidity_sensor.Read(&humidity_data);
@@ -73,7 +81,10 @@ int main() {
               << std::endl;
     std::cout << "temperature (from altimeter) = " << pressure_data.temperature
               << " °C" << std::endl << std::endl;
-    std::cout << "UV = " << uv_data.uv << "  " << std::endl << std::endl;
+    std::cout << "UV = " << uv_data.uv << std::endl << std::endl;
+
+    std::cout << "MCU ID = 0x" <<  std::hex <<  mcu_data.ID  << std::endl;
+    std::cout << "MCU version = 0x" << mcu_data.version   << std::endl << std::endl;
 
     usleep(200000);
   }
