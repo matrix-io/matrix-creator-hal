@@ -38,6 +38,7 @@ creator_memory_map.h  everloop.h        humidity_data.h    imu_sensor.h        p
 dummy_data.h          everloop_image.h  humidity_sensor.h  matrix_driver.h     pressure_sensor.h
 dummy_sensor.h        gpio_control.h    imu_data.h         microphone_array.h  wishbone_bus.h
 uv_data.h             uv_sensor.h       fw_data.h          mcu_firmware.h
+microphone_array_location.h
 )
 
 install (FILES ${matrix_creator_hal_headers} DESTINATION include/matrix_hal)
