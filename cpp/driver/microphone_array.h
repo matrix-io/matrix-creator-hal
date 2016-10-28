@@ -53,9 +53,16 @@ class MicrophoneArray : public MatrixDriver {
     return raw_data_[sample * kMicrophoneChannels + channel];
   }
 
+  void CalculateDelays(float azimutal_angle, float polar_angle,
+                       float radial_distance_mm = 100.0,
+                       float sound_speed_mmseg = 320 * 1000.0);
+
  private:
   std::valarray<int16_t> raw_data_;
   int16_t gain_;
+
+  /* beamforming delay and sum support */
+  std::valarray<int16_t> delay_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_

@@ -18,14 +18,19 @@
 #include <wiringPi.h>
 #include <string>
 #include <cstdlib>
+#include <cmath>
+#include <iostream>
 
 #include "cpp/driver/microphone_array.h"
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/microphone_array_location.h"
 
 namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
+  delay_.resize(kMicrophoneChannels);
+  delay_ = 0;
 }
 
 MicrophoneArray::~MicrophoneArray() {}
@@ -57,4 +62,26 @@ bool MicrophoneArray::Read() {
 
   return true;
 }
+
+void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
+                                      float radial_distance_mm,
+                                      float sound_speed_mmseg) {
+  /*
+    sound source position
+  */
+  float x, y, z;
+  x = radial_distance_mm * std::sin(azimutal_angle) * std::cos(polar_angle);
+  y = radial_distance_mm * std::sin(azimutal_angle) * std::sin(polar_angle);
+  z = radial_distance_mm * std::cos(azimutal_angle);
+
+  std::valarray<float> distance(kMicrophoneChannels);
+
+  for (int c = 0; c < kMicrophoneChannels; c++) {
+    distance[c] = std::sqrt(std::pow(micarray_location[c][0] - x, 2.0) +
+                            std::pow(micarray_location[c][1] - y, 2.0) +
+                            std::pow(z, 2.0));
+    std::cout << distance[c] << std::endl;
+  }
+}
+
 };  // namespace matrix_hal
