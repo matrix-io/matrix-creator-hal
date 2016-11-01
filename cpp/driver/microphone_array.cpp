@@ -29,8 +29,7 @@ namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
-  delay_.resize(kMicrophoneChannels);
-  delay_ = 0;
+  fifos_.resize(kMicrophoneChannels);
 }
 
 MicrophoneArray::~MicrophoneArray() {}

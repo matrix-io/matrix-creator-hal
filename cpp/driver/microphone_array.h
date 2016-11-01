@@ -22,6 +22,7 @@
 #include <valarray>
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
+#include "./circular_queue.h"
 
 namespace matrix_hal {
 
@@ -62,7 +63,7 @@ class MicrophoneArray : public MatrixDriver {
   int16_t gain_;
 
   /* beamforming delay and sum support */
-  std::valarray<int16_t> delay_;
+  std::valarray< CircularQueue<int16_t> > fifos_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_
