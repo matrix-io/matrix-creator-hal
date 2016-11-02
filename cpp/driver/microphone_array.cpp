@@ -19,7 +19,7 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
-#include <iostream>
+#include <map>
 
 #include "cpp/driver/microphone_array.h"
 #include "cpp/driver/creator_memory_map.h"
@@ -73,13 +73,27 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   y = radial_distance_mm * std::sin(azimutal_angle) * std::sin(polar_angle);
   z = radial_distance_mm * std::cos(azimutal_angle);
 
-  std::valarray<float> distance(kMicrophoneChannels);
+  std::map<float, int> distance_map;
 
+  /*
+    sorted distances from source position to each microphone
+  */
   for (int c = 0; c < kMicrophoneChannels; c++) {
-    distance[c] = std::sqrt(std::pow(micarray_location[c][0] - x, 2.0) +
-                            std::pow(micarray_location[c][1] - y, 2.0) +
-                            std::pow(z, 2.0));
-    std::cout << distance[c] << std::endl;
+    float distance = std::sqrt(std::pow(micarray_location[c][0] - x, 2.0) +
+                               std::pow(micarray_location[c][1] - y, 2.0) +
+                               std::pow(z, 2.0));
+    distance_map[distance] = c;
+  }
+
+  /*
+    fifo resize for delay compensation
+  */
+  float min_distance = distance_map.begin()->first;
+  for (std::map<float, int>::iterator it = distance_map.begin();
+       it != distance_map.end(); ++it) {
+    int delay = std::floor(
+        0.5 + (it->first - min_distance) * kSamplingRate / sound_speed_mmseg);
+    fifos_[it->second].Resize(delay);
   }
 }
 
