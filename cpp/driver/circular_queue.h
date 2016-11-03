@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_CIRCULAR_QUEUE_
-#define CPP_DRIVER_CIRCULAR_QUEUE_
+#ifndef CPP_DRIVER_CIRCULAR_QUEUE_H_
+#define CPP_DRIVER_CIRCULAR_QUEUE_H_
 
 namespace matrix_hal {
 
@@ -31,9 +31,7 @@ class CircularQueue {
     }
   }
 
-  /*
-    Resize buffer for circular fifo
-  */
+  //  Resize buffer for circular fifo
   bool Resize(int N) {
     if (N < 0) {
       return false;
@@ -49,9 +47,7 @@ class CircularQueue {
     return (fifo_ != NULL);
   }
 
-  /*
-    Simultaneous Push/Pop method
-  */
+  // Simultaneous Push/Pop method
   T PushPop(const T& data) {
     if (fifo_size_ > 1) {
       fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
@@ -69,4 +65,4 @@ class CircularQueue {
 };
 
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_CIRCULAR_QUEUE_
+#endif  // CPP_DRIVER_CIRCULAR_QUEUE_H_

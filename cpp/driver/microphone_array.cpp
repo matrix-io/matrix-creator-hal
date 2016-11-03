@@ -53,9 +53,7 @@ void MicrophoneArray::Setup(WishboneBus* wishbone) {
   pinMode(kMicrophoneArrayIRQ, INPUT);
 }
 
-/*
-  Read audio from the FPGA and calculate beam using delay & sum method
-*/
+//  Read audio from the FPGA and calculate beam using delay & sum method
 bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
   if (!wishbone_) return false;
@@ -90,13 +88,10 @@ bool MicrophoneArray::Read() {
   return true;
 }
 
-
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
                                       float radial_distance_mm,
                                       float sound_speed_mmseg) {
-  /*
-    sound source position
-  */
+  //  sound source position
   float x, y, z;
   x = radial_distance_mm * std::sin(azimutal_angle) * std::cos(polar_angle);
   y = radial_distance_mm * std::sin(azimutal_angle) * std::sin(polar_angle);
@@ -104,9 +99,7 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
 
   std::map<float, int> distance_map;
 
-  /*
-    sorted distances from source position to each microphone
-  */
+  // sorted distances from source position to each microphone
   for (int c = 0; c < kMicrophoneChannels; c++) {
     float distance = std::sqrt(std::pow(micarray_location[c][0] - x, 2.0) +
                                std::pow(micarray_location[c][1] - y, 2.0) +
@@ -114,9 +107,7 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
     distance_map[distance] = c;
   }
 
-  /*
-    fifo resize for delay compensation
-  */
+  // fifo resize for delay compensation
   float min_distance = distance_map.begin()->first;
   for (std::map<float, int>::iterator it = distance_map.begin();
        it != distance_map.end(); ++it) {

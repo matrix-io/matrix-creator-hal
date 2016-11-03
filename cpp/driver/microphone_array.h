@@ -61,15 +61,13 @@ class MicrophoneArray : public MatrixDriver {
                        float sound_speed_mmseg = 320 * 1000.0);
 
  private:
-  /*
-    delay and sum beamforming result
-  */
+  //  delay and sum beamforming result
   std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
 
-  /* beamforming delay and sum support */
+  // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;
 };
 };      // namespace matrix_hal
