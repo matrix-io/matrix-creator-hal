@@ -51,7 +51,7 @@ class MicrophoneArray : public MatrixDriver {
   }
 
   int16_t& At(int16_t sample, int16_t channel) {
-    return raw_data_[sample * kMicrophoneChannels + channel];
+    return delayed_data_[sample * kMicrophoneChannels + channel];
   }
 
   void CalculateDelays(float azimutal_angle, float polar_angle,
@@ -60,6 +60,7 @@ class MicrophoneArray : public MatrixDriver {
 
  private:
   std::valarray<int16_t> raw_data_;
+  std::valarray<int16_t> delayed_data_;
   int16_t gain_;
 
   /* beamforming delay and sum support */

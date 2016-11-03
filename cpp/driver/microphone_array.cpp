@@ -29,6 +29,7 @@ namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
+  delayed_data_.resize(kMicarrayBufferSize);
   fifos_.resize(kMicrophoneChannels);
 }
 
@@ -46,6 +47,7 @@ void MicrophoneArray::Setup(WishboneBus* wishbone) {
 }
 
 bool MicrophoneArray::Read() {
+  // TODO(andres.calderon@admobilize.com): avoid double buffer
   if (!wishbone_) return false;
 
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
@@ -56,7 +58,12 @@ bool MicrophoneArray::Read() {
       return false;
     }
 
-    for (auto& data : raw_data_) data = data * gain_;
+    for (uint32_t s = 0; s < NumberOfSamples(); s++) {
+      for (uint16_t c = 0; c < kMicrophoneChannels; c++) {
+        delayed_data_[s * kMicrophoneChannels + c] =
+            fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]) * gain_;
+      }
+    }
   }
 
   return true;
@@ -91,8 +98,8 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   float min_distance = distance_map.begin()->first;
   for (std::map<float, int>::iterator it = distance_map.begin();
        it != distance_map.end(); ++it) {
-    int delay = std::floor(
-        0.5 + (it->first - min_distance) * kSamplingRate / sound_speed_mmseg);
+    int delay = std::round((it->first - min_distance) * kSamplingRate /
+                           sound_speed_mmseg);
     fifos_[it->second].Resize(delay);
   }
 }
