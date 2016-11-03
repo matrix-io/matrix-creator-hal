@@ -23,9 +23,7 @@ namespace matrix_hal {
 template <class T>
 class CircularQueue {
  public:
-  CircularQueue() : N_(0), pointer_(0), fifo_(NULL) {}
-
-  CircularQueue(int N) : N_(N), pointer_(0) { fifo_ = new T[N_]; }
+  CircularQueue() : fifo_size_(0), pointer_(0), fifo_(NULL) {}
 
   ~CircularQueue() {
     if (fifo_) {
@@ -41,21 +39,22 @@ class CircularQueue {
     if (fifo_) {
       delete[] fifo_;
     }
-    N_ = N;
+
+    fifo_size_ = N + 1;
     pointer_ = 0;
-    fifo_ = new T[N_];
+    fifo_ = new T[fifo_size_];
     return (fifo_ != NULL);
   }
 
   T PushPop(const T& data) {
-    fifo_[(pointer_ + N_ - 1) % N_] = data;
+    fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
     T& ret = fifo_[pointer_];
-    pointer_ = (pointer_ + 1) % N_;
+    pointer_ = (pointer_ + 1) % fifo_size_;
     return ret;
   }
 
  private:
-  int N_;
+  int fifo_size_;
   int pointer_;
   T* fifo_;
 };

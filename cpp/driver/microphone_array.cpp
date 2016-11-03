@@ -31,6 +31,8 @@ MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
   delayed_data_.resize(kMicarrayBufferSize);
   fifos_.resize(kMicrophoneChannels);
+
+  CalculateDelays(0.0, 0.0);
 }
 
 MicrophoneArray::~MicrophoneArray() {}
