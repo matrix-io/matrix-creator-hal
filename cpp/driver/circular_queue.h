@@ -31,6 +31,9 @@ class CircularQueue {
     }
   }
 
+  /*
+    Resize buffer for circular fifo
+  */
   bool Resize(int N) {
     if (N < 0) {
       return false;
@@ -46,6 +49,9 @@ class CircularQueue {
     return (fifo_ != NULL);
   }
 
+  /*
+    Simultaneous Push/Pop method
+  */
   T PushPop(const T& data) {
     fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
     T& ret = fifo_[pointer_];
