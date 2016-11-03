@@ -18,6 +18,7 @@
 #include <wiringPi.h>
 #include <string>
 #include <cstdlib>
+#include <cstdint>
 #include <cmath>
 #include <map>
 
@@ -29,8 +30,12 @@ namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
+
   delayed_data_.resize(kMicarrayBufferSize);
+
   fifos_.resize(kMicrophoneChannels);
+
+  beamformed_.resize(NumberOfSamples());
 
   CalculateDelays(0.0, 0.0);
 }
@@ -48,6 +53,9 @@ void MicrophoneArray::Setup(WishboneBus* wishbone) {
   pinMode(kMicrophoneArrayIRQ, INPUT);
 }
 
+/*
+  Read audio from the FPGA and calculate beam using delay & sum method
+*/
 bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
   if (!wishbone_) return false;
@@ -61,15 +69,27 @@ bool MicrophoneArray::Read() {
     }
 
     for (uint32_t s = 0; s < NumberOfSamples(); s++) {
+      int sum = 0;
       for (uint16_t c = 0; c < kMicrophoneChannels; c++) {
         delayed_data_[s * kMicrophoneChannels + c] =
             fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]) * gain_;
+
+        sum = sum + delayed_data_[s * kMicrophoneChannels + c];
+      }
+
+      if (sum < INT16_MIN) {
+        beamformed_[s] = INT16_MIN;
+      } else if (sum > INT16_MAX) {
+        beamformed_[s] = INT16_MAX;
+      } else {
+        beamformed_[s] = sum;
       }
     }
   }
 
   return true;
 }
+
 
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
                                       float radial_distance_mm,

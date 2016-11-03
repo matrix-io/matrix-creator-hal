@@ -53,10 +53,13 @@ class CircularQueue {
     Simultaneous Push/Pop method
   */
   T PushPop(const T& data) {
-    fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
-    T& ret = fifo_[pointer_];
-    pointer_ = (pointer_ + 1) % fifo_size_;
-    return ret;
+    if (fifo_size_ > 1) {
+      fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
+      T& ret = fifo_[pointer_];
+      pointer_ = (pointer_ + 1) % fifo_size_;
+      return ret;
+    }
+    return data;
   }
 
  private:
