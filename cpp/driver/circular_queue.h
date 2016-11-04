@@ -23,13 +23,9 @@ namespace matrix_hal {
 template <class T>
 class CircularQueue {
  public:
-  CircularQueue() : fifo_size_(0), pointer_(0), fifo_(NULL) {}
+  CircularQueue() : fifo_size_(0), pointer_(0), fifo_(nullptr) {}
 
-  ~CircularQueue() {
-    if (fifo_) {
-      delete[] fifo_;
-    }
-  }
+  ~CircularQueue() { delete[] fifo_; }
 
   //  Resize buffer for circular fifo
   bool Resize(int N) {
@@ -37,18 +33,16 @@ class CircularQueue {
       return false;
     }
 
-    if (fifo_) {
-      delete[] fifo_;
-    }
+    delete[] fifo_;
 
     fifo_size_ = N + 1;
     pointer_ = 0;
     fifo_ = new T[fifo_size_];
-    return (fifo_ != NULL);
+    return fifo_ != NULL;
   }
 
   // Simultaneous Push/Pop method
-  T PushPop(const T& data) {
+  const T PushPop(const T& data) {
     if (fifo_size_ > 1) {
       fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
       T& ret = fifo_[pointer_];

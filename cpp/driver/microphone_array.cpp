@@ -72,16 +72,10 @@ bool MicrophoneArray::Read() {
         delayed_data_[s * kMicrophoneChannels + c] =
             fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]) * gain_;
 
-        sum = sum + delayed_data_[s * kMicrophoneChannels + c];
+        sum += delayed_data_[s * kMicrophoneChannels + c];
       }
 
-      if (sum < INT16_MIN) {
-        beamformed_[s] = INT16_MIN;
-      } else if (sum > INT16_MAX) {
-        beamformed_[s] = INT16_MAX;
-      } else {
-        beamformed_[s] = sum;
-      }
+      beamformed_[s] = std::min(INT16_MAX, std::max(sum, INT16_MIN));
     }
   }
 
