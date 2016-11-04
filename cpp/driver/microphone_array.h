@@ -22,6 +22,7 @@
 #include <valarray>
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
+#include "./circular_queue.h"
 
 namespace matrix_hal {
 
@@ -50,12 +51,24 @@ class MicrophoneArray : public MatrixDriver {
   }
 
   int16_t& At(int16_t sample, int16_t channel) {
-    return raw_data_[sample * kMicrophoneChannels + channel];
+    return delayed_data_[sample * kMicrophoneChannels + channel];
   }
 
+  int16_t& Beam(int16_t sample) { return beamformed_[sample]; }
+
+  void CalculateDelays(float azimutal_angle, float polar_angle,
+                       float radial_distance_mm = 100.0,
+                       float sound_speed_mmseg = 320 * 1000.0);
+
  private:
+  //  delay and sum beamforming result
+  std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;
+  std::valarray<int16_t> delayed_data_;
   int16_t gain_;
+
+  // beamforming delay and sum support
+  std::valarray<CircularQueue<int16_t> > fifos_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_
