@@ -110,7 +110,7 @@ uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
 }
 
 
-uint16_t GPIOControl::GetGPIOVector() {
+uint16_t GPIOControl::GetGPIOValue() {
   if (!wishbone_) return false;
   uint16_t value;
 
