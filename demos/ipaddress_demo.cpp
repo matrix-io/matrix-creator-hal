@@ -31,7 +31,6 @@
 namespace hal = matrix_hal;
 
 void SetNumber(int position, int value, hal::EverloopImage *image) {
-
   image->leds[position].blue = 0;
   image->leds[position].green = 20;
   image->leds[position].red = 40;
@@ -43,10 +42,7 @@ void SetNumber(int position, int value, hal::EverloopImage *image) {
 }
 
 int main() {
-  struct sockaddr_in sa;
-  char str[INET_ADDRSTRLEN];
   int last_integer = 0;
-
   hal::WishboneBus bus;
   bus.SpiInit();
   hal::Everloop everloop;
@@ -64,13 +60,16 @@ int main() {
     if (ifa->ifa_addr == nullptr) {
       continue;
     }
-    if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-      // is a valid IP4 Address
+
+    // check it is IP4
+    if (ifa->ifa_addr->sa_family == AF_INET) {
       tmp_addr_ptr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
       char address_buffer[INET_ADDRSTRLEN];
       inet_ntop(AF_INET, tmp_addr_ptr, address_buffer, INET_ADDRSTRLEN);
       printf("%s IP Address %s\n", ifa->ifa_name, address_buffer);
-      if (std::strcmp(ifa->ifa_name, "wlan0") == 0) {
+
+      // get IP for last network interface configured
+      if (std::strcmp(ifa->ifa_name, "lo") != 0) {
         in_addr_t address = inet_addr(address_buffer);
         last_integer = (address >> 24) & 0xFF;
         printf("show last integer: %i\n", last_integer);
