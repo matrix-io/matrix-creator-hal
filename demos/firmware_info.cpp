@@ -15,25 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_CREATOR_MEMORY_MAP_H_
-#define CPP_DRIVER_CREATOR_MEMORY_MAP_H_
+#include <iostream>
+#include <iomanip>
 
-#include <string>
+#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/fw_data.h"
+#include "../cpp/driver/mcu_firmware.h"
 
-namespace matrix_hal {
+namespace hal = matrix_hal;
 
-/* FPGA Wishbone address map */
-const uint32_t kMicrophoneArrayBaseAddress = 0x1800;
-const uint32_t kEverloopBaseAddress = 0x2000;
-const uint32_t kGPIOBaseAddress = 0x2800;
-const uint16_t kMCUBaseAddress = 0x3800;
+int main() {
+  hal::WishboneBus bus;
+  bus.SpiInit();
 
-/* MCU offsets map */
-const uint16_t kMemoryOffsetUV = 0x00;
-const uint16_t kMemoryOffsetPressure = 0x10;
-const uint16_t kMemoryOffsetHumidity = 0x20;
-const uint16_t kMemoryOffsetIMU = 0x30;
-const uint16_t kMemoryOffsetMCU = 0x90;
+  hal::MCUFirmware mcu_firmware;
+  mcu_firmware.Setup(&bus);
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_CREATOR_MEMORY_MAP_H_
+  hal::MCUData mcu_data;
+
+  mcu_firmware.Read(&mcu_data);
+
+  std::cout << "MCU ID = 0x" << std::hex << mcu_data.ID << std::endl;
+  std::cout << "MCU version = 0x" << mcu_data.version << std::endl;
+
+  return 0;
+}
