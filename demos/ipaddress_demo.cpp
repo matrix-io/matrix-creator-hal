@@ -20,9 +20,9 @@
 #include <sys/types.h>
 #include <ifaddrs.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <cstring>
-#include <arpa/inet.h>
 
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
@@ -30,12 +30,7 @@
 
 namespace hal = matrix_hal;
 
-struct sockaddr_in sa;
-char str[INET_ADDRSTRLEN];
-int last_integer = 0;
-
-void setNumber(int position, int value, hal::EverloopImage *image) {
-
+void SetNumber(int position, int value, hal::EverloopImage *image) {
   image->leds[position].blue = 0;
   image->leds[position].green = 20;
   image->leds[position].red = 40;
@@ -47,7 +42,7 @@ void setNumber(int position, int value, hal::EverloopImage *image) {
 }
 
 int main() {
-
+  int last_integer = 0;
   hal::WishboneBus bus;
   bus.SpiInit();
   hal::Everloop everloop;
@@ -55,31 +50,34 @@ int main() {
 
   everloop.Setup(&bus);
 
-  struct ifaddrs *ifAddrStruct = NULL;
+  struct ifaddrs *ifaddr_struct = NULL;
   struct ifaddrs *ifa = NULL;
-  void *tmpAddrPtr = NULL;
+  void *tmp_addr_ptr = NULL;
 
-  getifaddrs(&ifAddrStruct);
+  getifaddrs(&ifaddr_struct);
 
-  for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-    if (!ifa->ifa_addr) {
+  for (ifa = ifaddr_struct; ifa != NULL; ifa = ifa->ifa_next) {
+    if (ifa->ifa_addr == nullptr) {
       continue;
     }
-    if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-      // is a valid IP4 Address
-      tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-      char addressBuffer[INET_ADDRSTRLEN];
-      inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-      printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-      if (std::strcmp(ifa->ifa_name, "wlan0") == 0) {
-        in_addr_t address = inet_addr(addressBuffer);
+
+    // check it is IP4
+    if (ifa->ifa_addr->sa_family == AF_INET) {
+      tmp_addr_ptr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+      char address_buffer[INET_ADDRSTRLEN];
+      inet_ntop(AF_INET, tmp_addr_ptr, address_buffer, INET_ADDRSTRLEN);
+      printf("%s IP Address %s\n", ifa->ifa_name, address_buffer);
+
+      // get IP for last network interface configured
+      if (std::strcmp(ifa->ifa_name, "lo") != 0) {
+        in_addr_t address = inet_addr(address_buffer);
         last_integer = (address >> 24) & 0xFF;
         printf("show last integer: %i\n", last_integer);
       }
     }
   }
-  if (ifAddrStruct != NULL)
-    freeifaddrs(ifAddrStruct);
+  if (ifaddr_struct != nullptr)
+    freeifaddrs(ifaddr_struct);
 
   for (hal::LedValue &led : image.leds) {
     led.red = 0;
@@ -89,17 +87,17 @@ int main() {
   }
   everloop.Write(&image);
 
-  int first_digit = (int)last_integer / 100;
-  int second_digit = (int)(last_integer % 100) / 10;
-  int third_digit = (int)(last_integer % 100) % 10;
+  const int first_digit = last_integer / 100;
+  const int second_digit = last_integer % 100 / 10;
+  const int third_digit = last_integer % 10;
 
-  setNumber(0, first_digit, &image);
+  SetNumber(0, first_digit, &image);
   everloop.Write(&image);
 
-  setNumber(first_digit + 1, second_digit, &image);
+  SetNumber(first_digit + 1, second_digit, &image);
   everloop.Write(&image);
 
-  setNumber(first_digit + second_digit + 2, third_digit, &image);
+  SetNumber(first_digit + second_digit + 2, third_digit, &image);
   everloop.Write(&image);
 
   return 0;
