@@ -106,9 +106,3 @@ set_property(TARGET firmware_info PROPERTY CXX_STANDARD 11)
 target_link_libraries(firmware_info matrix_creator_hal)
 target_link_libraries(firmware_info ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(ipaddress_demo ipaddress_demo.cpp)
-set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
-target_link_libraries(ipaddress_demo matrix_creator_hal)
-target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
-
-
