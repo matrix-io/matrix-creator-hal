@@ -109,6 +109,17 @@ uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
   return value;
 }
 
+
+uint16_t GPIOControl::GetGPIOValues() {
+  if (!wishbone_) return false;
+  uint16_t value;
+
+  wishbone_->SpiRead16(kGPIOBaseAddress + 1, (unsigned char *)&value);
+
+  return value;
+}
+
+
 void GPIOControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
   uint32_t gpio_base_addr = kGPIOBaseAddress + 4;
