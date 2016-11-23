@@ -43,7 +43,7 @@ tar xf TAR0288.tgz -C assets
 ### Run DEMO:
 on matrix-creator-hal/build/demos:
 ```
-./pocketsphinx_demo -dict assets/0288.dic -lm assets/0288.lm -inmic yes -adcdev mic_channel0
+./pocketsphinx_demo -dict assets/0288.dic -lm assets/0288.lm -inmic yes -adcdev mic_channel8
 
 ``` 
 
