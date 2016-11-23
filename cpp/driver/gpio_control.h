@@ -42,6 +42,7 @@ class GPIOControl : public MatrixDriver {
   bool SetMode(uint16_t pin, uint16_t mode);
   bool SetFunction(uint16_t pin, uint16_t function);
   uint16_t GetGPIOValue(uint16_t pin);
+  uint16_t GetGPIOValues();
   bool SetGPIOValue(uint16_t pin, uint16_t value);
 
   bool SetPrescaler(uint16_t bank, uint16_t prescaler);
