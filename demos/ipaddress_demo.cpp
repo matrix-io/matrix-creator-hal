@@ -30,10 +30,6 @@
 
 namespace hal = matrix_hal;
 
-const int hundreds = 100;
-const int tens     = 10;
-
-
 void SetNumber(int position, int value, hal::EverloopImage *image) {
   image->leds[position].blue = 0;
   image->leds[position].green = 20;
@@ -91,9 +87,9 @@ int main() {
   }
   everloop.Write(&image);
 
-  int first_digit = last_integer / hundreds;
-  int second_digit = last_integer % hundreds / tens;
-  int third_digit = last_integer % tens;
+  const int first_digit = last_integer / 100;
+  const int second_digit = last_integer % 100 / 10;
+  const int third_digit = last_integer % 10;
 
   SetNumber(0, first_digit, &image);
   everloop.Write(&image);
