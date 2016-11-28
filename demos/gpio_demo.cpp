@@ -39,19 +39,22 @@ int main() {
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);
+  unsigned char inputPinList[8] = {0, 2, 4, 6, 8, 10, 12, 14};
+  unsigned char outputPinList[8] = {1, 3, 5, 7, 9, 11, 13, 15};
 
-  gpio.SetMode(PIN_0, INPUT);  /* pin 0, output */
-  gpio.SetMode(PIN_1, OUTPUT); /* pin 1, input */
-  uint16_t write_data = 0;
+  gpio.SetMode(inputPinList, sizeof(inputPinList), INPUT);
+  gpio.SetMode(outputPinList, sizeof(outputPinList), OUTPUT);
+
+  uint16_t write_data = 1;
+  gpio.SetGPIOValues(outputPinList, sizeof(outputPinList), write_data);
   uint16_t read_data = 0;
 
   while (true) {
-    gpio.SetGPIOValue(PIN_1, write_data);
-    usleep(100000);
-    read_data = gpio.GetGPIOValue(PIN_0);
-    std::cout << "Read Value : " << read_data << std::endl;
-    write_data = ~write_data;
-    usleep(100000);
+    std::system("clear");
+    read_data = gpio.GetGPIOValues();
+    std::cout << "Read Value : " << std::hex << read_data << std::endl
+              << std::endl;
+    usleep(10000);
   }
 
   return 0;

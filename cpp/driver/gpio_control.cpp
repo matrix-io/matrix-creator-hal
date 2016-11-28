@@ -57,6 +57,17 @@ uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
 GPIOControl::GPIOControl()
     : mode_(0x0), value_(0x0), function_(0x0), prescaler_(0x0) {}
 
+bool GPIOControl::SetMode(unsigned char *pinList, int length, uint16_t mode) {
+  if (!wishbone_) return false;
+
+  for (int i = 0; i < length; i++) {
+    uint32_t mask = 1 << pinList[i];
+    mode_ = mode << pinList[i] | (mode_ & ~mask);
+  }
+  wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
+  return true;
+}
+
 bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
   if (!wishbone_) return false;
 
@@ -97,6 +108,19 @@ bool GPIOControl::SetGPIOValue(uint16_t pin, uint16_t value) {
   return true;
 }
 
+bool GPIOControl::SetGPIOValues(unsigned char *pinList, int length,
+                                uint16_t value) {
+  if (!wishbone_) return false;
+
+  for (int i = 0; i < length; i++) {
+    uint32_t mask = 0x1 << pinList[i];
+    value_ = value << pinList[i] | (value_ & ~mask);
+  }
+  wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
+
+  return true;
+}
+
 uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
   if (!wishbone_) return false;
 
@@ -109,7 +133,6 @@ uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
   return value;
 }
 
-
 uint16_t GPIOControl::GetGPIOValues() {
   if (!wishbone_) return false;
   uint16_t value;
@@ -118,7 +141,6 @@ uint16_t GPIOControl::GetGPIOValues() {
 
   return value;
 }
-
 
 void GPIOControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
