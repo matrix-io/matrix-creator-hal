@@ -89,4 +89,9 @@ set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(ipaddress_demo matrix_creator_hal)
 target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(speaker_demo speaker_demo.cpp)
+set_property(TARGET speaker_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(speaker_demo matrix_creator_hal)
+target_link_libraries(speaker_demo ${CMAKE_THREAD_LIBS_INIT})
+
 
