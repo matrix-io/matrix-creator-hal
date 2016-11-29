@@ -68,7 +68,7 @@ int main() {
   int16_t duty_counter;
   float angle;
 
-  gpio.Bank(1).SetPeriod(period_counter);
+  gpio.Bank(0).SetPeriod(period_counter);
   std::cout << " Period counter : " << period_counter << std::endl;
 
   while (true) {
@@ -87,7 +87,7 @@ int main() {
     }
 
     duty_counter = (kServoRatio * angle) + kServoOffset;
-    gpio.Bank(1).SetDuty(0, duty_counter);
+    gpio.Bank(0).SetDuty(0, duty_counter);
 
     everloop.Write(&image1d);
 
