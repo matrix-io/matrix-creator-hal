@@ -59,8 +59,6 @@
 #include <string>
 #include <cstring>
 
-
-
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
 #else
@@ -271,21 +269,19 @@ recognize_from_microphone()
             ps_end_utt(ps);
             hyp = ps_get_hyp(ps, NULL );
             if (hyp != NULL) {
-              std::string cmd_ever,cmd_arc,cmd_uv,cmd_clear,cmd_stop,cmd_ipaddr,cmd_halt;
+              std::string cmd_ever,cmd_arc,cmd_clear,cmd_stop,cmd_ipaddr,cmd_halt;
               cmd_ever="./everloop_demo &";
               cmd_arc="./arc_demo &";
-              cmd_uv="./uv_demo &";
               cmd_ipaddr="./ipaddress_demo &";
               cmd_clear="./clear_demo &";
               cmd_halt="sudo halt";
-              cmd_stop="killall everloop_demo arc_demo uv_demo &";
+              cmd_stop="killall everloop_demo arc_demo &";
 
               printf("match: %s\n", hyp);
               if (std::strcmp(hyp, "MATRIX EVERLOOP") == 0)system(cmd_ever.c_str());
               if (std::strcmp(hyp, "MATRIX ARC") == 0)system(cmd_arc.c_str());
-              if (std::strcmp(hyp, "MATRIX GREEN") == 0)system(cmd_uv.c_str());
               if (std::strcmp(hyp, "MATRIX STOP") == 0)system(cmd_stop.c_str());
-              if (std::strcmp(hyp, "MATRIX GET IPADDRESS") == 0)system(cmd_ipaddr.c_str());
+              if (std::strcmp(hyp, "MATRIX IPADDRESS") == 0)system(cmd_ipaddr.c_str());
               if (std::strcmp(hyp, "MATRIX CLEAR") == 0){
                 system(cmd_stop.c_str());
                 system(cmd_clear.c_str());
