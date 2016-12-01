@@ -269,12 +269,19 @@ recognize_from_microphone()
             ps_end_utt(ps);
             hyp = ps_get_hyp(ps, NULL );
             if (hyp != NULL) {
-              std::string cmd_ever,cmd_arc,cmd_clear,cmd_stop,cmd_ipaddr,cmd_halt,cmd_timer;
+              std::string cmd_ever, cmd_arc, cmd_clear, cmd_stop, cmd_ipaddr,
+                  cmd_halt, cmd_timer, cmd_timer1, cmd_timer2, cmd_timer3, cmd_timer4,
+                  cmd_timer5;
               cmd_ever="./everloop_demo &";
               cmd_arc="./arc_demo &";
               cmd_ipaddr="./ipaddress_demo &";
               cmd_clear="./clear_demo &";
               cmd_timer="./timer_demo &";
+              cmd_timer1="./timer_demo 60 &";
+              cmd_timer2="./timer_demo 120 &";
+              cmd_timer3="./timer_demo 180 &";
+              cmd_timer4="./timer_demo 240 &";
+              cmd_timer5="./timer_demo 300 &";
               cmd_halt="sudo halt";
               cmd_stop="killall everloop_demo arc_demo timer_demo &";
 
@@ -284,6 +291,11 @@ recognize_from_microphone()
               if (std::strcmp(hyp, "MATRIX STOP") == 0)system(cmd_stop.c_str());
               if (std::strcmp(hyp, "MATRIX IPADDRESS") == 0)system(cmd_ipaddr.c_str());
               if (std::strcmp(hyp, "MATRIX GAME TIME") == 0)system(cmd_timer.c_str());
+              if (std::strcmp(hyp, "MATRIX ONE MINUTE") == 0)system(cmd_timer1.c_str());
+              if (std::strcmp(hyp, "MATRIX TWO MINUTES") == 0)system(cmd_timer2.c_str());
+              if (std::strcmp(hyp, "MATRIX THREE MINUTES") == 0)system(cmd_timer3.c_str());
+              if (std::strcmp(hyp, "MATRIX FOUR MINUTES") == 0)system(cmd_timer4.c_str());
+              if (std::strcmp(hyp, "MATRIX FIVE MINUTES") == 0)system(cmd_timer5.c_str());
               if (std::strcmp(hyp, "MATRIX CLEAR") == 0){
                 system(cmd_stop.c_str());
                 system(cmd_clear.c_str());
