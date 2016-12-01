@@ -8,9 +8,12 @@ include (../cmake/FatalWarnings.cmake)
 ADM_EXTRA_WARNINGS()
 
 find_package(Threads)
+find_package(PkgConfig)
+
+pkg_search_module(SPHINXBASE REQUIRED sphinxbase)
+pkg_search_module(POCKETSPHINX REQUIRED pocketsphinx)
 
 add_subdirectory(../cpp/driver driver)
-
 
 add_executable(compass_demo compass_demo.cpp)
 set_property(TARGET compass_demo PROPERTY CXX_STANDARD 11)
@@ -79,19 +82,31 @@ target_link_libraries(micarray_alsa_pipes matrix_creator_hal)
 target_link_libraries(micarray_alsa_pipes ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(micarray_alsa_pipes wiringPi)
 
-add_executable(firmware_info firmware_info.cpp)
-set_property(TARGET firmware_info PROPERTY CXX_STANDARD 11)
-target_link_libraries(firmware_info matrix_creator_hal)
-target_link_libraries(firmware_info ${CMAKE_THREAD_LIBS_INIT})
+add_executable(pocketsphinx_demo pocketsphinx_demo.cpp)
+set_property(TARGET pocketsphinx_demo PROPERTY CXX_STANDARD 11)
+target_include_directories(pocketsphinx_demo PUBLIC ${SPHINXBASE_INCLUDE_DIRS})
+target_include_directories(pocketsphinx_demo PUBLIC ${POCKETSPHINX_INCLUDE_DIRS})
+target_link_libraries(pocketsphinx_demo matrix_creator_hal)
+target_link_libraries(pocketsphinx_demo ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(pocketsphinx_demo ${SPHINXBASE_LIBRARIES})
+target_link_libraries(pocketsphinx_demo ${POCKETSPHINX_LIBRARIES})
+
+add_executable(clear_demo clear_demo.cpp)
+set_property(TARGET clear_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(clear_demo matrix_creator_hal)
+target_link_libraries(clear_demo ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(ipaddress_demo ipaddress_demo.cpp)
 set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(ipaddress_demo matrix_creator_hal)
 target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(speaker_demo speaker_demo.cpp)
-set_property(TARGET speaker_demo PROPERTY CXX_STANDARD 11)
-target_link_libraries(speaker_demo matrix_creator_hal)
-target_link_libraries(speaker_demo ${CMAKE_THREAD_LIBS_INIT})
+add_executable(firmware_info firmware_info.cpp)
+set_property(TARGET firmware_info PROPERTY CXX_STANDARD 11)
+target_link_libraries(firmware_info matrix_creator_hal)
+target_link_libraries(firmware_info ${CMAKE_THREAD_LIBS_INIT})
 
-
+add_executable(timer_demo timer_demo.cpp)
+set_property(TARGET timer_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(timer_demo matrix_creator_hal)
+target_link_libraries(timer_demo ${CMAKE_THREAD_LIBS_INIT})
