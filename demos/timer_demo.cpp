@@ -44,19 +44,15 @@ void setColor(hal::EverloopImage *img, int pos, int r, int g, int b, int w) {
   img->leds[pos % 35].white = w;
 }
 
-void drawProgress(hal::EverloopImage *img, unsigned counter, int warn, int alert) {
+void drawProgress(hal::EverloopImage *img, unsigned counter) {
   int min = counter % 35;
+  unsigned green = 35;
   for (int y = 0; y <= min; y++) {
-    if (y > alert) {
-      setColor(img, y, 40, 0, 0, 0);
-    }else if (alert >= y && y >= warn){
-      setColor(img, y, 18, 20, 0, 0);
-    }
-    else {
-      setColor(img, y, 10, 40, 0, 0);
-    }
+    setColor(img, y, y*2, green, 0, 0);
+    green=35-y;
   }
 }
+
 
 void drawSeconds(hal::EverloopImage *img, unsigned seconds) {
   int sec = seconds % 35;
@@ -143,13 +139,13 @@ int main(int argc, char *argv[]) {
         clear(&img);
       }
       else{
-        drawProgress(&img, counter, 17, 25);
+        drawProgress(&img, counter);
         drawSeconds(&img, seconds);
       }
     }
     else {
       clear(&img);
-      drawProgress(&img, counter, 17, 25);
+      drawProgress(&img, counter);
       drawSeconds(&img, seconds);
     }
     everloop.Write(&img);

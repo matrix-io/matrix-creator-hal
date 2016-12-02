@@ -100,6 +100,55 @@ static ps_decoder_t *ps;
 static cmd_ln_t *config;
 static FILE *rawfd;
 
+void process_rules(char const *hyp){
+  std::string cmd_ever, cmd_arc, cmd_clear, cmd_stop, cmd_ipaddr,
+    cmd_halt, cmd_timer, cmd_timer1, cmd_timer2, cmd_timer3, cmd_timer4,
+    cmd_timer5, cmd_timer10, cmd_timer10s;
+
+  cmd_ever = "./everloop_demo &";
+  cmd_arc = "./arc_demo &";
+  cmd_ipaddr = "./ipaddress_demo &";
+  cmd_clear = "./clear_demo &";
+  cmd_halt = "sudo halt";
+
+  cmd_timer = "./timer_demo &";
+  cmd_timer1 = "./timer_demo 60 &";
+  cmd_timer2 = "./timer_demo 120 &";
+  cmd_timer3 = "./timer_demo 180 &";
+  cmd_timer4 = "./timer_demo 240 &";
+  cmd_timer5 = "./timer_demo 300 &";
+  cmd_timer10 = "./timer_demo 600 &";
+  cmd_timer10s = "./timer_demo 10 &";
+
+  cmd_stop = "killall everloop_demo arc_demo timer_demo &";
+
+  printf("match: %s\n", hyp);
+  if (std::strcmp(hyp, "MATRIX EVERLOOP") == 0)system(cmd_ever.c_str());
+  if (std::strcmp(hyp, "MATRIX ARC") == 0)system(cmd_arc.c_str());
+  if (std::strcmp(hyp, "MATRIX STOP") == 0)system(cmd_stop.c_str());
+  if (std::strcmp(hyp, "MATRIX IPADDRESS") == 0)system(cmd_ipaddr.c_str());
+  if (std::strcmp(hyp, "MATRIX GAME TIME") == 0)system(cmd_timer.c_str());
+  if (std::strcmp(hyp, "MATRIX ONE MINUTE") == 0)system(cmd_timer1.c_str());
+  if (std::strcmp(hyp, "MATRIX TWO MINUTES") == 0)system(cmd_timer2.c_str());
+  if (std::strcmp(hyp, "MATRIX THREE MINUTES") == 0)system(cmd_timer3.c_str());
+  if (std::strcmp(hyp, "MATRIX FOUR MINUTES") == 0)system(cmd_timer4.c_str());
+  if (std::strcmp(hyp, "MATRIX FIVE MINUTES") == 0)system(cmd_timer5.c_str());
+  if (std::strcmp(hyp, "MATRIX TEN MINUTES") == 0)system(cmd_timer10.c_str());
+  if (std::strcmp(hyp, "MATRIX TEN SECONDS") == 0)system(cmd_timer10s.c_str());
+
+  if (std::strcmp(hyp, "MATRIX CLEAR") == 0){
+    system(cmd_stop.c_str());
+    system(cmd_clear.c_str());
+    system(cmd_clear.c_str());
+  }
+  if (std::strcmp(hyp, "MATRIX SHUTDOWN NOW") == 0){
+    system(cmd_stop.c_str());
+    system(cmd_clear.c_str());
+    system(cmd_clear.c_str());
+    system(cmd_halt.c_str());
+  }
+}
+
 static void
 print_word_times()
 {
@@ -269,44 +318,7 @@ recognize_from_microphone()
             ps_end_utt(ps);
             hyp = ps_get_hyp(ps, NULL );
             if (hyp != NULL) {
-              std::string cmd_ever, cmd_arc, cmd_clear, cmd_stop, cmd_ipaddr,
-                  cmd_halt, cmd_timer, cmd_timer1, cmd_timer2, cmd_timer3, cmd_timer4,
-                  cmd_timer5;
-              cmd_ever="./everloop_demo &";
-              cmd_arc="./arc_demo &";
-              cmd_ipaddr="./ipaddress_demo &";
-              cmd_clear="./clear_demo &";
-              cmd_timer="./timer_demo &";
-              cmd_timer1="./timer_demo 60 &";
-              cmd_timer2="./timer_demo 120 &";
-              cmd_timer3="./timer_demo 180 &";
-              cmd_timer4="./timer_demo 240 &";
-              cmd_timer5="./timer_demo 300 &";
-              cmd_halt="sudo halt";
-              cmd_stop="killall everloop_demo arc_demo timer_demo &";
-
-              printf("match: %s\n", hyp);
-              if (std::strcmp(hyp, "MATRIX EVERLOOP") == 0)system(cmd_ever.c_str());
-              if (std::strcmp(hyp, "MATRIX ARC") == 0)system(cmd_arc.c_str());
-              if (std::strcmp(hyp, "MATRIX STOP") == 0)system(cmd_stop.c_str());
-              if (std::strcmp(hyp, "MATRIX IPADDRESS") == 0)system(cmd_ipaddr.c_str());
-              if (std::strcmp(hyp, "MATRIX GAME TIME") == 0)system(cmd_timer.c_str());
-              if (std::strcmp(hyp, "MATRIX ONE MINUTE") == 0)system(cmd_timer1.c_str());
-              if (std::strcmp(hyp, "MATRIX TWO MINUTES") == 0)system(cmd_timer2.c_str());
-              if (std::strcmp(hyp, "MATRIX THREE MINUTES") == 0)system(cmd_timer3.c_str());
-              if (std::strcmp(hyp, "MATRIX FOUR MINUTES") == 0)system(cmd_timer4.c_str());
-              if (std::strcmp(hyp, "MATRIX FIVE MINUTES") == 0)system(cmd_timer5.c_str());
-              if (std::strcmp(hyp, "MATRIX CLEAR") == 0){
-                system(cmd_stop.c_str());
-                system(cmd_clear.c_str());
-                system(cmd_clear.c_str());
-              }
-              if (std::strcmp(hyp, "MATRIX SHUTDOWN NOW") == 0){
-                system(cmd_stop.c_str());
-                system(cmd_clear.c_str());
-                system(cmd_clear.c_str());
-                system(cmd_halt.c_str());
-              }
+              process_rules(hyp);
               fflush(stdout);
             }
 
