@@ -26,9 +26,6 @@
 #include "../cpp/driver/gpio_control.h"
 #include "../cpp/driver/wishbone_bus.h"
 
-#define OUTPUT 1
-#define SPEAKER 15
-
 namespace hal = matrix_hal;
 
 void clear(hal::EverloopImage *img) {
@@ -47,12 +44,15 @@ void setColor(hal::EverloopImage *img, int pos, int r, int g, int b, int w) {
   img->leds[pos % 35].white = w;
 }
 
-void drawProgress(hal::EverloopImage *img, unsigned counter) {
+void drawProgress(hal::EverloopImage *img, unsigned counter, int warn, int alert) {
   int min = counter % 35;
   for (int y = 0; y <= min; y++) {
-    if (y > 30) {
-      setColor(img, y, 40, 10, 0, 0);
-    } else {
+    if (y > alert) {
+      setColor(img, y, 40, 0, 0, 0);
+    }else if (alert >= y && y >= warn){
+      setColor(img, y, 18, 20, 0, 0);
+    }
+    else {
       setColor(img, y, 10, 40, 0, 0);
     }
   }
@@ -64,25 +64,28 @@ void drawSeconds(hal::EverloopImage *img, unsigned seconds) {
 }
 
 int main(int argc, char *argv[]) {
+  const unsigned ticks = 16; // Beeps on alarm
+  const int speakerpin = 15; // GPIO pin for speaker
+  const int outputmode = 1;
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);
-  gpio.SetMode(SPEAKER, OUTPUT);
+  gpio.SetMode(speakerpin, outputmode);
 
   hal::Everloop everloop;
   hal::EverloopImage img;
-
   everloop.Setup(&bus);
 
   unsigned counter = 0;
   unsigned seconds = 0;
   uint16_t speaker = 0;
   unsigned tick = 0;
-  unsigned ticks = 15;
   bool start_alarm = false;
 
+  // configuration time (default 3min)
   float time = 180.0 / 35.0;
   if (argc == 2) {
     std::istringstream iss(argv[1]);
@@ -95,14 +98,11 @@ int main(int argc, char *argv[]) {
   }
 
   clear(&img);
+  gpio.SetGPIOValue(speakerpin, 0);
 
-  gpio.SetGPIOValue(SPEAKER, 0);
   std::chrono::time_point<std::chrono::system_clock> smin, now, ssec, sbeep;
   smin = std::chrono::system_clock::now();
-  ssec = smin;
-  sbeep = smin;
-
-  setColor(&img, 0, 10, 40, 0, 0);
+  ssec = sbeep = smin;
 
   while (1) {
     now = std::chrono::system_clock::now();
@@ -126,14 +126,11 @@ int main(int argc, char *argv[]) {
       tick++;
     }
 
-    if ((counter % 35) == 0) {
+    if ((counter % 35) == 0 && tick < ticks) {
+      gpio.SetGPIOValue(speakerpin, speaker);
       start_alarm = true;
-    }
-
-    if (start_alarm && tick < ticks) {
-      gpio.SetGPIOValue(SPEAKER, speaker);
     } else {
-      gpio.SetGPIOValue(SPEAKER, 0);
+      gpio.SetGPIOValue(speakerpin, 0);
     }
 
     if ((counter % 35) == 34) {
@@ -146,13 +143,13 @@ int main(int argc, char *argv[]) {
         clear(&img);
       }
       else{
-        drawProgress(&img, counter);
+        drawProgress(&img, counter, 17, 25);
         drawSeconds(&img, seconds);
       }
     }
     else {
       clear(&img);
-      drawProgress(&img, counter);
+      drawProgress(&img, counter, 17, 25);
       drawSeconds(&img, seconds);
     }
     everloop.Write(&img);
