@@ -123,7 +123,7 @@ bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
   tx_buffer_[1] = WR1(add, 0);
   tx_buffer_[2] = p[0];
   tx_buffer_[3] = p[1];
-  
+
   return SpiTransfer(tx_buffer_, rx_buffer_, 4);
 }
 
@@ -159,7 +159,7 @@ bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
 }
 
 bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
-  std::unique_lock<std::mutex> lock(mutex_); 
+  std::unique_lock<std::mutex> lock(mutex_);
 
   const int length = 2;
   tx_buffer_[0] = RD0(add);

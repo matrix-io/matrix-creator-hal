@@ -47,7 +47,8 @@ bool GPIOBank::SetDuty(uint16_t channel, uint16_t duty) {
 uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
   if (!wishbone_) return false;
   uint16_t counter;
-  return wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char *)&counter);
+  return wishbone_->SpiRead16(mem_offset_ + 2 + channel,
+                              (unsigned char *)&counter);
 }
 
 GPIOControl::GPIOControl()
@@ -60,7 +61,7 @@ bool GPIOControl::SetMode(unsigned char *pinList, int length, uint16_t mode) {
     uint32_t mask = 1 << pinList[i];
     mode_ = mode << pinList[i] | (mode_ & ~mask);
   }
- return wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
+  return wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
 }
 
 bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
