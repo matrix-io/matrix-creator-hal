@@ -31,27 +31,23 @@ bool GPIOBank::SetupTimer(uint16_t channel, uint16_t init_event,
   timer_setup_ = init_event << channel | (timer_setup_ & ~mask);
   mask = 1 << (channel + 4);
   timer_setup_ = final_event << (channel + 4) | (timer_setup_ & ~mask);
-  wishbone_->SpiWrite16(mem_offset_, timer_setup_);
-  return true;
+  return wishbone_->SpiWrite16(mem_offset_, timer_setup_);
 }
 
 bool GPIOBank::SetPeriod(uint16_t period) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(mem_offset_ + 1, period);
-  return true;
+  return wishbone_->SpiWrite16(mem_offset_ + 1, period);
 }
 
 bool GPIOBank::SetDuty(uint16_t channel, uint16_t duty) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(mem_offset_ + 2 + channel, duty);
-  return true;
+  return wishbone_->SpiWrite16(mem_offset_ + 2 + channel, duty);
 }
 
 uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
   if (!wishbone_) return false;
   uint16_t counter;
-  wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char *)&counter);
-  return counter;
+  return wishbone_->SpiRead16(mem_offset_ + 2 + channel, (unsigned char *)&counter);
 }
 
 GPIOControl::GPIOControl()
@@ -64,8 +60,7 @@ bool GPIOControl::SetMode(unsigned char *pinList, int length, uint16_t mode) {
     uint32_t mask = 1 << pinList[i];
     mode_ = mode << pinList[i] | (mode_ & ~mask);
   }
-  wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
-  return true;
+ return wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
 }
 
 bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
@@ -74,8 +69,7 @@ bool GPIOControl::SetMode(uint16_t pin, uint16_t mode) {
   uint32_t mask = 1 << pin;
 
   mode_ = mode << pin | (mode_ & ~mask);
-  wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
-  return true;
+  return wishbone_->SpiWrite16(kGPIOBaseAddress, mode_);
 }
 
 bool GPIOControl::SetFunction(uint16_t pin, uint16_t function) {
@@ -85,8 +79,7 @@ bool GPIOControl::SetFunction(uint16_t pin, uint16_t function) {
 
   function_ = function << pin | (function_ & ~mask);
 
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 2, function_);
-  return true;
+  return wishbone_->SpiWrite16(kGPIOBaseAddress + 2, function_);
 }
 
 bool GPIOControl::SetPrescaler(uint16_t bank, uint16_t prescaler) {
@@ -95,17 +88,14 @@ bool GPIOControl::SetPrescaler(uint16_t bank, uint16_t prescaler) {
 
   prescaler_ = prescaler << (4 * bank) | (prescaler_ & ~mask);
 
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 3, prescaler_);
-  return true;
+  return wishbone_->SpiWrite16(kGPIOBaseAddress + 3, prescaler_);
 }
 
 bool GPIOControl::SetGPIOValue(uint16_t pin, uint16_t value) {
   if (!wishbone_) return false;
   uint32_t mask = 0x1 << pin;
   value_ = value << pin | (value_ & ~mask);
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
-
-  return true;
+  return wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
 }
 
 bool GPIOControl::SetGPIOValues(unsigned char *pinList, int length,
@@ -116,9 +106,7 @@ bool GPIOControl::SetGPIOValues(unsigned char *pinList, int length,
     uint32_t mask = 0x1 << pinList[i];
     value_ = value << pinList[i] | (value_ & ~mask);
   }
-  wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
-
-  return true;
+  return wishbone_->SpiWrite16(kGPIOBaseAddress + 1, value_);
 }
 
 uint16_t GPIOControl::GetGPIOValue(uint16_t pin) {
