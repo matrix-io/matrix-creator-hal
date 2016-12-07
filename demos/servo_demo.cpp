@@ -27,84 +27,73 @@
 
 namespace hal = matrix_hal;
 
-#define CLK_FRQ 200000000
+const int kFPGAClock = 200000000;
+const uint16_t kGPIOOutputMode = 1;
+const uint16_t kGPIOInputMode = 0;
 
-#define INPUT 0
-#define OUTPUT 1
+const uint16_t kPin0 = 0;
 
-#define PIN_0 0
-#define PIN_4 4
+const uint16_t kGPIOPrescaler = 0x5;
+const uint16_t kPWMFunction = 1;
 
-#define TIMER 1
-#define PWM 1
+const float kPWMPeriod = 0.02;  // Seconds
 
-#define RISING_EDGE 0
-#define FALLING_EDGE 1
+/* Constants Values based on 9g ServoMotor Calibration */
+
+const int kServoRatio = 37.7;
+const int kServoOffset = 1800;
 
 int main() {
+  std::cout << "Set desired Angle in degrees" << std::endl << std::endl;
+
   hal::WishboneBus bus;
   bus.SpiInit();
-
-  hal::IMUSensor imu_sensor;
-  imu_sensor.Setup(&bus);
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
   hal::EverloopImage image1d;
 
-  hal::IMUData imu_data;
-
   hal::GPIOControl gpio;
   gpio.Setup(&bus);
 
-  gpio.SetMode(PIN_4, OUTPUT); /* pin 4, output */
-  gpio.SetMode(PIN_0, INPUT);  /* pin 0, input */
+  gpio.SetMode(kPin0, kGPIOOutputMode);  /* pin 0, output */
+  gpio.SetFunction(kPin0, kPWMFunction); /* pin 0, pwm */
 
-  gpio.SetFunction(PIN_4, PWM);   /* pin 4, PWM output */
-  gpio.SetFunction(PIN_0, TIMER); /* pin 0, Timer input */
+  gpio.SetPrescaler(0, kGPIOPrescaler); /* set prescaler bank 0 */
 
-  gpio.SetPrescaler(0, 0x5); /* set prescaler bank 0 */
-  gpio.SetPrescaler(1, 0x5); /* set prescaler bank 1 */
+  uint16_t period_counter =
+      (kPWMPeriod * kFPGAClock) /
+      ((1 << kGPIOPrescaler) * 2); /* Set Period counter for 20ms */
+  int16_t duty_counter;
+  float angle;
 
-  gpio.Bank(0).SetupTimer(0, RISING_EDGE, FALLING_EDGE); /* set timer event */
-
-  uint16_t period_counter = (0.02 * CLK_FRQ) / ((1 << 5) * 2);
-  int16_t duty_counter = 0;
-
-  gpio.Bank(1).SetPeriod(period_counter);
-  std::cout << " Period counter : " << period_counter << "\t" << std::endl;
+  gpio.Bank(0).SetPeriod(period_counter);
+  std::cout << " Period counter : " << period_counter << std::endl;
 
   while (true) {
+    std::cout << " Angle :";
+    std::cin >> angle;
+    std::cout << std::endl;
     for (hal::LedValue& led : image1d.leds) {
       led.red = 0;
       led.blue = 0;
     }
 
-    imu_sensor.Read(&imu_data);
+    uint16_t ledAngle = -angle / 10 + 18;
 
-    int pin;
-    if (imu_data.yaw < 0.0)
-      pin = (360.0 + imu_data.yaw) * 35.0 / 360.0;
-    else
-      pin = imu_data.yaw * 35.0 / 360.0;
+    for (int i = 17; i >= ledAngle; i--) {
+      image1d.leds[i].blue = 50;
+    }
 
-    image1d.leds[pin].blue = 50;
-
-    pin = (pin + 17) % 34; /* opposite led */
-
-    image1d.leds[pin].red = 50;
-    duty_counter = (2.75 * (imu_data.yaw + 170) + 20) * (period_counter / 1000);
-    gpio.Bank(1).SetDuty(0, duty_counter);
+    duty_counter = (kServoRatio * angle) + kServoOffset;
+    gpio.Bank(0).SetDuty(0, duty_counter);
 
     everloop.Write(&image1d);
 
-    std::cout << " Duty counter : " << duty_counter << "\t";
+    std::cout << " Duty counter : " << duty_counter << std::endl;
 
     usleep(5000);
-    uint16_t result;
-    result = gpio.Bank(0).GetTimerCounter(0);
-    std::cout << "Timer Counter : " << result << std::endl;
   }
 
   return 0;
