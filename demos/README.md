@@ -5,16 +5,24 @@
 
 ### Dependencies 
 
-Before, plase check wiki [Getting Started Guide](https://github.com/matrix-io/matrix-creator-quickstart/wiki/2.-Getting-Started)
-
+Before, please install MALOS and perform device reboot. For more details: [Getting Started Guide](https://github.com/matrix-io/matrix-creator-quickstart/wiki/2.-Getting-Started)
+```
+echo "deb http://packages.matrix.one/matrix-creator/ ./" | sudo tee --append /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install matrix-creator-init matrix-creator-malos cmake g++ git libzmq3-dev --no-install-recommends
+reboot
+```
+Add some dependencies and pocketsphinx package
 ```
 echo "deb http://dev-packages.matrix.one/ stable main" | sudo tee -a /etc/apt/sources.list
-sudo apt-get update && sudo apt-get install --yes pocketsphinx
+sudo apt-get update
+sudo apt-get install libblas-dev liblapack-dev pocketsphinx --no-install-recommends --yes 
 ```
 
 ### Building
 ``` 
-git clone --recursive git@github.com:matrix-io/matrix-creator-hal.git
+git clone https://github.com/matrix-io/matrix-creator-hal.git hal
 cd matrix-creator-hal
 git checkout av/pocketsphinx_demo
 mkdir build && cd build && cmake .. && make
