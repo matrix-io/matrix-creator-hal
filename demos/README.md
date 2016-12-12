@@ -27,33 +27,50 @@ cd matrix-creator-hal
 git checkout av/pocketsphinx_demo
 mkdir build && cd build && cmake .. && make
 ```
-### Prepare lenguage and phrases for recognition
 
-1. Make a text plane with this:
-``` 
-matrix everloop
-matrix arc
-matrix green
-matrix clear
-matrix stop
-matrix shutdown now
-matrix get ipaddress
-``` 
-2. Upload this file to [Sphinx Knowledge Base Tool](http://www.speech.cs.cmu.edu/tools/lmtool-new.html) and compile knowledge base.
-3. Dowload [TARXXXXX.tgz](http://www.speech.cs.cmu.edu/tools/product/1477415688_3g2372/TAR0288.tgz) to build directory on HAL branch and descompress it like this:
+### Testing commands:
+Download sample lenguaje and dictionary from [here](https://drive.google.com/file/d/0B3lA7p7SjZu-YUJxYmIwcnh4Qlk/view?usp=sharing) or make new models (explanation below) then extract it:
 ```
 cd demos
-wget -ct0 http://www.speech.cs.cmu.edu/tools/product/1477415688_32372/TAR0288.tgz
 mkdir assets
-tar xf TAR0288.tgz -C assets
+tar xf TAR6706.tgz -C assets
 ```
-
 ### Run DEMO:
 on matrix-creator-hal/build/demos:
 ```
-./pocketsphinx_demo -dict assets/0288.dic -lm assets/0288.lm -inmic yes -adcdev mic_channel8
-
+./pocketsphinx_demo -keyphrase "MATRIX" -kws_threshold 1e-20 -dict assets/6706.dic -lm assets/6706.lm -inmic yes -adcdev mic_channel8
 ``` 
+- *mic_channel8* (all microphones array)
+- *mic_channelX* (only X microphone)
+
+#### Custom lenguage and phrases for recognition (optional)
+
+1. Make a text plane with this:
+..* ``` 
+matrix
+everloop
+arc
+clear
+stop
+shutdown
+now
+ipaddress
+matrix everloop
+matrix clear
+matrix stop
+matrix ipaddress
+matrix game time
+matrix one minute
+matrix two minutes
+matrix three minutes
+matrix four minutes
+matrix five minutes
+matrix ten seconds
+matrix ten minutes
+``` 
+2. Upload this file to [Sphinx Knowledge Base Tool](http://www.speech.cs.cmu.edu/tools/lmtool-new.html) and compile knowledge base.
+3. Dowload *TARXXXXX.tgz* and upgrade assets: 
+
 
 ## IP Address DEMO
 on matrix-creator-hal/build/demos:
