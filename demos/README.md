@@ -45,11 +45,11 @@ on matrix-creator-hal/build/demos:
 
 #### Custom lenguage and phrases for recognition (optional)
 
-1. Make a text plane with this:
-..* ``` 
++ Make a text plane with this: 
+``` 
 matrix
 everloop
-arc
+arc 
 clear
 stop
 shutdown
@@ -67,9 +67,11 @@ matrix four minutes
 matrix five minutes
 matrix ten seconds
 matrix ten minutes
-``` 
-2. Upload this file to [Sphinx Knowledge Base Tool](http://www.speech.cs.cmu.edu/tools/lmtool-new.html) and compile knowledge base.
-3. Dowload *TARXXXXX.tgz* and upgrade assets: 
+```
+
++ Upload this file to [Sphinx Knowledge Base Tool](http://www.speech.cs.cmu.edu/tools/lmtool-new.html) and compile knowledge base.
+
++ Dowload *TARXXXXX.tgz* and upgrade assets: 
 
 
 ## IP Address DEMO
