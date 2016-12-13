@@ -28,7 +28,7 @@ git checkout av/pocketsphinx_demo
 mkdir build && cd build && cmake .. && make
 ```
 
-### Testing commands:
+### Install testing commands:
 Download sample lenguaje and dictionary from [here](https://drive.google.com/file/d/0B3lA7p7SjZu-YUJxYmIwcnh4Qlk/view?usp=sharing) or make new models (explanation below) then extract it:
 ```
 cd demos
@@ -43,9 +43,9 @@ on matrix-creator-hal/build/demos:
 - *mic_channel8* (all microphones array)
 - *mic_channelX* (only X microphone)
 
-#### Custom lenguage and phrases for recognition (optional)
+#### (optional) Custom lenguage and phrases for recognition 
 
-+ Make a text plane with this: 
++ Make a text plane like this: 
 ``` 
 matrix
 everloop
