@@ -29,7 +29,7 @@ mkdir build && cd build && cmake .. && make
 ```
 
 ### Install testing commands:
-Download sample lenguaje and dictionary from [here](https://drive.google.com/file/d/0B3lA7p7SjZu-YUJxYmIwcnh4Qlk/view?usp=sharing) or make new models (explanation below) then extract it:
+Download sample lenguage and dictionary from [here](https://drive.google.com/file/d/0B3lA7p7SjZu-YUJxYmIwcnh4Qlk/view?usp=sharing) or make new models (explanation below) then extract it:
 ```
 cd demos
 mkdir assets
