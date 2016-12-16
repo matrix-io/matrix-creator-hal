@@ -38,15 +38,15 @@ int main() {
 
   while (1) {
     for (hal::LedValue& led : image1d.leds) {
-      led.red = 0;
-      led.green = 0;
-      led.blue = static_cast<int>(std::sin(counter / 128.0) * 7.0) + 8;
-      led.white = 0;
+      led.red = 255;
+      led.green = 255;
+      led.blue = 255; //static_cast<int>(std::sin(counter / 128.0) * 7.0) + 8;
+      led.white = 255;
     }
 
     everloop.Write(&image1d);
     ++counter;
-    usleep(1000);
+    usleep(100);
   }
 
   return 0;

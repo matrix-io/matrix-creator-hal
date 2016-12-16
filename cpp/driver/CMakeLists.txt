@@ -21,7 +21,7 @@ set(matrix_creator_hal_src
   imu_sensor.cpp
   matrix_driver.cpp
   mcu_firmware.cpp
-  microphone_array.cpp
+#  microphone_array.cpp
   pressure_sensor.cpp
   uv_sensor.cpp
   wishbone_bus.cpp
