@@ -39,11 +39,13 @@ class GPIOControl : public MatrixDriver {
  public:
   GPIOControl();
   void Setup(WishboneBus* wishbone);
+  bool SetMode(unsigned char* pinList, int length, uint16_t mode);
   bool SetMode(uint16_t pin, uint16_t mode);
   bool SetFunction(uint16_t pin, uint16_t function);
   uint16_t GetGPIOValue(uint16_t pin);
   uint16_t GetGPIOValues();
   bool SetGPIOValue(uint16_t pin, uint16_t value);
+  bool SetGPIOValues(unsigned char* pinList, int length, uint16_t value);
 
   bool SetPrescaler(uint16_t bank, uint16_t prescaler);
   GPIOBank& Bank(uint16_t bank) { return banks_[bank]; }
