@@ -40,7 +40,7 @@
 namespace matrix_hal {
 
 WishboneBus::WishboneBus()
-    : device_name_("/dev/spidev2.0"),
+    : device_name_("/dev/spidev0.0"),
       spi_mode_(3),
       spi_bits_(8),
       spi_speed_(18000000),
