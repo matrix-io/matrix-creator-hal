@@ -43,11 +43,6 @@ target_link_libraries(uv_demo ${CMAKE_THREAD_LIBS_INIT})
 #target_link_libraries(mic_demo ${CMAKE_THREAD_LIBS_INIT})
 #target_link_libraries(mic_demo wiringPi)
 
-add_executable(ir_demo ir_demo.cpp)
-set_property(TARGET ir_demo PROPERTY CXX_STANDARD 11)
-target_link_libraries(ir_demo matrix_creator_hal)
-target_link_libraries(ir_demo ${CMAKE_THREAD_LIBS_INIT})
-
 #add_executable(micarray_recorder micarray_recorder.cpp)
 #set_property(TARGET micarray_recorder PROPERTY CXX_STANDARD 11)
 #target_link_libraries(micarray_recorder matrix_creator_hal)
@@ -80,10 +75,4 @@ add_executable(firmware_info firmware_info.cpp)
 set_property(TARGET firmware_info PROPERTY CXX_STANDARD 11)
 target_link_libraries(firmware_info matrix_creator_hal)
 target_link_libraries(firmware_info ${CMAKE_THREAD_LIBS_INIT})
-
-add_executable(ipaddress_demo ipaddress_demo.cpp)
-set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
-target_link_libraries(ipaddress_demo matrix_creator_hal)
-target_link_libraries(ipaddress_demo ${CMAKE_THREAD_LIBS_INIT})
-
 
