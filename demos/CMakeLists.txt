@@ -52,4 +52,8 @@ set_property(TARGET clear_demo PROPERTY CXX_STANDARD 11)
 target_link_libraries(clear_demo matrix_creator_hal)
 target_link_libraries(clear_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(sensors_status sensors_status.cpp)
+set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
+target_link_libraries(sensors_status matrix_creator_hal)
+target_link_libraries(sensors_status ${CMAKE_THREAD_LIBS_INIT})
 
