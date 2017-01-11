@@ -143,15 +143,13 @@ void process_rules(const char *hyp) {
 }
 
 static void print_word_times() {
-  int frame_rate = cmd_ln_int32_r(config_, "-frate");
+  const int frame_rate = cmd_ln_int32_r(config_, "-frate");
   ps_seg_t *iter = ps_seg_iter(ps_);
   while (iter != NULL) {
-    int32 sf, ef, pprob;
-    float conf;
-
+    int32 sf, ef;
     ps_seg_frames(iter, &sf, &ef);
-    pprob = ps_seg_prob(iter, NULL, NULL, NULL);
-    conf = logmath_exp(ps_get_logmath(ps_), pprob);
+    const int32 pprob = ps_seg_prob(iter, NULL, NULL, NULL);
+    const float conf = logmath_exp(ps_get_logmath(ps_), pprob);
     printf("%s %.3f %.3f %f\n", ps_seg_word(iter), ((float)sf / frame_rate),
            ((float)ef / frame_rate), conf);
     iter = ps_seg_next(iter);
