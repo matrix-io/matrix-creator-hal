@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
+#include <chrono>
 #include <ctime>
 #include <iostream>
-#include <chrono>
 #include <sstream>
+#include <unistd.h>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -48,11 +48,10 @@ void drawProgress(hal::EverloopImage *img, unsigned counter) {
   int min = counter % 35;
   unsigned green = 35;
   for (int y = 0; y <= min; y++) {
-    setColor(img, y, y*2, green, 0, 0);
-    green=35-y;
+    setColor(img, y, y * 2, green, 0, 0);
+    green = 35 - y;
   }
 }
-
 
 void drawSeconds(hal::EverloopImage *img, unsigned seconds) {
   int sec = seconds % 35;
@@ -82,14 +81,14 @@ int main(int argc, char *argv[]) {
   bool start_alarm = false;
 
   // configuration time (default 3min)
-  float time = 180.0 / 35.0;
+  float config_time = 180.0 / 35.0;
   if (argc == 2) {
     std::istringstream iss(argv[1]);
     int val;
     if (iss >> val) {
-      std::cout << "time set to: " << argv[1] << " secs.\n";
-      time = (float)val / 35.0;
-      std::cout << "led time: " << time << "\n";
+      std::cout << "config time set to: " << argv[1] << " secs.\n";
+      config_time = (float)val / 35.0;
+      std::cout << "led config time: " << config_time << "\n";
     }
   }
 
@@ -106,12 +105,12 @@ int main(int argc, char *argv[]) {
     std::chrono::duration<double> elapsed_seconds = now - ssec;
     std::chrono::duration<double> elapsed_beep = now - sbeep;
 
-    if (elapsed_minutes.count() > time) {
+    if (elapsed_minutes.count() > config_time) {
       smin = std::chrono::system_clock::now();
       ++counter;
     }
 
-    if (elapsed_seconds.count() > time / 35.) {
+    if (elapsed_seconds.count() > config_time / 35.) {
       ssec = std::chrono::system_clock::now();
       ++seconds;
     }
@@ -135,21 +134,18 @@ int main(int argc, char *argv[]) {
     }
 
     if (start_alarm && tick < ticks) {
-      if(speaker){
+      if (speaker) {
         clear(&img);
-      }
-      else{
+      } else {
         drawProgress(&img, counter);
         drawSeconds(&img, seconds);
       }
-    }
-    else {
+    } else {
       clear(&img);
       drawProgress(&img, counter);
       drawSeconds(&img, seconds);
     }
     everloop.Write(&img);
-      
   }
 
   return 0;
