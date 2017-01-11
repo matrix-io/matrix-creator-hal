@@ -83,3 +83,13 @@ IP Address demo print the last integer of wlan0 IP address, for example if Rasbe
 > [yellow led] one blue led    (1)
 > [yellow led] three blue leds (3)
 > [yellow led] five blue leds  (5)
+
+## Timer DEMO
+on matrix-creator-hal/build/demos:
+```
+./timer_demo
+```
+optional options:
+```
+./timer_demo seconds
+```
