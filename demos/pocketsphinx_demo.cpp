@@ -150,8 +150,9 @@ static void print_word_times() {
     ps_seg_frames(iter, &sf, &ef);
     const int32 pprob = ps_seg_prob(iter, NULL, NULL, NULL);
     const float conf = logmath_exp(ps_get_logmath(ps_), pprob);
-    printf("%s %.3f %.3f %f\n", ps_seg_word(iter), ((float)sf / frame_rate),
-           ((float)ef / frame_rate), conf);
+    printf("%s %.3f %.3f %f\n", ps_seg_word(iter),
+           static_cast<float>(sf) / frame_rate,
+           static_cast<float>(ef) / frame_rate, conf);
     iter = ps_seg_next(iter);
   }
 }
