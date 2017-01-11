@@ -153,10 +153,6 @@ static void sleep_msec(int32 ms) {
  */
 static void recognize_from_microphone() {
   ad_rec_t *ad;
-  int16 adbuf[2048];
-  int32 audio;
-  const char *hyp;
-
   if ((ad = ad_open_dev(cmd_ln_str_r(config_, "-adcdev"),
                         (int)cmd_ln_float32_r(config_, "-samprate"))) == NULL)
     E_FATAL("Failed to open audio device\n");
@@ -168,6 +164,9 @@ static void recognize_from_microphone() {
   uint8 utt_started = FALSE;
   E_INFO("Ready....\n");
 
+  int32 audio;
+  int16 adbuf[2048];
+  const char *hyp;
   for (;;) {
     if ((audio = ad_read(ad, adbuf, 2048)) < 0)
       E_FATAL("Failed to read audio\n");
