@@ -88,26 +88,20 @@ static cmd_ln_t *config_;
 static FILE *rawfd_;
 
 void process_rules(const char *hyp) {
-  std::string cmd_ever, cmd_arc, cmd_clear, cmd_stop, cmd_ipaddr, cmd_halt,
-      cmd_timer, cmd_timer1, cmd_timer2, cmd_timer3, cmd_timer4, cmd_timer5,
-      cmd_timer10, cmd_timer10s;
-
-  cmd_ever = "./everloop_demo &";
-  cmd_arc = "./arc_demo &";
-  cmd_ipaddr = "./ipaddress_demo &";
-  cmd_clear = "./clear_demo &";
-  cmd_halt = "sudo halt";
-
-  cmd_timer = "./timer_demo &";
-  cmd_timer1 = "./timer_demo 60 &";
-  cmd_timer2 = "./timer_demo 120 &";
-  cmd_timer3 = "./timer_demo 180 &";
-  cmd_timer4 = "./timer_demo 240 &";
-  cmd_timer5 = "./timer_demo 300 &";
-  cmd_timer10 = "./timer_demo 600 &";
-  cmd_timer10s = "./timer_demo 10 &";
-
-  cmd_stop = "killall everloop_demo arc_demo timer_demo &";
+  const std::string cmd_ever = "./everloop_demo &";
+  const std::string cmd_arc = "./arc_demo &";
+  const std::string cmd_ipaddr = "./ipaddress_demo &";
+  const std::string cmd_clear = "./clear_demo &";
+  const std::string cmd_halt = "sudo halt";
+  const std::string cmd_timer = "./timer_demo &";
+  const std::string cmd_timer1 = "./timer_demo 60 &";
+  const std::string cmd_timer2 = "./timer_demo 120 &";
+  const std::string cmd_timer3 = "./timer_demo 180 &";
+  const std::string cmd_timer4 = "./timer_demo 240 &";
+  const std::string cmd_timer5 = "./timer_demo 300 &";
+  const std::string cmd_timer10 = "./timer_demo 600 &";
+  const std::string cmd_timer10s = "./timer_demo 10 &";
+  const std::string cmd_stop = "killall everloop_demo arc_demo timer_demo &";
 
   printf("match: %s\n", hyp);
   if (std::strcmp(hyp, "MATRIX EVERLOOP") == 0)
