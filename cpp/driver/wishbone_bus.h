@@ -19,6 +19,8 @@
 #define CPP_DRIVER_WISHBONE_BUS_H_
 
 #include <stdint.h>
+#include <linux/spi/spidev.h>
+
 #include <string>
 #include <mutex>
 
@@ -34,13 +36,16 @@ class WishboneBus {
 
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
-  bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
+  bool SpiRead16(
+      uint16_t add,
+      unsigned char* data);  // TODO(andres.calderon):Change type to uint16_t
+  int SpiRawTransfer(int fd, spi_ioc_transfer& tr);
+
   void SpiClose();
 
  private:
   bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
                    unsigned int size);
-
 
  private:
   std::string device_name_;

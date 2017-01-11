@@ -29,6 +29,7 @@
 #include <linux/spi/spidev.h>
 #include <string>
 #include <iostream>
+#include <wiringPi.h>
 #include "cpp/driver/wishbone_bus.h"
 
 #define WR0(a) ((a >> 6) & 0x0FF)
@@ -38,6 +39,8 @@
 #define RD1(a, i) (((a << 2) & 0xFC) | 0x01 | (i << 1))
 
 namespace matrix_hal {
+
+const int SPISel = 5;
 
 WishboneBus::WishboneBus()
     : device_name_("/dev/spidev0.0"),
@@ -91,7 +94,23 @@ bool WishboneBus::SpiInit() {
     return false;
   }
 
+  wiringPiSetupGpio();
+
+  pinMode(SPISel, OUTPUT);
+
   return true;
+}
+
+int WishboneBus::SpiRawTransfer(int fd, spi_ioc_transfer &tr) {
+  std::unique_lock<std::mutex> lock(mutex_);
+
+  digitalWrite(SPISel, LOW);
+
+  int res = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+
+  digitalWrite(SPISel, HIGH);
+
+  return res;
 }
 
 bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
@@ -106,6 +125,7 @@ bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
   tr.delay_usecs = spi_delay_;
   tr.speed_hz = spi_speed_;
   tr.bits_per_word = spi_bits_;
+  digitalWrite(SPISel, HIGH);
 
   if (ioctl(spi_fd_, SPI_IOC_MESSAGE(1), &tr) < 1) {
     std::cerr << "can't send spi message" << std::endl;
