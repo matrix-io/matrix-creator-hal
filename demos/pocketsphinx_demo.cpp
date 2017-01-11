@@ -45,6 +45,8 @@
  * recognized.
  *   - Single-threaded implementation for portability.
  *   - Uses audio library; can be replaced with an equivalent custom library.
+ *
+ * MOD: @hpsaturn (MATRIX Creator demo for continous recognition trigger)
  */
 
 #include <assert.h>
