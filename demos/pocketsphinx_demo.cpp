@@ -87,7 +87,7 @@ static ps_decoder_t *ps_;
 static cmd_ln_t *config_;
 static FILE *rawfd_;
 
-void process_rules(char const *hyp) {
+void process_rules(const char *hyp) {
   std::string cmd_ever, cmd_arc, cmd_clear, cmd_stop, cmd_ipaddr, cmd_halt,
       cmd_timer, cmd_timer1, cmd_timer2, cmd_timer3, cmd_timer4, cmd_timer5,
       cmd_timer10, cmd_timer10s;
@@ -286,7 +286,7 @@ static void recognize_from_microphone() {
   int16 adbuf[2048];
   uint8 utt_started, in_speech;
   int32 k;
-  char const *hyp;
+  const char *hyp;
 
   if ((ad = ad_open_dev(cmd_ln_str_r(config_, "-adcdev"),
                         (int)cmd_ln_float32_r(config_, "-samprate"))) == NULL)
