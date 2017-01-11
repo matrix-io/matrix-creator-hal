@@ -154,8 +154,7 @@ static void sleep_msec(int32 ms) {
 static void recognize_from_microphone() {
   ad_rec_t *ad;
   int16 adbuf[2048];
-  uint8 utt_started, in_speech;
-  int32 k;
+  int32 audio;
   const char *hyp;
 
   if ((ad = ad_open_dev(cmd_ln_str_r(config_, "-adcdev"),
@@ -166,14 +165,14 @@ static void recognize_from_microphone() {
 
   if (ps_start_utt(ps_) < 0)
     E_FATAL("Failed to start utterance\n");
-  utt_started = FALSE;
+  uint8 utt_started = FALSE;
   E_INFO("Ready....\n");
 
   for (;;) {
-    if ((k = ad_read(ad, adbuf, 2048)) < 0)
+    if ((audio = ad_read(ad, adbuf, 2048)) < 0)
       E_FATAL("Failed to read audio\n");
-    ps_process_raw(ps_, adbuf, k, FALSE, FALSE);
-    in_speech = ps_get_in_speech(ps_);
+    ps_process_raw(ps_, adbuf, audio, FALSE, FALSE);
+    const int8 in_speech = ps_get_in_speech(ps_);
     if (in_speech && !utt_started) {
       utt_started = TRUE;
       E_INFO("Listening...\n");
