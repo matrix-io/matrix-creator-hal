@@ -2,6 +2,7 @@
 
 keyphrase="$1"
 MIC=$2
+threshold="1e-20"
 
 if [ "$keyphrase" = "" ]; then
     keyphrase="HEY MATRIX"
@@ -12,5 +13,5 @@ if [ "$MIC" = "" ]; then
 fi
 
 sphinx=../build/demos/pocketsphinx_demo 
-$sphinx -keyphrase "$keyphrase" -kws_threshold 1e-20  -inmic yes -adcdev mic_channel$MIC
+$sphinx -keyphrase "$keyphrase" -kws_threshold $threshold -inmic yes -adcdev mic_channel$MIC
 
