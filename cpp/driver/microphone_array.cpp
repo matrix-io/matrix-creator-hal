@@ -18,6 +18,7 @@
 #include <wiringPi.h>
 #include <string>
 #include <iostream>
+#include <ctime>
 #include <cstdlib>
 #include <cstdint>
 #include <cmath>
@@ -31,6 +32,16 @@ int max_irq_samples=1000;
 int irq_samples=0;
 
 namespace matrix_hal {
+
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
   raw_data_.resize(kMicarrayBufferSize);
@@ -67,7 +78,7 @@ bool MicrophoneArray::Read() {
     if(irq_samples<max_irq_samples)irq_samples++;
     else{
       irq_samples=0;
-      std::cout << "1000 samples reached" << std::endl;
+      std::cout << currentDateTime() << " 1000 samples reached" << std::endl;
     }
 
     if (!wishbone_->SpiReadBurst(
