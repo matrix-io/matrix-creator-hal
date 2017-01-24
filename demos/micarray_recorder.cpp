@@ -33,7 +33,7 @@ int main() {
 
   everloop.Write(&image1d);
 
-  uint16_t seconds_to_record = 60;
+  uint16_t seconds_to_record = 20;
 
   int16_t buffer[mics.Channels() + 1][seconds_to_record * mics.SamplingRate()];
 
