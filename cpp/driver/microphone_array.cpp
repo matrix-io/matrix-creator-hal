@@ -17,6 +17,7 @@
 
 #include <wiringPi.h>
 #include <string>
+#include <iostream>
 #include <cstdlib>
 #include <cstdint>
 #include <cmath>
