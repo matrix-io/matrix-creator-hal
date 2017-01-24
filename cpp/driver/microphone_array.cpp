@@ -26,6 +26,9 @@
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/microphone_array_location.h"
 
+int max_irq_samples=1000;
+int irq_samples=0;
+
 namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray() : gain_(8) {
@@ -58,7 +61,14 @@ bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
   if (!wishbone_) return false;
 
+
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
+    if(irq_samples<max_irq_samples)irq_samples++;
+    else{
+      irq_samples=0;
+      std::cout << "1000 samples reached" << std::endl;
+    }
+
     if (!wishbone_->SpiReadBurst(
             kMicrophoneArrayBaseAddress,
             reinterpret_cast<unsigned char*>(&raw_data_[0]),
