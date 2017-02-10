@@ -28,6 +28,7 @@ set(matrix_creator_hal_src
   uv_sensor.cpp
   wishbone_bus.cpp
   cross_correlation.cpp
+  direction_of_arrival.cpp
 )
 
 add_library(matrix_creator_hal ${matrix_creator_hal_src})
@@ -58,6 +59,7 @@ set (matrix_creator_hal_headers
   uv_sensor.h       
   wishbone_bus.h
   cross_correlation.h
+  direction_of_arrival.h
 )
 
 install (TARGETS matrix_creator_hal DESTINATION lib)
