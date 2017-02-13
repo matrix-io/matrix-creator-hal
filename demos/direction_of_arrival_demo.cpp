@@ -17,7 +17,7 @@
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
-#include "../cpp/driver/cross_correlation.h"
+#include "../cpp/driver/direction_of_arrival.h"
 
 namespace hal = matrix_hal;
 
@@ -39,60 +39,27 @@ int main() {
 
   everloop.Write(&image1d);
 
-  int16_t buffer[mics.Channels()][mics.SamplingRate()];
+  int16_t buffer_1D[mics.Channels()*mics.SamplingRate()];
+  int16_t* buffer_2D[mics.Channels()];
 
-  hal::CrossCorrelation corr(N);
-  std::valarray<float> current_mag(4);
-  std::valarray<float> current_index(4);
+  for (uint16_t c = 0; c < mics.Channels(); c++)
+  {
+     buffer_2D[c] = &buffer_1D[c*mics.SamplingRate()];  
+  }
+
+  hal::DirectionOfArrival DoA(N);
 
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
 
     for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
       for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
-        buffer[c][s] = mics.At(s, c);
+        buffer_2D[c][s] = mics.At(s, c);
       }
     }
 
-    for (int channel = 0; channel < 4; channel++) {
-      corr.Exec(buffer[channel], buffer[channel + 4]);
+    DoA.Calculate(buffer_2D);
 
-      float* c = corr.Result();
-
-      int index = 0;
-      float m = c[0];
-      int max_tof = 6;
-      for (int i = 1; i < max_tof; i++)
-        if (c[i] > m) {
-          index = i;
-          m = c[i];
-        }
-
-      for (int i = N - max_tof; i < N; i++)
-        if (c[i] > m) {
-          index = i;
-          m = c[i];
-        }
-
-      current_mag[channel] = m;
-      current_index[channel] = index;
-    }
-
-    int dir = 0;
-    int index = current_index[0];
-    float mag = current_mag[0];
-    for (int channel = 1; channel < 4; channel++) {
-      if (mag < current_mag[channel]) {
-        dir = channel;
-        mag = current_mag[channel];
-        index = current_index[channel];
-      }
-    }
-
-    if (index > 64) index = -(128 - index);
-
-    if (mag > 2e8)
-      std::cout << dir << "\t" << index << "\t" << mag << std::endl;
   }
 
   return 0;
