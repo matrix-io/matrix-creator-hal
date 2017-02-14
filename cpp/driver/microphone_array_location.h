@@ -28,7 +28,7 @@ namespace matrix_hal {
   x,y  position in milimeters
  */
 
-float micarray_location[8][2] = {
+static float micarray_location[8][2] = {
     {20.0908795, -48.5036755},  /* M1 */
     {-20.0908795, -48.5036755}, /* M2 */
     {-48.5036755, -20.0908795}, /* M3 */

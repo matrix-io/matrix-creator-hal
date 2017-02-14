@@ -20,21 +20,34 @@
 
 #include <string>
 #include <valarray>
+
 #include "./cross_correlation.h"
+#include "./microphone_array.h"
 
 namespace matrix_hal {
 
 class DirectionOfArrival {
  public:
-  DirectionOfArrival(int length);
+  DirectionOfArrival(MicrophoneArray& mics);
 
-  void Calculate(int16_t** buffer);
+  void Calculate();
+
+  float GetAzimutalAngle() { return azimutal_angle_; }
+  float GetPolarAngle() { return polar_angle_; }
+  int GetNearestMicrophone() { return mic_direction_; }
 
  private:
+  MicrophoneArray& mics_;
   int length_;
   CrossCorrelation corr_;
   std::valarray<float> current_mag_;
   std::valarray<float> current_index_;
+  std::valarray<int16_t> buffer_1D_;
+  std::valarray<int16_t*> buffer_2D_;
+
+  uint16_t mic_direction_;
+  float azimutal_angle_;
+  float polar_angle_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DIRECTION_OF_ARRIVAL_H_

@@ -3,21 +3,21 @@
  * All rights reserved.
  */
 
-#include <wiringPi.h>
-#include <string.h>
 #include <fftw3.h>
 #include <stdint.h>
+#include <string.h>
+#include <wiringPi.h>
 
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <valarray>
 
-#include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/direction_of_arrival.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
-#include "../cpp/driver/direction_of_arrival.h"
 
 namespace hal = matrix_hal;
 
@@ -39,27 +39,17 @@ int main() {
 
   everloop.Write(&image1d);
 
-  int16_t buffer_1D[mics.Channels()*mics.SamplingRate()];
-  int16_t* buffer_2D[mics.Channels()];
-
-  for (uint16_t c = 0; c < mics.Channels(); c++)
-  {
-     buffer_2D[c] = &buffer_1D[c*mics.SamplingRate()];  
-  }
-
-  hal::DirectionOfArrival DoA(N);
+  hal::DirectionOfArrival doa(mics);
 
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
 
-    for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
-      for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
-        buffer_2D[c][s] = mics.At(s, c);
-      }
-    }
+    doa.Calculate();
 
-    DoA.Calculate(buffer_2D);
-
+    std::cout << "azimutal angle = " << doa.GetAzimutalAngle()*180/M_PI << std::endl;
+    std::cout << "polar angle = " << doa.GetPolarAngle()*180/M_PI << std::endl;
+    std::cout << "mic = " << doa.GetNearestMicrophone() << std::endl
+              << std::endl;
   }
 
   return 0;
