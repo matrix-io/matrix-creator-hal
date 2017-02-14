@@ -16,7 +16,7 @@
  */
 
 #include <unistd.h>
-#include <cmath>
+#include <iostream>
 
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
@@ -34,54 +34,23 @@ int main() {
 
   everloop.Setup(&bus);
 
- int red [18] = { 229, 158, 83, 11, 0, 83, 0, 0, 0, 0, 26, 106, 182, 210, 205, 200, 195, 191};
- int green [18] = { 221, 224, 219, 214, 210, 219, 200, 146, 80, 56, 0, 0, 0, 0, 0, 0, 59, 127};
- int blue [18] = { 0, 0, 0, 0, 0, 57, 185, 195, 191, 229, 224, 219, 214, 165, 86, 11, 0, 0};
- 
- // double dim [18] = { 0.1, 0.1, 0.1, 0, 0.2, 0.5, 0.10, 0.30, 0.50, 0.80, 1, 0.50, 0.30, 0.10, 0.5, 0.2, 0.1, 0.1};
-
-
-
- double  gen_dim = 0.15;
- int  color_rot = 0;
- // int  dim_rot = 0;
+  unsigned counter = 0;
 
   while (1) {
-  // for (hal::LedValue& led : image1d.leds) {
-    color_rot--;
-    if (color_rot < 0) {
-      color_rot = 17; 
+    for (hal::LedValue& led : image1d.leds) {
+      led.red = 0;
+      led.green = 0;
+      led.blue = 0;
+      led.white = 0;
     }
+    image1d.leds[(counter / 2) % 35].red = 20;
+    image1d.leds[(counter / 7) % 35].green = 30;
+    image1d.leds[(counter / 11) % 35].blue = 30;
+    image1d.leds[34 - (counter % 35)].white = 10;
 
-    // dim_rot++;
-    // if (dim_rot > 17) {
-    //   dim_rot = 0;
-    // }
-
-   for (int i = 0; i < 18; i++) {
-
-    int color_i = i + color_rot;
-    if(color_i > 17) 
-      color_i = color_i - 17;
-
-    // int dim_i = i + dim_rot;
-    // if(dim_i > 17) 
-    //   dim_i = dim_i - 17;
-
-    // image1d.leds[i].red =   red[color_i] * gen_dim * dim[dim_i];
-    // image1d.leds[i].green = green[color_i] * gen_dim * dim[dim_i];
-    // image1d.leds[i].blue =  blue[color_i] * gen_dim * dim[dim_i];
-    // image1d.leds[i].white =  0;
-
-
-    image1d.leds[i].red =   red[color_i] * gen_dim ;
-    image1d.leds[i].green = green[color_i] * gen_dim ;
-    image1d.leds[i].blue =  blue[color_i] * gen_dim ;
-    image1d.leds[i].white =  0;
-
-  }
     everloop.Write(&image1d);
-    usleep(80000);
+    ++counter;
+    usleep(20000);
   }
 
   return 0;

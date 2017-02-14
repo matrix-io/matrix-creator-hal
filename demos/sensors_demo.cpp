@@ -70,7 +70,9 @@ int main() {
 
     std::cout << "yaw = " << imu_data.yaw << "°\t";
     std::cout << "roll = " << imu_data.roll << "°\t";
-    std::cout << "pitch = " << imu_data.pitch << "°" << std::endl << std::endl;
+    std::cout << "pitch = " << imu_data.pitch << "°" << std::endl;
+    std::cout << "accel = {" << imu_data.accel_x << ", " <<  imu_data.accel_y << "," << imu_data.accel_z <<  "}"  << std::endl << std::endl;
+
 
     std::cout << "humidity = " << humidity_data.humidity << " %" << std::endl;
     std::cout << "temperature (from humidity sensor) = "
