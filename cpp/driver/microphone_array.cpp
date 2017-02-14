@@ -46,7 +46,7 @@ void MicrophoneArray::Setup(WishboneBus* wishbone) {
   MatrixDriver::Setup(wishbone);
 
   // TODO(andres.calderon@admobilize.com): avoid systems calls
-  std::system("gpio edge 6 both");
+  std::system("gpio edge 23 both");
 
   wiringPiSetupSys();
 
