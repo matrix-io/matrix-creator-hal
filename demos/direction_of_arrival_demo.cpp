@@ -21,7 +21,8 @@
 
 namespace hal = matrix_hal;
 
-const int N = 128;
+int led_offset[] = {23, 27, 32, 1, 6, 10, 14, 19};
+int lut[] = {1, 2, 10, 200, 10, 2, 1};
 
 int main() {
   hal::WishboneBus bus;
@@ -35,22 +36,39 @@ int main() {
 
   hal::EverloopImage image1d;
 
-  for (auto& led : image1d.leds) led.red = 10;
-
-  everloop.Write(&image1d);
-
   hal::DirectionOfArrival doa(mics);
+
+  float azimutal_angle;
+  float polar_angle;
+  int mic;
 
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
 
     doa.Calculate();
 
-    std::cout << "azimutal angle = " << doa.GetAzimutalAngle()*180/M_PI << std::endl;
-    std::cout << "polar angle = " << doa.GetPolarAngle()*180/M_PI << std::endl;
-    std::cout << "mic = " << doa.GetNearestMicrophone() << std::endl
-              << std::endl;
-  }
+    azimutal_angle = doa.GetAzimutalAngle() * 180 / M_PI;
+    polar_angle = doa.GetPolarAngle() * 180 / M_PI;
+    mic = doa.GetNearestMicrophone();
 
+    std::cout << "azimutal angle = " << azimutal_angle
+              << ", polar angle = " << polar_angle << ", mic = " << mic
+              << std::endl;
+
+    for (hal::LedValue& led : image1d.leds) {
+      led.blue = 0;
+    }
+
+    for (int i = led_offset[mic] - 3, j = 0; i < led_offset[mic] + 3;
+         ++i, ++j) {
+      if (i < 0) {
+        image1d.leds[image1d.leds.size() + i].blue = lut[j];
+      } else {
+        image1d.leds[i % image1d.leds.size()].blue = lut[j];
+      }
+
+      everloop.Write(&image1d);
+    }
+  }
   return 0;
 }
