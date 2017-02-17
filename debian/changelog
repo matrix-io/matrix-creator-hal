@@ -1,0 +1,9 @@
+libmatrix-creator-hal (0.1.1) unstable; urgency=medium
+
+  * Initial release.
+
+ -- Andres Calderon <andres.calderon@admobilize.com>  Thu, 16 Feb 2017 12:00:00 +0000
+
+Local variables:
+mode: debian-changelog
+End:
