@@ -2,6 +2,7 @@ libmatrix-creator-hal (0.1.2) unstable; urgency=medium
 
   * MATRIX Creator Hardware Abstraction Layer 
   * Initial realease of Libraries.
+  * Initial realease of Direction of Arrival (DoA)
 
  -- Kevin Patino <kevin.patino@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
 
