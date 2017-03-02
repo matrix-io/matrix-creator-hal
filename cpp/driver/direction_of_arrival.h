@@ -15,29 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_MICARRAY_LOCATION_H_
-#define CPP_DRIVER_MICARRAY_LOCATION_H_
+#ifndef CPP_DIRECTION_OF_ARRIVAL_H_
+#define CPP_DIRECTION_OF_ARRIVAL_H_
 
 #include <string>
-#include "./imu_data.h"
-#include "./matrix_driver.h"
+#include <valarray>
+
+#include "./cross_correlation.h"
+#include "./microphone_array.h"
 
 namespace matrix_hal {
 
-/*
-  x,y  position in milimeters
- */
+class DirectionOfArrival {
+ public:
+  DirectionOfArrival(MicrophoneArray& mics);
 
-static float micarray_location[8][2] = {
-    {20.0908795, -48.5036755},  /* M1 */
-    {-20.0908795, -48.5036755}, /* M2 */
-    {-48.5036755, -20.0908795}, /* M3 */
-    {-48.5036755, 20.0908795},  /* M4 */
-    {-20.0908795, 48.5036755},  /* M5 */
-    {20.0908795, 48.5036755},   /* M6 */
-    {48.5036755, 20.0908795},   /* M7 */
-    {48.5036755, -20.0908795}   /* M8 */
+  void Calculate();
+
+  float GetAzimutalAngle() { return azimutal_angle_; }
+  float GetPolarAngle() { return polar_angle_; }
+  int GetNearestMicrophone() { return mic_direction_; }
+
+ private:
+  MicrophoneArray& mics_;
+  int length_;
+  CrossCorrelation corr_;
+  std::valarray<float> current_mag_;
+  std::valarray<float> current_index_;
+  std::valarray<int16_t> buffer_1D_;
+  std::valarray<int16_t*> buffer_2D_;
+
+  uint16_t mic_direction_;
+  float azimutal_angle_;
+  float polar_angle_;
 };
-
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_MICARRAY_LOCATION_H_
+#endif  // CPP_DIRECTION_OF_ARRIVAL_H_

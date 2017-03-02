@@ -6,7 +6,7 @@ HAL is the lowest-level abstraction for the MATRIX Creator drivers. You can inte
 It does have some package dependencies, so please make sure to install the pre-requisites.
 
 ```
-$ sudo apt-get install cmake g++ git
+$ sudo apt-get install cmake g++ git libfftw3-dev
 ```
 
 ### Build

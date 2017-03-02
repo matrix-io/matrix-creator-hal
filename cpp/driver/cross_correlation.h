@@ -15,29 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_MICARRAY_LOCATION_H_
-#define CPP_DRIVER_MICARRAY_LOCATION_H_
+#ifndef CPP_CROSS_CORRELATION_H_
+#define CPP_CROSS_CORRELATION_H_
 
-#include <string>
-#include "./imu_data.h"
-#include "./matrix_driver.h"
+#include <fftw3.h>
+#include <stdint.h>
 
 namespace matrix_hal {
 
 /*
-  x,y  position in milimeters
- */
+Cross-correlation between signals implemented in frequency domain.
+*/
+class CrossCorrelation {
+ public:
+  CrossCorrelation(int N);
+  ~CrossCorrelation();
 
-static float micarray_location[8][2] = {
-    {20.0908795, -48.5036755},  /* M1 */
-    {-20.0908795, -48.5036755}, /* M2 */
-    {-48.5036755, -20.0908795}, /* M3 */
-    {-48.5036755, 20.0908795},  /* M4 */
-    {-20.0908795, 48.5036755},  /* M5 */
-    {20.0908795, 48.5036755},   /* M6 */
-    {48.5036755, 20.0908795},   /* M7 */
-    {48.5036755, -20.0908795}   /* M8 */
+  void Exec(int16_t* a, int16_t* b);
+  float* Result();
+
+ private:
+  void Corr(float* out, float* x, float* y);
+
+  int order_;
+  float* in_;
+  float* A_;
+  float* B_;
+  float* C_;
+  float* c_;
+
+  fftwf_plan forward_plan_a_;
+  fftwf_plan forward_plan_b_;
+  fftwf_plan inverse_plan_;
 };
 
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_MICARRAY_LOCATION_H_
+#endif  // CPP_CROSS_CORRELATION_H_
