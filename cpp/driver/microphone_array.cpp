@@ -69,9 +69,11 @@ bool MicrophoneArray::Read() {
     for (uint32_t s = 0; s < NumberOfSamples(); s++) {
       int sum = 0;
       for (uint16_t c = 0; c < kMicrophoneChannels; c++) {
+        // delaying data for beamforming 'delay & sum' algorithm 
         delayed_data_[s * kMicrophoneChannels + c] =
             fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]) * gain_;
 
+        // accumulation data for beamforming 'delay & sum' algorithm 
         sum += delayed_data_[s * kMicrophoneChannels + c];
       }
 
@@ -82,6 +84,8 @@ bool MicrophoneArray::Read() {
   return true;
 }
 
+
+// Setting fifos for the 'delay & sum' algorithm
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
                                       float radial_distance_mm,
                                       float sound_speed_mmseg) {
