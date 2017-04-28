@@ -21,6 +21,7 @@ set(matrix_creator_hal_src
   gpio_control.cpp
   humidity_sensor.cpp
   imu_sensor.cpp
+  DCM.cpp
   matrix_driver.cpp
   mcu_firmware.cpp
   microphone_array.cpp
@@ -49,6 +50,7 @@ set (matrix_creator_hal_headers
   humidity_sensor.h  
   imu_data.h         
   imu_sensor.h        
+  DCM.h
   matrix_driver.h     
   mcu_firmware.h
   microphone_array.h  
