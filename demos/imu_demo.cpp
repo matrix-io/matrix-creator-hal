@@ -34,9 +34,14 @@
 #include "../cpp/driver/uv_sensor.h"
 #include "../cpp/driver/uv_data.h"
 #include "../cpp/driver/DCM.h"
+#include "../cpp/driver/iCompass.h"
 
 
 namespace hal = matrix_hal;
+
+//Magnetic declination angle for iCompass
+#define MAG_DEC -6.683333  //degrees for Miami Beach, FL (from http://www.magnetic-declination.com/)
+
 
 //Used for DCM filter
 const float Kp_ROLLPITCH = 1.2f;  //was .3423
@@ -53,6 +58,9 @@ int main() {
   hal::IMUSensor imu_sensor;
 
   imu_sensor.Setup(&bus);
+
+  iCompass maghead; 
+  maghead = iCompass(MAG_DEC);
 
   // DCM Initialization
   DCM dcm; 
@@ -81,11 +89,22 @@ int main() {
 
   std::ofstream myfile;
   myfile.open ("imu.log");
-  myfile << "Count , COMPASS_YAW , PITCH , ROLL , DCM_YAW , DCM_PITCH , DCM_ROLL" << std::endl;
+  myfile << "Count  \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
+  // myfile << "Count , COMPASS_YAW , PITCH , ROLL , DCM_YAW , DCM_PITCH , DCM_ROLL" << std::endl;
   myfile.close();
   myfile.open ("imu.log", std::ofstream::app);
 
   int count = 0;
+
+  float mag_max_x = -1000; 
+  float mag_max_y = -1000; 
+  float mag_max_z = -1000; 
+
+  float mag_min_x = 1000; 
+  float mag_min_y = 1000; 
+  float mag_min_z = 1000; 
+
+  bool first_loop = true;
 
   while (true) {
 
@@ -101,13 +120,53 @@ int main() {
     values[7] = imu_data.mag_y;
     values[8] = imu_data.mag_z;
 
+    // if (first_loop) {
+    //   mag_max_x = values[6];
+    //   mag_max_y = values[7];
+    //   mag_max_z = values[8];
 
-    dcm.G_Dt = 0.020; // ~10 ms  // TODO : measure the actual time
-    dcm.setSensorVals(values);
-    dcm.calDCM();
-    dcm.getEulerDeg(ypr);
+    //   mag_min_x = values[6];
+    //   mag_min_y = values[7];
+    //   mag_min_z = values[8];
+    // }
+    // first_loop = false;
 
-    ypr_old[0] = atan2(-values[7], values[6]) * 180.0 / M_PI;
+    //Compass Offset correction
+    // float mag_offset_x = 0.302190000000000;
+    // float mag_offset_y = 0.175560000000000;
+    // float mag_offset_z = -0.0753200000000000;
+
+    if (values[6] > mag_max_x) mag_max_x = values[6];
+    if (values[7] > mag_max_y) mag_max_y = values[7];
+    if (values[8] > mag_max_z) mag_max_z = values[8];
+
+    if (values[6] < mag_min_x) mag_min_x = values[6];
+    if (values[7] < mag_min_y) mag_min_y = values[7];
+    if (values[8] < mag_min_z) mag_min_z = values[8];
+
+    float mag_offset_x = (mag_max_x + mag_min_x)/2;
+    float mag_offset_y = (mag_max_y + mag_min_y)/2;
+    float mag_offset_z = (mag_max_z + mag_min_z)/2;
+
+    values[3] = values[6] - mag_offset_x ;
+    values[4] = values[7] - mag_offset_y ;
+    values[5] = values[8] - mag_offset_z ;
+
+    //Compass Tilt compensation
+    // values[9] = maghead.iheading(1, 0, 0, values[0], values[1], values[2], values[6], values[7], values[8]);
+
+    // DCM
+    // dcm.G_Dt = 0.020; // ~10 ms  // TODO : measure the actual time
+    // dcm.setSensorVals(values);
+    // dcm.calDCM();
+    // dcm.getEulerDeg(ypr);
+
+    ypr[0] = atan2(-values[7], values[6]) * 180.0 / M_PI;
+    ypr[1] = atan2(values[1], values[2]) * 180.0 / M_PI;
+    ypr[2] = atan2(-values[0],
+      sqrt(values[1] * values[1] + values[2] * values[2])) * 180.0 / M_PI;
+
+    ypr_old[0] = atan2(-values[4], values[3]) * 180.0 / M_PI;
     ypr_old[1] = atan2(values[1], values[2]) * 180.0 / M_PI;
     ypr_old[2] = atan2(-values[0],
       sqrt(values[1] * values[1] + values[2] * values[2])) * 180.0 / M_PI;
@@ -118,22 +177,46 @@ int main() {
     // std::cout << "dcm_pitch  = " << ypr[1] << std::endl;
     // std::cout << "dcm_roll = " << ypr[2] << std::endl;
     
-    std::cout << "Count \t COMPASS_YAW \t PITCH \t ROLL \t DCM_YAW \t DCM_PITCH \t DCM_ROLL" << std::endl;
+    std::cout << "Count  \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
     std::cout << count << " \t " 
+    << ypr[0] << " \t " 
+    << ypr[1] << " \t " 
+    << ypr[2] << " \t " 
     << ypr_old[0] << " \t " 
     << ypr_old[1] << " \t " 
     << ypr_old[2] << " \t " 
-    << ypr[0] << " \t " 
-    << ypr[1] << " \t " 
-    << ypr[2] << std::endl;
+    << values[0] << " \t " 
+    << values[1] << " \t " 
+    << values[2] << " \t " 
+    << values[3] << " \t " 
+    << values[4] << " \t " 
+    << values[5] << " \t " 
+    << values[6] << " \t " 
+    << values[7] << " \t " 
+    << values[8] << " \t " 
+    << std::endl;
 
     myfile << count << " \t " 
+    << ypr[0] << " \t " 
+    << ypr[1] << " \t " 
+    << ypr[2] << " \t "
     << ypr_old[0] << " \t " 
     << ypr_old[1] << " \t " 
     << ypr_old[2] << " \t " 
-    << ypr[0] << " \t " 
-    << ypr[1] << " \t " 
-    << ypr[2] << std::endl;
+    << values[0] << " \t " 
+    << values[1] << " \t " 
+    << values[2] << " \t " 
+    << values[3] << " \t " 
+    << values[4] << " \t " 
+    << values[5] << " \t " 
+    << values[6] << " \t " 
+    << values[7] << " \t " 
+    << values[8] << " \t " 
+    << mag_offset_x << " \t " 
+    << mag_offset_y << " \t " 
+    << mag_offset_z << " \t " 
+
+    << std::endl;
 
 
     // std::cout << "raw_yaw = " << ypr_old[0] << std::endl;
