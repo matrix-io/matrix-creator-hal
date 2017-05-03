@@ -89,7 +89,7 @@ int main() {
 
   std::ofstream myfile;
   myfile.open ("imu.log");
-  myfile << "Count  \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
+  myfile << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
   // myfile << "Count , COMPASS_YAW , PITCH , ROLL , DCM_YAW , DCM_PITCH , DCM_ROLL" << std::endl;
   myfile.close();
   myfile.open ("imu.log", std::ofstream::app);
@@ -177,8 +177,11 @@ int main() {
     // std::cout << "dcm_pitch  = " << ypr[1] << std::endl;
     // std::cout << "dcm_roll = " << ypr[2] << std::endl;
     
-    std::cout << "Count  \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
+    std::cout << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
     std::cout << count << " \t " 
+    << imu_data.mag_x << " \t " 
+    << imu_data.mag_y << " \t " 
+    << imu_data.mag_z << " \t " 
     << ypr[0] << " \t " 
     << ypr[1] << " \t " 
     << ypr[2] << " \t " 
@@ -197,6 +200,9 @@ int main() {
     << std::endl;
 
     myfile << count << " \t " 
+    << imu_data.mag_x << " \t " 
+    << imu_data.mag_y << " \t " 
+    << imu_data.mag_z << " \t " 
     << ypr[0] << " \t " 
     << ypr[1] << " \t " 
     << ypr[2] << " \t "
