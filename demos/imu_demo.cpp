@@ -89,8 +89,7 @@ int main() {
 
   std::ofstream myfile;
   myfile.open ("imu.log");
-  myfile << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
-  // myfile << "Count , COMPASS_YAW , PITCH , ROLL , DCM_YAW , DCM_PITCH , DCM_ROLL" << std::endl;
+  myfile << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t  YAW_PI  \t PITCH_PI \t ROLL_PI \t accel_x \t accel_y \t accel_z \t real_gyro_x \t real_gyro_y \t real_gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
   myfile.close();
   myfile.open ("imu.log", std::ofstream::app);
 
@@ -161,10 +160,10 @@ int main() {
     // dcm.calDCM();
     // dcm.getEulerDeg(ypr);
 
-    ypr[0] = atan2(-values[7], values[6]) * 180.0 / M_PI;
-    ypr[1] = atan2(values[1], values[2]) * 180.0 / M_PI;
-    ypr[2] = atan2(-values[0],
-      sqrt(values[1] * values[1] + values[2] * values[2])) * 180.0 / M_PI;
+    // ypr[0] = atan2(-values[7], values[6]) * 180.0 / M_PI;
+    // ypr[1] = atan2(values[1], values[2]) * 180.0 / M_PI;
+    // ypr[2] = atan2(-values[0],
+    //   sqrt(values[1] * values[1] + values[2] * values[2])) * 180.0 / M_PI;
 
     ypr_old[0] = atan2(-values[4], values[3]) * 180.0 / M_PI;
     ypr_old[1] = atan2(values[1], values[2]) * 180.0 / M_PI;
@@ -177,57 +176,43 @@ int main() {
     // std::cout << "dcm_pitch  = " << ypr[1] << std::endl;
     // std::cout << "dcm_roll = " << ypr[2] << std::endl;
     
-    std::cout << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t YAW \t   PITCH   \t   ROLL   \t  YAW_2  \t PITCH_2 \t ROLL_2 \t accel_x \t accel_y \t accel_z \t gyro_x \t gyro_y \t gyro_z \t mag_x \t mag_y \t mag_z " << std::endl;
+    std::cout << "Count  \t MCU_YAW \t MCU_PITCH \t MCU_ROLL \t  YAW_PI  \t PITCH_PI \t ROLL_PI \t accel_x \t accel_y \t accel_z \t real_mag_x \t real_mag_y \t real_mag_z \t mag_x \t mag_y \t mag_z " << std::endl;
+
     std::cout << count << " \t " 
-    << imu_data.mag_x << " \t " 
-    << imu_data.mag_y << " \t " 
-    << imu_data.mag_z << " \t " 
-    << ypr[0] << " \t " 
-    << ypr[1] << " \t " 
-    << ypr[2] << " \t " 
-    << ypr_old[0] << " \t " 
-    << ypr_old[1] << " \t " 
-    << ypr_old[2] << " \t " 
-    << values[0] << " \t " 
-    << values[1] << " \t " 
-    << values[2] << " \t " 
-    << values[3] << " \t " 
-    << values[4] << " \t " 
-    << values[5] << " \t " 
-    << values[6] << " \t " 
-    << values[7] << " \t " 
-    << values[8] << " \t " 
-    << std::endl;
+      << imu_data.yaw << " \t " 
+      << imu_data.pitch << " \t " 
+      << imu_data.roll << " \t " 
+      << ypr_old[0] << " \t " 
+      << ypr_old[1] << " \t " 
+      << ypr_old[2] << " \t " 
+      << imu_data.accel_x << " \t " 
+      << imu_data.accel_y << " \t " 
+      << imu_data.accel_z << " \t " 
+      << imu_data.gyro_x << " \t " 
+      << imu_data.gyro_y << " \t " 
+      << imu_data.gyro_z << " \t " 
+      << imu_data.mag_x << " \t " 
+      << imu_data.mag_y << " \t " 
+      << imu_data.mag_z << " \t " 
+      << std::endl;
 
     myfile << count << " \t " 
-    << imu_data.mag_x << " \t " 
-    << imu_data.mag_y << " \t " 
-    << imu_data.mag_z << " \t " 
-    << ypr[0] << " \t " 
-    << ypr[1] << " \t " 
-    << ypr[2] << " \t "
-    << ypr_old[0] << " \t " 
-    << ypr_old[1] << " \t " 
-    << ypr_old[2] << " \t " 
-    << values[0] << " \t " 
-    << values[1] << " \t " 
-    << values[2] << " \t " 
-    << values[3] << " \t " 
-    << values[4] << " \t " 
-    << values[5] << " \t " 
-    << values[6] << " \t " 
-    << values[7] << " \t " 
-    << values[8] << " \t " 
-    << mag_offset_x << " \t " 
-    << mag_offset_y << " \t " 
-    << mag_offset_z << " \t " 
-
-    << std::endl;
-
-
-    // std::cout << "raw_yaw = " << ypr_old[0] << std::endl;
-    // std::cout << "raw_pitch = " << ypr_old[1] << std::endl;
-    // std::cout << "raw_roll = " << ypr_old[2] << std::endl;
+      << imu_data.yaw << " \t " 
+      << imu_data.pitch << " \t " 
+      << imu_data.roll << " \t " 
+      << ypr_old[0] << " \t " 
+      << ypr_old[1] << " \t " 
+      << ypr_old[2] << " \t " 
+      << imu_data.accel_x << " \t " 
+      << imu_data.accel_y << " \t " 
+      << imu_data.accel_z << " \t " 
+      << imu_data.gyro_x << " \t " 
+      << imu_data.gyro_y << " \t " 
+      << imu_data.gyro_z << " \t " 
+      << imu_data.mag_x << " \t " 
+      << imu_data.mag_y << " \t " 
+      << imu_data.mag_z << " \t " 
+      << std::endl;
 
     if (++count > 1000)
       count = 0;
