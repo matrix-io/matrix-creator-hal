@@ -46,6 +46,12 @@ add_executable(mic_demo mic_demo.cpp)
   target_link_libraries(mic_demo ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(mic_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
 
+add_executable(mic_test mic_test.cpp)
+  set_property(TARGET mic_test PROPERTY CXX_STANDARD 11)
+  target_link_libraries(mic_test matrix_creator_hal)
+  target_link_libraries(mic_test ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(mic_test ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+
 add_executable(ir_demo ir_demo.cpp)
   set_property(TARGET ir_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(ir_demo matrix_creator_hal)
