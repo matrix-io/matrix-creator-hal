@@ -30,6 +30,11 @@ add_executable(arc_demo arc_demo.cpp)
   target_link_libraries(arc_demo matrix_creator_hal)
   target_link_libraries(arc_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(leds_test leds_test.cpp)
+  set_property(TARGET leds_test PROPERTY CXX_STANDARD 11)
+  target_link_libraries(leds_test matrix_creator_hal)
+  target_link_libraries(leds_test ${CMAKE_THREAD_LIBS_INIT})
+
 add_executable(sensors_demo sensors_demo.cpp)
   set_property(TARGET sensors_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(sensors_demo matrix_creator_hal)
