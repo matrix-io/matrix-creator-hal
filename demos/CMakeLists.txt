@@ -20,6 +20,11 @@ add_executable(compass_demo compass_demo.cpp)
   target_link_libraries(compass_demo matrix_creator_hal)
   target_link_libraries(compass_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(compass_calib compass_calib.cpp)
+  set_property(TARGET compass_calib PROPERTY CXX_STANDARD 11)
+  target_link_libraries(compass_calib matrix_creator_hal)
+  target_link_libraries(compass_calib ${CMAKE_THREAD_LIBS_INIT})
+
 add_executable(everloop_demo everloop_demo.cpp)
   set_property(TARGET everloop_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(everloop_demo matrix_creator_hal)
