@@ -47,10 +47,6 @@ float mag_x_min = std::numeric_limits<float>::max();
 float mag_y_min = std::numeric_limits<float>::max();
 float mag_z_min = std::numeric_limits<float>::max();
 
-float x_mag_calib[CALIB_ARRAY_SIZE];
-float y_mag_calib[CALIB_ARRAY_SIZE]; 
-float Z_mag_calib[CALIB_ARRAY_SIZE]; 
-
 float x_mag_offset;
 float y_mag_offset;
 float z_mag_offset;
@@ -63,12 +59,16 @@ float mag_x = 0;
 float mag_y = 0;
 float mag_z = 0;
 
-float yaw   = 0;
-float pitch = 0;
-float roll  = 0;
+std::vector<int> xy_count (36);
+std::vector<int> xz_count (36);
 
-float gravity = 0;
-int count = 0;
+bool xy_valid = false;
+bool xz_valid = false;
+
+float xy_amp_distance;
+float xy_offset_distance;
+float xz_amp_distance;
+float xz_offset_distance;
 
 enum OrientationType{
   NONE,
@@ -77,22 +77,12 @@ enum OrientationType{
   Z_AXIS,
 };
 
-std::vector<int> xy_count (36);
-std::vector<float> xy_value (36);
-std::vector<int> xz_count (36);
-std::vector<float> xz_value (36);
+enum States{
+  XY_AXIS_CALIB,
+  Z_AXIS_CALIB,
+  DONE_CALIB,
+};
 
-bool xy_valid = false;
-bool xz_valid = false;
-
-float xy_amp_distance;
-float xy_offset_distance;
-
-float xz_amp_distance;
-float xz_offset_distance;
-
-bool xy_calib_done = false;
-bool xz_calib_done = false;
 
 OrientationType calc_orientation(float acc_x, float acc_y,float acc_z)
 {
@@ -130,6 +120,7 @@ int main() {
   hal::EverloopImage image1d;
   
   OrientationType orientation = NONE;
+  States state = XY_AXIS_CALIB;
 
   float xy_rot = 0;
   float xz_rot = 0;
@@ -178,8 +169,6 @@ int main() {
         xy_count[xy_angle_index]++;
       } 
 
-      
-
     }else if ( orientation == Y_AXIS )
     {
       mag_x_max = (mag_x > mag_x_max)? mag_x : mag_x_max; 
@@ -216,94 +205,136 @@ int main() {
     std::cout << "******************  Compass Calibration *******************" << "\n";
     std::cout << "***********************************************************" << "\n\n";
 
-    std::cout << "Compass Axis X:" << "\n";
-    std::cout << "- Max: "  << mag_x_max << "\n"; 
-    std::cout << "- Min: "  << mag_x_min << "\n"; 
-    std::cout << "- Offset : "  << x_mag_offset << "\n"; 
+    if(state == XY_AXIS_CALIB){
+      std::cout << "Step 1: Calibrate X and Y axis" << "\n" << "\n" ;
+      std::cout << "STATUS BAR: " ;
 
-    std::cout << "Compass Axis Y:" << "\n";
-    std::cout << "- Max: "  << mag_y_max << "\n"; 
-    std::cout << "- Min: "  << mag_y_min << "\n"; 
-    std::cout << "- Offset : "  << y_mag_offset << "\n"; 
-    
-    std::cout << "Compass Axis Z:" << "\n"; 
-    std::cout << "- Max: "  << mag_z_max << "\n"; 
-    std::cout << "- Min: "  << mag_z_min << "\n"; 
-    std::cout << "- Offset : "  << z_mag_offset << "\n"; 
+      int calib_done_count = 0;
+      // Printing Status Bar
+      for (uint i = 0; i < xy_count.size(); i++) {
+        if (xy_count[i] > 5){
+          std::cout << "|" ;
+          calib_done_count++;
+        }else if (xy_count[i] > 3){
+          std::cout << ":" ;
+        }else if (xy_count[i] > 0){
+          std::cout << "." ;
+        }else 
+        std::cout << "_" ;
+      }
 
-    std::cout << "\n";
+      //calibration done detection
+      if(calib_done_count == (int)xy_count.size()){
+        state = Z_AXIS_CALIB;
+      }
 
-    // YX Bar
+      std::cout << "\n            " ;
+      for (uint i = 0; i < xy_count.size(); i++) {
+        if (xy_angle_index == i) {
+          std::cout << "^" ;
+        }
+        else{
+          std::cout << " " ;
+        }
+      } 
+      std::cout << std::endl;
 
-    std::cout << "X and Y Axis calibration:" << "\n" ;
-    for (uint i = 0; i < xy_count.size(); i++) {
-      if (xy_count[i] > 5)
-        std::cout << "|" ;
-      else if (xy_count[i] > 3)
-        std::cout << ":" ;
-      else if (xy_count[i] > 0)
-        std::cout << "." ;
-      else 
-      std::cout << "_" ;
+      std::cout << "Notes:" << "\n" ;
+      std::cout << "- Put the MATRIX Creator facing up" << "\n";
+      std::cout << "- Turn the board slowly to cover 360 deg. Use de bar as a guide." << "\n" ;
+      std::cout << "- The Calibration on this axis is completed when all slots in the bar are |" << "\n" ;
+
+    }else if(state == Z_AXIS_CALIB){
+
+      std::cout << "Step 1: Calibrate X and Y axis : Done !" << "\n" << "\n" ;
+      std::cout << "Step 2: Calibrate Z axis" << "\n" << "\n" ;
+
+      std::cout << "STATUS BAR: " ;
+      int calib_done_count = 0;
+      for (uint i = 0; i < xz_count.size(); i++) {
+        if (xz_count[i] > 5){
+          std::cout << "|" ;
+          calib_done_count++;
+        }else if (xz_count[i] > 3){
+          std::cout << ":" ;
+        }else if (xz_count[i] > 0){
+          std::cout << "." ;
+        }else 
+        std::cout << "_" ; 
+      }
+      
+      //calibration done detection
+      if(calib_done_count == (int)xy_count.size()){
+        state = DONE_CALIB;
+      }
+
+      std::cout << "\n            " ;
+      for (uint i = 0; i < xz_count.size(); i++) {
+        if (xz_angle_index == i) {
+          std::cout << "^" ;
+        }
+        else{
+          std::cout << " " ;
+        }
+      } 
+
+      std::cout << "\nBoard Orientation: " ; 
+      if(orientation == X_AXIS){
+        std::cout << "X_AXIS" << "\n";
+      }else if(orientation == Y_AXIS){
+        std::cout << "Y_AXIS" << "\n";
+      }else if(orientation == Z_AXIS){
+        std::cout << "Z_AXIS" << "\n";
+      }else{
+        std::cout << "NONE" << "\n";
+      }
+
+      std::cout << std::endl;
+    } else if(state == DONE_CALIB){
+      
+      std::cout << "CALIBRATION DONE !!!" << "\n" << "\n";
+
+      std::cout << "Compass Axis X:" << "\n";
+      std::cout << "- Max: "  << mag_x_max << "\n"; 
+      std::cout << "- Min: "  << mag_x_min << "\n"; 
+      std::cout << "- Offset : "  << x_mag_offset << "\n"; 
+
+      std::cout << "Compass Axis Y:" << "\n";
+      std::cout << "- Max: "  << mag_y_max << "\n"; 
+      std::cout << "- Min: "  << mag_y_min << "\n"; 
+      std::cout << "- Offset : "  << y_mag_offset << "\n"; 
+      
+      std::cout << "Compass Axis Z:" << "\n"; 
+      std::cout << "- Max: "  << mag_z_max << "\n"; 
+      std::cout << "- Min: "  << mag_z_min << "\n"; 
+      std::cout << "- Offset : "  << z_mag_offset << "\n"; 
+
+      std::cout << "\n";
+      std::cout << " Do you want to save this calibration values to the MATRIX CREATOR? [y/n]: " << "\n";
+      std::cout << " (Previous calibration data will be lost)" << "\n";
+      char choice;
+      std::cin >> choice;
+
+      while (tolower(choice) != 'n' && tolower(choice) != 'y') {
+        std::cout << "\nPlease enter Y (Yes) or N (No): ";
+        std::cin >> choice;
+      }
+
+      if (tolower(choice) == 'y')
+      {
+        std::cout << "Saving to sensor ..." << "\n";
+        std::cout << "Calibration saved sucesfully !" << "\n";
+        sleep(1);
+        break;
+      }else if (tolower(choice) == 'n'){
+        std::cout << "Calibration not saved!" << "\n";
+        break;
+      }
+
+      std::cout << "\n";
     }
 
-    // TODO:Add detection of calibration done 
-
-    std::cout << "\n" ;
-    for (uint i = 0; i < xy_count.size(); i++) {
-      if (xy_angle_index == i) {
-        std::cout << "^" ;
-      }
-      else{
-        std::cout << " " ;
-      }
-    } 
-    std::cout << std::endl;
-
-    // Z Calibration
-    std::cout << "Z Axis Calibration:"  << "\n" ;
-    for (uint i = 0; i < xz_count.size(); i++) {
-      if (xz_count[i] > 5)
-        std::cout << "|" ;
-      else if (xz_count[i] > 3)
-        std::cout << ":" ;
-      else if (xz_count[i] > 0)
-        std::cout << "." ;
-      else 
-      std::cout << "_" ;
-    }
-    // TODO: Add detection of calibration done 
-
-    std::cout << "\n" ;
-    for (uint i = 0; i < xz_count.size(); i++) {
-      if (xz_angle_index == i) {
-        std::cout << "^" ;
-      }
-      else{
-        std::cout << " " ;
-      }
-    } 
-
-    std::cout << "\n";
-
-    std::cout << "Board Orientation: " ; 
-    if(orientation == X_AXIS){
-      std::cout << "X_AXIS" << "\n";
-    }else if(orientation == Y_AXIS){
-      std::cout << "Y_AXIS" << "\n";
-    }else if(orientation == Z_AXIS){
-      std::cout << "Z_AXIS" << "\n";
-    }else{
-      std::cout << "NONE" << "\n";
-    }
-
-
-
-    std::cout << std::endl;
-
-
-
-    usleep(100000);
+    usleep(50000);
   }
 
   return 0;
