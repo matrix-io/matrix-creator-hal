@@ -1,7 +1,7 @@
 Source: libmatrix-creator-hal
 Section: libs
 Priority: optional
-Maintainer: Andres Calderon <andres.calderon@admobilize.com>
+Maintainer: Admobilize <info@admobilize.com>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.5
 Homepage: https://github.com/matrix-io/matrix-creator-hal
@@ -10,7 +10,7 @@ Package: libmatrix-creator-hal
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}, wiringpi, libfftw3-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, wiringpi, libfftw3-dev, matrix-creator-init
 Description: Hardware Abstraction Layer for MATRIX.
 
 Package: libmatrix-creator-hal-dev
