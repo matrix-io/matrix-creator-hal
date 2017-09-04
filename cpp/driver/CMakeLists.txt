@@ -29,6 +29,7 @@ set(matrix_creator_hal_src
   wishbone_bus.cpp
   cross_correlation.cpp
   direction_of_arrival.cpp
+  uart_control.cpp
 )
 
 add_library(matrix_creator_hal ${matrix_creator_hal_src})
