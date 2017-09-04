@@ -19,8 +19,8 @@
 #include <iostream>
 #include <string>
 
-#include "cpp/driver/uart_control.h"
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/uart_control.h"
 
 namespace matrix_hal {
 
@@ -48,8 +48,9 @@ bool UartControl::GetUartUCR() {
 
 bool UartControl::SetUartValue(uint16_t data) {
   if (!wishbone_) return false;
-  GetUartUCR();
-  while (ucr_ & UART_BUSY);
+  do {
+    GetUartUCR();
+  } while (!(ucr_ & UART_BUSY));
   wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
   return true;
 }
