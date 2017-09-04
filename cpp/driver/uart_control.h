@@ -28,7 +28,7 @@ class UartControl : public MatrixDriver {
   UartControl();
   void Setup(WishboneBus* wishbone);
   uint16_t GetUartValue();
-  uint16_t GetUartUCR();
+  bool GetUartUCR();
   bool SetUartValue(uint16_t data);
   uint16_t ucr_;
 }

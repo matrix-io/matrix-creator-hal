@@ -59,4 +59,5 @@ void UartControl::Setup(WishboneBus *wishbone) {
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
 }
+
 }
