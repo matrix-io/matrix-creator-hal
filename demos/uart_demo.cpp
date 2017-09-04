@@ -4,9 +4,9 @@
  */
 
 #include <wiringPi.h>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <valarray>
 
 #include "../cpp/driver/uart_control.h"
@@ -22,7 +22,11 @@ int main() {
   uart.Setup(&bus);
 
   while (true) {
-  	uint16_t data;
-  	data = uart.GetUartValue();
+    uint16_t data;
+    data = uart.GetUartValue();
+    std::cout << data << std::endl;
+    for (char i = 'A'; i < 'Z'; i++) {
+      uart.SetUartValue((uint16_t)i);
+    }
   }
 }

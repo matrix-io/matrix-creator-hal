@@ -32,7 +32,6 @@ uint16_t UartControl::GetUartValue() {
   uint16_t value;
   if (waitForInterrupt(kUartIRQ, -1) > 0) {
     wishbone_->SpiRead16(kUartBaseAddress + 1, (unsigned char *)&value);
-    std::cout << value << std::endl;
     return value;
   }
   return false;
@@ -50,7 +49,7 @@ bool UartControl::SetUartValue(uint16_t data) {
   if (!wishbone_) return false;
   do {
     GetUartUCR();
-  } while (!(ucr_ & UART_BUSY));
+  } while (ucr_ & UART_BUSY);
   wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
   return true;
 }
