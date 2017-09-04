@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "cpp/driver/uart_control.h"
 #include <wiringPi.h>
 #include <iostream>
 #include <string>
-#include "cpp/driver/uart_control.h"
 #include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
@@ -32,6 +32,7 @@ uint16_t UartControl::GetUartValue() {
     wishbone_->SpiRead16(kUartBaseAddress + 1, (unsigned char *)&value);
     return value;
   }
+  return false;
 }
 
 bool UartControl::GetUartUCR() {
@@ -45,7 +46,8 @@ bool UartControl::SetUartValue(uint16_t data) {
   if (!wishbone_) return false;
   GetUartUCR();
   while (ucr_ & UART_BUSY);
-  return wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
+  wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
+  return true;
 }
 
 UartControl::UartControl() : ucr_(0x0) {}
@@ -59,5 +61,4 @@ void UartControl::Setup(WishboneBus *wishbone) {
 
   pinMode(kUartIRQ, INPUT);
 }
-
 }

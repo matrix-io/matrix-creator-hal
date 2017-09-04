@@ -31,7 +31,7 @@ class UartControl : public MatrixDriver {
   bool GetUartUCR();
   bool SetUartValue(uint16_t data);
   uint16_t ucr_;
-}
+};
 
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_UART_CONTROL_H_
