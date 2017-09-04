@@ -102,3 +102,7 @@ add_executable(direction_of_arrival_demo direction_of_arrival_demo.cpp)
   target_link_libraries(direction_of_arrival_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
   target_link_libraries(direction_of_arrival_demo ${FFTW_LIBRARIES})
 
+add_executable(uart_demo uart_demo.cpp)
+  set_property(TARGET uart_demo PROPERTY CXX_STANDARD 11)
+  target_link_libraries(uart_demo matrix_creator_hal)
+  target_link_libraries(uart_demo ${CMAKE_THREAD_LIBS_INIT})
