@@ -4,7 +4,6 @@
  */
 
 #include <wiringPi.h>
-
 #include <string>
 #include <fstream>
 #include <iostream>
