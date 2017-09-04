@@ -60,6 +60,7 @@ set (matrix_creator_hal_headers
   wishbone_bus.h
   cross_correlation.h
   direction_of_arrival.h
+  uart_control.h
 )
 
 install (TARGETS matrix_creator_hal DESTINATION lib)
