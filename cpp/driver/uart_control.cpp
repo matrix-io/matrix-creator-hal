@@ -48,7 +48,7 @@ bool UartControl::SetUartValue(uint16_t data) {
   return wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
 }
 
-UARTControl::UARTControl() : ucr_(0x0) {}
+UartControl::UartControl() : ucr_(0x0) {}
 
 void UartControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
