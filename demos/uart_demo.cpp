@@ -24,6 +24,5 @@ int main() {
   while (true) {
   	uint16_t data;
   	data = uart.GetUartValue();
-    std::cout << data << std::endl;
   }
 }
