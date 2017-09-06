@@ -24,7 +24,7 @@
 
 namespace matrix_hal {
 
-const uint16_t kUartIRQ = 25;
+const uint16_t kUartIRQ = 5;
 const uint16_t UART_BUSY = 0x0010;
 
 uint16_t UartControl::GetUartValue() {
@@ -59,7 +59,7 @@ UartControl::UartControl() : ucr_(0x0) {}
 void UartControl::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
   // TODO(andres.calderon@admobilize.com): avoid systems calls
-  std::system("gpio edge 25 rising");
+  std::system("gpio edge 5 rising");
 
   wiringPiSetupSys();
 
