@@ -20,7 +20,7 @@ int main() {
 
   hal::UartControl uart;
   uart.Setup(&bus);
-  
+
   uart.SetUartValue(0x0D);
   uart.SetUartValue(0x0D);
   uart.SetUartValue(0x0D);
@@ -28,6 +28,6 @@ int main() {
   while (true) {
     uint16_t data;
     data = uart.GetUartValue();
-    std::cout << char(data) ;
+    std::cout << char(data);
   }
 }
