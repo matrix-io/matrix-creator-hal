@@ -20,13 +20,14 @@ int main() {
 
   hal::UartControl uart;
   uart.Setup(&bus);
+  
+  uart.SetUartValue(0x0D);
+  uart.SetUartValue(0x0D);
+  uart.SetUartValue(0x0D);
 
   while (true) {
     uint16_t data;
     data = uart.GetUartValue();
-    std::cout << data << std::endl;
-    for (char i = 'A'; i < 'Z'; i++) {
-      uart.SetUartValue((uint16_t)i);
-    }
+    std::cout << char(data) ;
   }
 }
