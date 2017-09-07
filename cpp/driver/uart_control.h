@@ -15,26 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_CREATOR_MEMORY_MAP_H_
-#define CPP_DRIVER_CREATOR_MEMORY_MAP_H_
-
-#include <string>
+#ifndef CPP_DRIVER_UART_CONTROL_H_
+#define CPP_DRIVER_UART_CONTROL_H_
+#include <cstdint>
+#include <vector>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
-/* FPGA Wishbone address map */
-const uint32_t kUartBaseAddress = 0x0800;
-const uint32_t kMicrophoneArrayBaseAddress = 0x1800;
-const uint32_t kEverloopBaseAddress = 0x2000;
-const uint32_t kGPIOBaseAddress = 0x2800;
-const uint16_t kMCUBaseAddress = 0x3800;
-
-/* MCU offsets map */
-const uint16_t kMemoryOffsetUV = 0x00;
-const uint16_t kMemoryOffsetPressure = 0x10;
-const uint16_t kMemoryOffsetHumidity = 0x20;
-const uint16_t kMemoryOffsetIMU = 0x30;
-const uint16_t kMemoryOffsetMCU = 0x90;
+class UartControl : public MatrixDriver {
+ public:
+  UartControl();
+  void Setup(WishboneBus* wishbone);
+  uint16_t GetUartValue();
+  bool GetUartUCR();
+  bool SetUartValue(uint16_t data);
+  uint16_t ucr_;
+};
 
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_CREATOR_MEMORY_MAP_H_
+#endif  // CPP_DRIVER_UART_CONTROL_H_
