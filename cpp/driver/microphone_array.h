@@ -29,7 +29,6 @@ namespace matrix_hal {
 const uint16_t kMicarrayBufferSize = 1024;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
-const uint32_t kSamplingRate = 16000;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -41,10 +40,12 @@ class MicrophoneArray : public MatrixDriver {
 
   bool Read();
 
+  uint16_t GetSampleFrequency();
+
+  bool SetSampleFrequency(uint16_t sample_frequency);
+
   void SetGain(int16_t gain) { gain_ = gain; }
   uint16_t Channels() { return kMicrophoneChannels; }
-
-  uint32_t SamplingRate() { return kSamplingRate; }
 
   uint32_t NumberOfSamples() {
     return kMicarrayBufferSize / kMicrophoneChannels;
@@ -66,6 +67,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
+  int16_t sample_frequency_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;

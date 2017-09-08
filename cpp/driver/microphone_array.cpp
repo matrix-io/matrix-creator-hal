@@ -28,7 +28,7 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() : gain_(8) {
+MicrophoneArray::MicrophoneArray() : gain_(8) ,sample_frequency_(16000) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -109,10 +109,25 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   float min_distance = distance_map.begin()->first;
   for (std::map<float, int>::iterator it = distance_map.begin();
        it != distance_map.end(); ++it) {
-    int delay = std::round((it->first - min_distance) * kSamplingRate /
+    int delay = std::round((it->first - min_distance) * sample_frequency_ /
                            sound_speed_mmseg);
     fifos_[it->second].Resize(delay);
   }
+}
+
+bool GetSampleFrequency(){
+  if (!wishbone_) return false;
+  uint16_t value;
+  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 1, (unsigned char *)&value);
+  sample_frequency_ = value;
+  return true;
+}
+
+bool SetSampleFrequency(uint16_t sample_frequency){
+  if (!wishbone_) return false;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, sample_frequency);
+  sample_frequency_ = sample_frequency;
+  return true;
 }
 
 };  // namespace matrix_hal
