@@ -115,7 +115,7 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   }
 }
 
-bool MicrophoneArray::GetSampleFrequency(){
+bool MicrophoneArray::GetDecimationCounter(){
   if (!wishbone_) return false;
   uint16_t value;
   wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 1, (unsigned char *)&value);
@@ -123,9 +123,10 @@ bool MicrophoneArray::GetSampleFrequency(){
   return true;
 }
 
-bool MicrophoneArray::SetSampleFrequency(uint16_t sample_frequency){
+bool MicrophoneArray::SetDecimationCounter(uint32_t sample_frequency){
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, sample_frequency);
+  uint16_t decimation_counter;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, decimation_counter);
   sample_frequency_ = sample_frequency;
   return true;
 }

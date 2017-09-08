@@ -171,5 +171,10 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
   return false;
 }
 
+bool WishboneBus::GetSoftwareVersion(char *version,int length){
+  SpiRead(kBootBaseAddress , (unsigned char *)&version);
+  return true;
+}
+
 void WishboneBus::SpiClose(void) { close(spi_fd_); }
 };  // namespace matrix_hal

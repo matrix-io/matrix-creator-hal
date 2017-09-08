@@ -21,6 +21,16 @@ int main() {
   hal::WishboneBus bus;
   bus.SpiInit();
 
+  char version[8];
+
+  bus.GetSoftwareVersion(version,sizeof(version));
+  
+  std::string str;
+  str.assign(version,8);
+  
+  std::cout << str << std:endl;
+
+
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
 
