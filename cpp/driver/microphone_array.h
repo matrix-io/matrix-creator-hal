@@ -39,8 +39,10 @@ class MicrophoneArray : public MatrixDriver {
   void Setup(WishboneBus* wishbone);
 
   bool Read();
+  
+  uint32_t SamplingRate(){return sample_frequency_;}
 
-  uint16_t GetSampleFrequency();
+  bool GetSampleFrequency();
 
   bool SetSampleFrequency(uint16_t sample_frequency);
 

@@ -43,7 +43,7 @@ WishboneBus::WishboneBus()
     : device_name_("/dev/spidev0.0"),
       spi_mode_(3),
       spi_bits_(8),
-      spi_speed_(18000000),
+      spi_speed_(10000000),
       spi_delay_(0) {}
 
 bool WishboneBus::SpiInit() {
