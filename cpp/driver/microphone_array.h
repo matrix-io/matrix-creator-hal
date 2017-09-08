@@ -29,7 +29,6 @@ namespace matrix_hal {
 const uint16_t kMicarrayBufferSize = 1024;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
-const uint32_t kFPGASystemFrequency = 200_000_000;
 
 
 class MicrophoneArray : public MatrixDriver {
@@ -44,10 +43,10 @@ class MicrophoneArray : public MatrixDriver {
   
   uint32_t SamplingRate(){return sample_frequency_;}
 
-  bool GetSampleFrequency();
+  bool GetDecimationCounter();
 
-  bool SetSampleFrequency(uint16_t sample_frequency);
-
+  bool SetDecimationCounter(uint32_t sample_frequency);
+  
   void SetGain(int16_t gain) { gain_ = gain; }
   uint16_t Channels() { return kMicrophoneChannels; }
 
