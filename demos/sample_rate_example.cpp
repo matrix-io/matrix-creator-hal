@@ -30,8 +30,8 @@ int main() {
   std::cout << std::endl << "Sample rate value: " << sample_rate << std::endl;
   
   mics.SetSampleFrequency(sample_rate);
-
-  std::cout << "MicrophoneArray sample rate value: " << mics.GetSampleFrequency() << std::endl;
+  mics.GetSampleFrequency();
+  std::cout << "MicrophoneArray sample rate value: " << mics.SamplingRate() << std::endl;
 
   return 0;
 
