@@ -44,15 +44,18 @@ class MicrophoneArray : public MatrixDriver {
 
   bool Read();
   
-  uint32_t SamplingRate(){return sample_frequency_;}
-
-  bool SetSamplingRate(uint32_t sampling_frequency);
+  uint32_t SamplingRate(){return sampling_frequency_;}
   
-  uint16_t DecimationRatio(){return decimation_counter_;}
+  uint16_t DecimationRatio(){return decimation_ratio_;}
 
-  uint16_t Gain(){return data_gain_;}
+  uint16_t Gain(){return gain_;}
 
-  bool GetDecimationRation();
+  bool GetDecimationRatio();
+
+bool GetPDMRatio();
+bool SetPDMRatio(uint16_t pdm_ratio);
+bool SetSamplingRate(uint32_t sampling_frequency);
+
 
   bool SetDecimationRatio(uint16_t decimation_counter);
 

@@ -39,7 +39,7 @@ class WishboneBus {
   bool SpiRead(uint16_t add, unsigned char* data, int length);
   bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
-  uint16_t FPGAClock() { return fpga_frequency_; }
+  uint32_t FPGAClock() { return fpga_frequency_; }
 
 
  private:
