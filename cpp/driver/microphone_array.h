@@ -43,10 +43,9 @@ class MicrophoneArray : public MatrixDriver {
   
   uint32_t SamplingRate(){return sample_frequency_;}
   
-  uint32_t DecimationCounter(){return decimation_counter_;}
+  uint16_t DecimationCounter(){return decimation_counter_;}
 
-
-  uint32_t Gain(){return gain_;}
+  uint16_t Gain(){return data_gain_;}
 
   bool GetDecimationCounter();
 
@@ -79,6 +78,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
+  uint16_t data_gain_;
   uint16_t sample_frequency_;
   uint16_t decimation_counter_;
 

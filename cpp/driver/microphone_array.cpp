@@ -28,7 +28,7 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() : gain_(0) ,sample_frequency_(16000), decimation_counter_(188) {
+MicrophoneArray::MicrophoneArray() : gain_(4) , data_gain_(0), sample_frequency_(16000), decimation_counter_(188) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -134,14 +134,14 @@ bool MicrophoneArray::GetDataGain(){
   if (!wishbone_) return false;
   uint16_t value;
   wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 2, (unsigned char *)&value);
-  gain_ = value;
+  data_gain_ = value;
   return true;
 }
 
 bool MicrophoneArray::SetDataGain(uint16_t data_gain){
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, data_gain);
-  gain_ = data_gain;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 2, data_gain);
+  data_gain_ = data_gain;
   return true;
 }
 
