@@ -28,7 +28,7 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() : gain_(4) , data_gain_(0), sample_frequency_(16000), decimation_counter_(188) {
+MicrophoneArray::MicrophoneArray() : gain_(1) , data_gain_(0), sample_frequency_(16000), decimation_counter_(188) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
