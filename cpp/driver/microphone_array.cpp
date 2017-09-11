@@ -28,7 +28,7 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() : gain_(8) ,sample_frequency_(16000) {
+MicrophoneArray::MicrophoneArray() : gain_(0) ,sample_frequency_(16000), decimation_counter_(188) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -119,15 +119,29 @@ bool MicrophoneArray::GetDecimationCounter(){
   if (!wishbone_) return false;
   uint16_t value;
   wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 1, (unsigned char *)&value);
-  sample_frequency_ = value;
+  decimation_counter_ = value;
   return true;
 }
 
-bool MicrophoneArray::SetDecimationCounter(uint32_t sample_frequency){
+bool MicrophoneArray::SetDecimationCounter(uint16_t decimation_counter){
   if (!wishbone_) return false;
-  uint16_t decimation_counter;
   wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, decimation_counter);
-  sample_frequency_ = sample_frequency;
+  decimation_counter_ = decimation_counter;
+  return true;
+}
+
+bool MicrophoneArray::GetDataGain(){
+  if (!wishbone_) return false;
+  uint16_t value;
+  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 2, (unsigned char *)&value);
+  gain_ = value;
+  return true;
+}
+
+bool MicrophoneArray::SetDataGain(uint16_t data_gain){
+  if (!wishbone_) return false;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, data_gain);
+  gain_ = data_gain;
   return true;
 }
 

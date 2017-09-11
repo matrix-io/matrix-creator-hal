@@ -31,7 +31,7 @@ class WishboneBus {
   bool SpiInit();
   bool SpiWrite(uint16_t add, unsigned char* data, unsigned char inc);
   bool SpiWrite16(uint16_t add, uint16_t data);
-  bool WishboneBus::GetSoftwareVersion(char *version,int length);
+  bool GetSoftwareVersion(char *version,int length);
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
   bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
