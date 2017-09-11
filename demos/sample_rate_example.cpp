@@ -25,7 +25,7 @@ int main() {
 
   bus.GetSoftwareVersion(version,sizeof(version));
   
-    std::string str;
+  std::string str;
   str.assign(version,8);
   
   std::cout << str << std::endl;

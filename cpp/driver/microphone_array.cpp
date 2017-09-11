@@ -21,6 +21,10 @@
 #include <cstdlib>
 #include <map>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <valarray>
+
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/microphone_array.h"
@@ -31,8 +35,8 @@ namespace matrix_hal {
 MicrophoneArray::MicrophoneArray()
     : gain_(0),
       pdm_ratio_(0),
-      sample_frequency_(0),
-      decimation_counter_(0) {
+      sampling_frequency_(0),
+      decimation_ratio_(0) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -113,7 +117,7 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   float min_distance = distance_map.begin()->first;
   for (std::map<float, int>::iterator it = distance_map.begin();
        it != distance_map.end(); ++it) {
-    int delay = std::round((it->first - min_distance) * sample_frequency_ /
+    int delay = std::round((it->first - min_distance) * sampling_frequency_ /
                            sound_speed_mmseg);
     fifos_[it->second].Resize(delay);
   }
@@ -131,7 +135,7 @@ bool MicrophoneArray::GetPDMRatio() {
 bool MicrophoneArray::SetPDMRatio(uint16_t pdm_ratio) {
   if (!wishbone_) return false;
   wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 3, pdm_ratio);
-  pdm_ratio_ = decimation_ratio;
+  pdm_ratio_ = pdm_ratio;
   return true;
 }
 
@@ -162,7 +166,7 @@ bool MicrophoneArray::GetGain() {
 
 bool MicrophoneArray::SetGain(uint16_t gain) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 2, data_gain);
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 2, gain);
   gain_ = gain;
   return true;
 }
@@ -170,12 +174,11 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
 
   sampling_frequency_ = sampling_frequency;
-  uint32_t systemClock = wishbone_->GetFPGAFrequency();
+  uint32_t systemClock = wishbone_->FPGAClock();
   uint32_t correctedFrequencyPDM =
       std::ceil(kPDMFrequency / sampling_frequency + 0.5) * sampling_frequency;
   pdm_ratio_ = std::floor(systemClock / correctedFrequencyPDM);
   decimation_ratio_ = std::floor(correctedFrequencyPDM / sampling_frequency);
-  
   uint16_t maxCICBits = std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
   gain_ = kCICWidth - maxCICBits;
 
@@ -189,7 +192,9 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
 void MicrophoneArray::ReadInitialValues() {
   GetPDMRatio();
   GetDecimationRatio();
-  uint32_t systemClock = wishbone_->GetFPGAFrequency();
+  wishbone_->GetFPGAFrequency();
+  uint32_t systemClock = wishbone_->FPGAClock();
+    std::cout << "FPGA CLK: " << systemClock << std::endl;
   sampling_frequency_ = (kPDMFrequency)/(decimation_ratio_);
 }
 

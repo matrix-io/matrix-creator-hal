@@ -46,7 +46,7 @@ WishboneBus::WishboneBus()
       spi_bits_(8),
       spi_speed_(10000000),
       spi_delay_(0),
-      fpga_frequency_(0) {}
+      fpga_frequency_(125000000) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -93,7 +93,6 @@ bool WishboneBus::SpiInit() {
     return false;
   }
 
-  GetFPGAFrequency();
   return true;
 }
 
@@ -181,8 +180,10 @@ bool WishboneBus::GetSoftwareVersion(char *version,int length){
 
 bool WishboneBus::GetFPGAFrequency(){
   uint16_t values[2];
-  if (!SpiRead(kConfBaseAddress + 4 , (unsigned char *)values, sizeof(values)) return false;
-  fpga_frequency_ = (fpga_frequency_ * values[1])/values[0];
+  if (!SpiRead(kConfBaseAddress + 4 , (unsigned char *)values, sizeof(values))) return false;
+  std::cout << values[1] << values[0] << std::endl; 
+  fpga_frequency_ = (kFPGAClock * values[1])/values[0];
+  std::cout <<  fpga_frequency_  << std::endl;
   return true;
 }
 
