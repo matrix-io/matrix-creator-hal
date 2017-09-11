@@ -16,19 +16,23 @@
  */
 
 #include <wiringPi.h>
-#include <string>
-#include <cstdlib>
-#include <cstdint>
 #include <cmath>
+#include <cstdint>
+#include <cstdlib>
 #include <map>
+#include <string>
 
-#include "cpp/driver/microphone_array.h"
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/microphone_array.h"
 #include "cpp/driver/microphone_array_location.h"
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray() : gain_(1) , data_gain_(0), sample_frequency_(16000), decimation_counter_(188) {
+MicrophoneArray::MicrophoneArray()
+    : gain_(0),
+      pdm_ratio_(0),
+      sample_frequency_(0),
+      decimation_counter_(0) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -42,7 +46,7 @@ MicrophoneArray::MicrophoneArray() : gain_(1) , data_gain_(0), sample_frequency_
 
 MicrophoneArray::~MicrophoneArray() {}
 
-void MicrophoneArray::Setup(WishboneBus* wishbone) {
+void MicrophoneArray::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
 
   // TODO(andres.calderon@admobilize.com): avoid systems calls
@@ -51,6 +55,7 @@ void MicrophoneArray::Setup(WishboneBus* wishbone) {
   wiringPiSetupSys();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
+  ReadInitialValues();  
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -61,7 +66,7 @@ bool MicrophoneArray::Read() {
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
     if (!wishbone_->SpiReadBurst(
             kMicrophoneArrayBaseAddress,
-            reinterpret_cast<unsigned char*>(&raw_data_[0]),
+            reinterpret_cast<unsigned char *>(&raw_data_[0]),
             sizeof(int16_t) * kMicarrayBufferSize)) {
       return false;
     }
@@ -69,11 +74,11 @@ bool MicrophoneArray::Read() {
     for (uint32_t s = 0; s < NumberOfSamples(); s++) {
       int sum = 0;
       for (uint16_t c = 0; c < kMicrophoneChannels; c++) {
-        // delaying data for beamforming 'delay & sum' algorithm 
+        // delaying data for beamforming 'delay & sum' algorithm
         delayed_data_[s * kMicrophoneChannels + c] =
-            fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]) * gain_;
+            fifos_[c].PushPop(raw_data_[s * kMicrophoneChannels + c]);
 
-        // accumulation data for beamforming 'delay & sum' algorithm 
+        // accumulation data for beamforming 'delay & sum' algorithm
         sum += delayed_data_[s * kMicrophoneChannels + c];
       }
 
@@ -83,7 +88,6 @@ bool MicrophoneArray::Read() {
 
   return true;
 }
-
 
 // Setting fifos for the 'delay & sum' algorithm
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
@@ -115,34 +119,87 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   }
 }
 
-bool MicrophoneArray::GetDecimationCounter(){
+bool MicrophoneArray::GetPDMRatio() {
   if (!wishbone_) return false;
   uint16_t value;
-  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 1, (unsigned char *)&value);
-  decimation_counter_ = value;
+  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 3,
+                       (unsigned char *)&value);
+  pdm_ratio_ = value;
   return true;
 }
 
-bool MicrophoneArray::SetDecimationCounter(uint16_t decimation_counter){
+bool MicrophoneArray::SetPDMRatio(uint16_t pdm_ratio) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, decimation_counter);
-  decimation_counter_ = decimation_counter;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 3, pdm_ratio);
+  pdm_ratio_ = decimation_ratio;
   return true;
 }
 
-bool MicrophoneArray::GetDataGain(){
+bool MicrophoneArray::GetDecimationRatio() {
   if (!wishbone_) return false;
   uint16_t value;
-  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 2, (unsigned char *)&value);
-  data_gain_ = value;
+  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 1,
+                       (unsigned char *)&value);
+  decimation_ratio_ = value;
   return true;
 }
 
-bool MicrophoneArray::SetDataGain(uint16_t data_gain){
+bool MicrophoneArray::SetDecimationRatio(uint16_t decimation_ratio) {
+  if (!wishbone_) return false;
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 1, decimation_ratio);
+  decimation_ratio_ = decimation_ratio;
+  return true;
+}
+
+bool MicrophoneArray::GetGain() {
+  if (!wishbone_) return false;
+  uint16_t value;
+  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 2,
+                       (unsigned char *)&value);
+  gain_ = value;
+  return true;
+}
+
+bool MicrophoneArray::SetGain(uint16_t gain) {
   if (!wishbone_) return false;
   wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 2, data_gain);
-  data_gain_ = data_gain;
+  gain_ = gain;
   return true;
+}
+
+bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
+
+  sampling_frequency_ = sampling_frequency;
+  uint32_t systemClock = wishbone_->GetFPGAFrequency();
+  uint32_t correctedFrequencyPDM =
+      std::ceil(kPDMFrequency / sampling_frequency + 0.5) * sampling_frequency;
+  pdm_ratio_ = std::floor(systemClock / correctedFrequencyPDM);
+  decimation_ratio_ = std::floor(correctedFrequencyPDM / sampling_frequency);
+  
+  uint16_t maxCICBits = std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
+  gain_ = kCICWidth - maxCICBits;
+
+  //SetPDMRatio(pdm_ratio_); 
+  //SetDecimationRatio(decimation_ratio_);
+  //SetGain(gain_);  
+
+  return true;
+}
+
+void MicrophoneArray::ReadInitialValues() {
+  GetPDMRatio();
+  GetDecimationRatio();
+  uint32_t systemClock = wishbone_->GetFPGAFrequency();
+  sampling_frequency_ = (kPDMFrequency)/(decimation_ratio_);
+}
+
+
+void MicrophoneArray::ShowConfiguration(){
+  std::cout << "Audio Configuration: " << std::endl;
+  std::cout << "Sampling Frequency: " << sampling_frequency_ << std::endl;
+  std::cout << "PDM Ratio: " << pdm_ratio_ << std::endl;
+  std::cout << "Decimation Ratio: " << decimation_ratio_<< std::endl;
+  std::cout << "Gain : " << gain_ << std::endl;
 }
 
 };  // namespace matrix_hal

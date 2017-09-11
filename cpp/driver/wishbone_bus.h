@@ -24,6 +24,8 @@
 
 namespace matrix_hal {
 
+const uint32_t kFPGAClock = 50000000;
+
 class WishboneBus {
  public:
   WishboneBus();
@@ -32,10 +34,13 @@ class WishboneBus {
   bool SpiWrite(uint16_t add, unsigned char* data, unsigned char inc);
   bool SpiWrite16(uint16_t add, uint16_t data);
   bool GetSoftwareVersion(char *version,int length);
+  bool GetFPGAFrequency();
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
   bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
+  uint16_t FPGAClock() { return fpga_frequency_; }
+
 
  private:
   bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
@@ -52,6 +57,7 @@ class WishboneBus {
   unsigned int spi_delay_;
   unsigned char rx_buffer_[4096];
   unsigned char tx_buffer_[4096];
+  uint32_t fpga_frequency_;
   mutable std::mutex mutex_;
 };
 };      // namespace matrix_hal

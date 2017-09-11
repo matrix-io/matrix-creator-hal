@@ -26,6 +26,9 @@
 
 namespace matrix_hal {
 
+const uint32_t kPDMFrequency = 3000000;
+const uint32_t kCICStages = 3;
+const uint16_t kCICWidth = 23;
 const uint16_t kMicarrayBufferSize = 1024;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
@@ -42,20 +45,25 @@ class MicrophoneArray : public MatrixDriver {
   bool Read();
   
   uint32_t SamplingRate(){return sample_frequency_;}
+
+  bool SetSamplingRate(uint32_t sampling_frequency);
   
-  uint16_t DecimationCounter(){return decimation_counter_;}
+  uint16_t DecimationRatio(){return decimation_counter_;}
 
   uint16_t Gain(){return data_gain_;}
 
-  bool GetDecimationCounter();
+  bool GetDecimationRation();
 
-  bool SetDecimationCounter(uint16_t decimation_counter);
+  bool SetDecimationRatio(uint16_t decimation_counter);
 
-  bool GetDataGain();
+  bool GetGain();
 
-  bool SetDataGain(uint16_t data_gain);
+  bool SetGain(uint16_t gain);
+
+  void ReadInitialValues();
+
+  void ShowConfiguration();
   
-  void SetGain(int16_t gain) { gain_ = gain; }
   uint16_t Channels() { return kMicrophoneChannels; }
 
   uint32_t NumberOfSamples() {
@@ -78,9 +86,9 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
-  uint16_t data_gain_;
-  uint16_t sample_frequency_;
-  uint16_t decimation_counter_;
+  uint16_t pdm_ratio_;
+  uint16_t sampling_frequency_;
+  uint16_t decimation_ratio_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;
