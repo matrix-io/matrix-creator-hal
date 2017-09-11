@@ -45,7 +45,8 @@ WishboneBus::WishboneBus()
       spi_mode_(3),
       spi_bits_(8),
       spi_speed_(10000000),
-      spi_delay_(0) {}
+      spi_delay_(0),
+      fpga_frequency_(0) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -92,6 +93,7 @@ bool WishboneBus::SpiInit() {
     return false;
   }
 
+  GetFPGAFrequency();
   return true;
 }
 
@@ -173,9 +175,17 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 }
 
 bool WishboneBus::GetSoftwareVersion(char *version,int length){
-  SpiRead(kConfBaseAddress , (unsigned char *)version, length);
+  if (!SpiRead(kConfBaseAddress , (unsigned char *)version, length)) return false;
   return true;
 }
+
+bool WishboneBus::GetFPGAFrequency(){
+  uint16_t values[2];
+  if (!SpiRead(kConfBaseAddress + 4 , (unsigned char *)values, sizeof(values)) return false;
+  fpga_frequency_ = (fpga_frequency_ * values[1])/values[0];
+  return true;
+}
+
 
 void WishboneBus::SpiClose(void) { close(spi_fd_); }
 };  // namespace matrix_hal

@@ -25,22 +25,23 @@ int main() {
 
   bus.GetSoftwareVersion(version,sizeof(version));
   
-  std::string str;
+    std::string str;
   str.assign(version,8);
   
   std::cout << str << std::endl;
-
   
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
-  
+
+  mics.ShowConfiguration();
+
+  /*
   mics.GetDataGain();
   std::cout << "MicrophoneArray Gain: " << mics.Gain() << std::endl;
   
   mics.GetDecimationCounter();
   std::cout << "MicrophoneArray sample rate value: " << mics.DecimationCounter() << std::endl;
  
-
   uint16_t data_gain;
   std::cout << "Set MicrophoneArray data_gain value: ";
   std::cin >> data_gain;
@@ -56,7 +57,7 @@ int main() {
   mics.SetDecimationCounter(sample_rate);
   mics.GetDecimationCounter();
   std::cout << "MicrophoneArray sample rate value: " << mics.DecimationCounter() << std::endl;
-
+  */
   return 0;
 
 }
