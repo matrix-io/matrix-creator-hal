@@ -42,10 +42,19 @@ class MicrophoneArray : public MatrixDriver {
   bool Read();
   
   uint32_t SamplingRate(){return sample_frequency_;}
+  
+  uint32_t DecimationCounter(){return decimation_counter_;}
+
+
+  uint32_t Gain(){return gain_;}
 
   bool GetDecimationCounter();
 
-  bool SetDecimationCounter(uint32_t sample_frequency);
+  bool SetDecimationCounter(uint16_t decimation_counter);
+
+  bool GetDataGain();
+
+  bool SetDataGain(uint16_t data_gain);
   
   void SetGain(int16_t gain) { gain_ = gain; }
   uint16_t Channels() { return kMicrophoneChannels; }
@@ -71,7 +80,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
   uint16_t sample_frequency_;
-  uint16_t pdm_frequency_;
+  uint16_t decimation_counter_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;

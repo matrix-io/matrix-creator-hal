@@ -30,6 +30,7 @@
 #include <string>
 #include <iostream>
 #include "cpp/driver/wishbone_bus.h"
+#include "cpp/driver/creator_memory_map.h"
 
 #define WR0(a) ((a >> 6) & 0x0FF)
 #define WR1(a, i) (((a << 2) & 0xFC) | (i << 1))
@@ -172,7 +173,7 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 }
 
 bool WishboneBus::GetSoftwareVersion(char *version,int length){
-  SpiRead(kBootBaseAddress , (unsigned char *)&version);
+  SpiRead(kConfBaseAddress , (unsigned char *)version, length);
   return true;
 }
 
