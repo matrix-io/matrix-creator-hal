@@ -34,7 +34,7 @@ int main() {
   everloop.Write(&image1d);
 
   uint32_t sampling_rate;
-  std::cout << "Set MicrophoneArray sample rate value: ";
+  std::cout << "Set MicrophoneArray Sampling Rate Value: ";
   std::cin >> sampling_rate;
   mics.SetSamplingRate(sampling_rate);
   mics.ReadConfValues();

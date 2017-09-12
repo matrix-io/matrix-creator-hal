@@ -190,7 +190,6 @@ void MicrophoneArray::ReadConfValues() {
   GetDecimationRatio();
   GetGain();
   wishbone_->GetFPGAFrequency();
-  uint32_t systemClock = wishbone_->FPGAClock();
   sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
 }
 
