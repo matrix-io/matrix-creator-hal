@@ -19,12 +19,11 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
-#include <map>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <string>
 #include <valarray>
-
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/microphone_array.h"
@@ -33,10 +32,7 @@
 namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray()
-    : gain_(0),
-      pdm_ratio_(0),
-      sampling_frequency_(0),
-      decimation_ratio_(0) {
+    : gain_(0), pdm_ratio_(0), sampling_frequency_(0), decimation_ratio_(0) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -59,7 +55,7 @@ void MicrophoneArray::Setup(WishboneBus *wishbone) {
   wiringPiSetupSys();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
-  ReadInitialValues();  
+  ReadInitialValues();
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -172,19 +168,19 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 }
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
-
   sampling_frequency_ = sampling_frequency;
   uint32_t systemClock = wishbone_->FPGAClock();
   uint32_t correctedFrequencyPDM =
       std::ceil(kPDMFrequency / sampling_frequency + 0.5) * sampling_frequency;
   pdm_ratio_ = std::floor(systemClock / correctedFrequencyPDM);
   decimation_ratio_ = std::floor(correctedFrequencyPDM / sampling_frequency);
-  uint16_t maxCICBits = std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
+  uint16_t maxCICBits =
+      std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
   gain_ = kCICWidth - maxCICBits;
 
-  //SetPDMRatio(pdm_ratio_); 
-  //SetDecimationRatio(decimation_ratio_);
-  //SetGain(gain_);  
+  SetPDMRatio(pdm_ratio_);
+  SetDecimationRatio(decimation_ratio_);
+  SetGain(gain_);
 
   return true;
 }
@@ -194,16 +190,15 @@ void MicrophoneArray::ReadInitialValues() {
   GetDecimationRatio();
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();
-    std::cout << "FPGA CLK: " << systemClock << std::endl;
-  sampling_frequency_ = (kPDMFrequency)/(decimation_ratio_);
+  std::cout << "FPGA CLK: " << systemClock << std::endl;
+  sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
 }
 
-
-void MicrophoneArray::ShowConfiguration(){
+void MicrophoneArray::ShowConfiguration() {
   std::cout << "Audio Configuration: " << std::endl;
   std::cout << "Sampling Frequency: " << sampling_frequency_ << std::endl;
   std::cout << "PDM Ratio: " << pdm_ratio_ << std::endl;
-  std::cout << "Decimation Ratio: " << decimation_ratio_<< std::endl;
+  std::cout << "Decimation Ratio: " << decimation_ratio_ << std::endl;
   std::cout << "Gain : " << gain_ << std::endl;
 }
 
