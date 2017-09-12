@@ -191,7 +191,6 @@ void MicrophoneArray::ReadConfValues() {
   GetGain();
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();
-  std::cout << "FPGA CLK: " << systemClock << std::endl;
   sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
 }
 
