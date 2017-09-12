@@ -35,19 +35,13 @@ int main() {
 
   mics.ShowConfiguration();
  
-  uint16_t data_gain;
-  std::cout << "Set MicrophoneArray data_gain value: ";
-  std::cin >> data_gain;
-  std::cout << std::endl << "Sample data gain: " << data_gain << std::endl << std::endl;
-  mics.SetGain(data_gain);
+  uint32_t sampling_rate;
+  std::cout << "Set MicrophoneArray sample rate value: ";
+  std::cin >> sampling_rate;
+  mics.SetSamplingRate(sampling_rate);
   
-  uint16_t sample_rate;
-  std::cout << "Set MicrophoneArray sample rate value: "; 
-  std::cin >> sample_rate;
-  std::cout << std::endl << "Sample rate value: " << sample_rate << std::endl;
-  mics.SetDecimationRatio(sample_rate);
+  mics.ShowConfiguration();
 
-  
   return 0;
 
 }
