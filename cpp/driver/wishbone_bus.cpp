@@ -181,9 +181,7 @@ bool WishboneBus::GetSoftwareVersion(char *version,int length){
 bool WishboneBus::GetFPGAFrequency(){
   uint16_t values[2];
   if (!SpiRead(kConfBaseAddress + 4 , (unsigned char *)values, sizeof(values))) return false;
-  std::cout << values[1] << values[0] << std::endl; 
   fpga_frequency_ = (kFPGAClock * values[1])/values[0];
-  std::cout <<  fpga_frequency_  << std::endl;
   return true;
 }
 
