@@ -55,7 +55,7 @@ void MicrophoneArray::Setup(WishboneBus *wishbone) {
   wiringPiSetupSys();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
-  ReadInitialValues();
+  ReadConfValues();
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -176,7 +176,7 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   decimation_ratio_ = std::floor(correctedFrequencyPDM / sampling_frequency);
   uint16_t maxCICBits =
       std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
-  gain_ = kCICWidth - maxCICBits;
+  gain_ = kCICWidth - maxCICBits+1;
 
   SetPDMRatio(pdm_ratio_);
   SetDecimationRatio(decimation_ratio_);
@@ -185,13 +185,14 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   return true;
 }
 
-void MicrophoneArray::ReadInitialValues() {
+void MicrophoneArray::ReadConfValues() {
   GetPDMRatio();
   GetDecimationRatio();
+  GetGain();
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();
   std::cout << "FPGA CLK: " << systemClock << std::endl;
-  sampling_frequency_ = std::round((kPDMFrequency) / (decimation_ratio_ * 1000))*1000;
+  sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
 }
 
 void MicrophoneArray::ShowConfiguration() {

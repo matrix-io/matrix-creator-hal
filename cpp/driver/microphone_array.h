@@ -61,7 +61,7 @@ class MicrophoneArray : public MatrixDriver {
 
   bool SetGain(uint16_t gain);
 
-  void ReadInitialValues();
+  void ReadConfValues();
 
   void ShowConfiguration();
 
