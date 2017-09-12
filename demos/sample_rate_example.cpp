@@ -39,7 +39,7 @@ int main() {
   std::cout << "Set MicrophoneArray sample rate value: ";
   std::cin >> sampling_rate;
   mics.SetSamplingRate(sampling_rate);
-  
+
   mics.ShowConfiguration();
 
   return 0;
