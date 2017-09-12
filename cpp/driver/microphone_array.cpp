@@ -191,7 +191,7 @@ void MicrophoneArray::ReadInitialValues() {
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();
   std::cout << "FPGA CLK: " << systemClock << std::endl;
-  sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
+  sampling_frequency_ = std::round((kPDMFrequency) / (decimation_ratio_ * 1000))*1000;
 }
 
 void MicrophoneArray::ShowConfiguration() {
