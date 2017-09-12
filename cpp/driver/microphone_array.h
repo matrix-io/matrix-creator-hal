@@ -20,9 +20,9 @@
 
 #include <string>
 #include <valarray>
+#include "./circular_queue.h"
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
-#include "./circular_queue.h"
 
 namespace matrix_hal {
 
@@ -33,7 +33,6 @@ const uint16_t kMicarrayBufferSize = 1024;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
 
-
 class MicrophoneArray : public MatrixDriver {
  public:
   MicrophoneArray();
@@ -43,19 +42,18 @@ class MicrophoneArray : public MatrixDriver {
   void Setup(WishboneBus* wishbone);
 
   bool Read();
-  
-  uint32_t SamplingRate(){return sampling_frequency_;}
-  
-  uint16_t DecimationRatio(){return decimation_ratio_;}
 
-  uint16_t Gain(){return gain_;}
+  uint32_t SamplingRate() { return sampling_frequency_; }
+
+  uint16_t DecimationRatio() { return decimation_ratio_; }
+
+  uint16_t Gain() { return gain_; }
 
   bool GetDecimationRatio();
 
-bool GetPDMRatio();
-bool SetPDMRatio(uint16_t pdm_ratio);
-bool SetSamplingRate(uint32_t sampling_frequency);
-
+  bool GetPDMRatio();
+  bool SetPDMRatio(uint16_t pdm_ratio);
+  bool SetSamplingRate(uint32_t sampling_frequency);
 
   bool SetDecimationRatio(uint16_t decimation_counter);
 
@@ -66,7 +64,7 @@ bool SetSamplingRate(uint32_t sampling_frequency);
   void ReadInitialValues();
 
   void ShowConfiguration();
-  
+
   uint16_t Channels() { return kMicrophoneChannels; }
 
   uint32_t NumberOfSamples() {
