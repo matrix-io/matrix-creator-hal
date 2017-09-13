@@ -3,6 +3,7 @@
  * All rights reserved.
  */
 
+#include <gflags/gflags.h>
 #include <wiringPi.h>
 
 #include <fstream>
@@ -15,9 +16,15 @@
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
+DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+
 namespace hal = matrix_hal;
 
-int main() {
+int main(int argc, char *agrv[]) {
+
+  google::ParseCommandLineFlags(&argc, &agrv, true);
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -33,9 +40,7 @@ int main() {
 
   everloop.Write(&image1d);
 
-  uint32_t sampling_rate;
-  std::cout << "Set MicrophoneArray Sampling Rate Value: ";
-  std::cin >> sampling_rate;
+  int sampling_rate = FLAGS_sampling_frequency;
   mics.SetSamplingRate(sampling_rate);
   mics.ReadConfValues();
   mics.ShowConfiguration();
