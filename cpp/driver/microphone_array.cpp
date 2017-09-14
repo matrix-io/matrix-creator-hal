@@ -170,13 +170,12 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   sampling_frequency_ = sampling_frequency;
   uint32_t systemClock = wishbone_->FPGAClock();
-  uint32_t correctedFrequencyPDM =
-      std::ceil(kPDMFrequency / sampling_frequency + 0.5) * sampling_frequency;
-  pdm_ratio_ = std::floor(systemClock / correctedFrequencyPDM);
-  decimation_ratio_ = std::floor(correctedFrequencyPDM / sampling_frequency);
+  pdm_ratio_ = std::floor(systemClock / kPDMFrequency) - 1;
+  decimation_ratio_ =
+      std::floor((systemClock) / (sampling_frequency * (pdm_ratio + 1))) - 1;
   uint16_t maxCICBits =
       std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
-  gain_ = kCICWidth - maxCICBits+1;
+  gain_ = kCICWidth - maxCICBits + 1;
 
   SetPDMRatio(pdm_ratio_);
   SetDecimationRatio(decimation_ratio_);
