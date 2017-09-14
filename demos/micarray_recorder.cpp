@@ -3,21 +3,28 @@
  * All rights reserved.
  */
 
+#include <gflags/gflags.h>
 #include <wiringPi.h>
 
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <valarray>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
+DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+
 namespace hal = matrix_hal;
 
-int main() {
+int main(int argc, char *agrv[]) {
+
+  google::ParseCommandLineFlags(&argc, &agrv, true);
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -33,9 +40,14 @@ int main() {
 
   everloop.Write(&image1d);
 
-  uint16_t seconds_to_record = 10;
+  int sampling_rate = FLAGS_sampling_frequency;
+  mics.SetSamplingRate(sampling_rate);
+  mics.ShowConfiguration();
 
-  int16_t buffer[mics.Channels() + 1][seconds_to_record * mics.SamplingRate()];
+  uint16_t seconds_to_record = 5;
+
+  int16_t buffer[mics.Channels() + 1]
+                [(seconds_to_record + 1) * mics.SamplingRate()];
 
   mics.CalculateDelays(0, 0, 1000, 320 * 1000);
 
@@ -50,7 +62,8 @@ int main() {
       buffer[mics.Channels()][step] = mics.Beam(s);
       step++;
     }
-    if (step == seconds_to_record * mics.SamplingRate()) break;
+
+    if (step >= seconds_to_record * mics.SamplingRate()) break;
   }
 
   for (uint16_t c = 0; c < mics.Channels() + 1; c++) {

@@ -12,6 +12,8 @@ find_library (FFTW_LIBRARIES NAMES fftw3f )
 FIND_LIBRARY(WIRINGPI_LIB NAMES wiringPi)
 FIND_LIBRARY(WIRINGPI_DEV_LIB NAMES wiringPiDev)
 FIND_LIBRARY(CRYPT_LIB NAMES crypt)
+FIND_LIBRARY(GFLAGS_LIB NAMES gflags)
+message(STATUS "gflags found =>" "${GFLAGS_LIB}") 
 
 add_subdirectory(../cpp/driver driver)
 
@@ -57,6 +59,7 @@ add_executable(micarray_recorder micarray_recorder.cpp)
   target_link_libraries(micarray_recorder matrix_creator_hal)
   target_link_libraries(micarray_recorder ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(micarray_recorder ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+  target_link_libraries(micarray_recorder ${GFLAGS_LIB})
 
 add_executable(servo_demo servo_demo.cpp)
   set_property(TARGET servo_demo PROPERTY CXX_STANDARD 11)
@@ -107,3 +110,4 @@ add_executable(uart_demo uart_demo.cpp)
   target_link_libraries(uart_demo matrix_creator_hal)
   target_link_libraries(uart_demo ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(uart_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+

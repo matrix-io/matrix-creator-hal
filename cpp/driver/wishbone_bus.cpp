@@ -30,6 +30,7 @@
 #include <string>
 #include <iostream>
 #include "cpp/driver/wishbone_bus.h"
+#include "cpp/driver/creator_memory_map.h"
 
 #define WR0(a) ((a >> 6) & 0x0FF)
 #define WR1(a, i) (((a << 2) & 0xFC) | (i << 1))
@@ -43,8 +44,9 @@ WishboneBus::WishboneBus()
     : device_name_("/dev/spidev0.0"),
       spi_mode_(3),
       spi_bits_(8),
-      spi_speed_(18000000),
-      spi_delay_(0) {}
+      spi_speed_(10000000),
+      spi_delay_(0),
+      fpga_frequency_(125000000) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -170,6 +172,19 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
   }
   return false;
 }
+
+bool WishboneBus::GetSoftwareVersion(char *version,int length){
+  if (!SpiRead(kConfBaseAddress , (unsigned char *)version, length)) return false;
+  return true;
+}
+
+bool WishboneBus::GetFPGAFrequency(){
+  uint16_t values[2];
+  if (!SpiRead(kConfBaseAddress + 4 , (unsigned char *)values, sizeof(values))) return false;
+  fpga_frequency_ = (kFPGAClock * values[1])/values[0];
+  return true;
+}
+
 
 void WishboneBus::SpiClose(void) { close(spi_fd_); }
 };  // namespace matrix_hal
