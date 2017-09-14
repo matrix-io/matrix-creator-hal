@@ -172,7 +172,7 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   uint32_t systemClock = wishbone_->FPGAClock();
   pdm_ratio_ = std::floor(systemClock / kPDMFrequency) - 1;
   decimation_ratio_ =
-      std::floor((systemClock) / (sampling_frequency * (pdm_ratio + 1))) - 1;
+      std::floor((systemClock) / (sampling_frequency * (pdm_ratio_ + 1))) - 1;
   uint16_t maxCICBits =
       std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
   gain_ = kCICWidth - maxCICBits + 1;
@@ -189,7 +189,8 @@ void MicrophoneArray::ReadConfValues() {
   GetDecimationRatio();
   GetGain();
   wishbone_->GetFPGAFrequency();
-  sampling_frequency_ = (kPDMFrequency) / (decimation_ratio_);
+  uint32_t systemClock = wishbone_->FPGAClock();
+  sampling_frequency_ = std::floor((systemClock) / ((pdm_ratio_ + 1)*(decimation_ratio_ + 1)*1000))*1000;
 }
 
 void MicrophoneArray::ShowConfiguration() {

@@ -42,7 +42,6 @@ int main(int argc, char *agrv[]) {
 
   int sampling_rate = FLAGS_sampling_frequency;
   mics.SetSamplingRate(sampling_rate);
-  mics.ReadConfValues();
   mics.ShowConfiguration();
 
   uint16_t seconds_to_record = 5;
