@@ -1,7 +1,7 @@
 libmatrix-creator-hal (0.1.4) unstable; urgency=medium
 
   * Multiple frequency support in micarray has been supported
-  * Read FPGA core infromation has been supported
+  * Read FPGA core information has been supported
 
  -- Admobilize <info@admobilize.com>  Thu, 14 Sep 2017 15:51:50 +0000
 
