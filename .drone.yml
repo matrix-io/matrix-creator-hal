@@ -27,11 +27,6 @@ pipeline:
         --access-key-id $${AWS_ACCESS_KEY_ID}
         --secret-access-key $${AWS_SECRET_ACCESS_KEY}
         libmatrix-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
-     - deb-s3 upload --bucket packages.matrixlabs.ai 
-        --prefix $DISTRIBUTION
-        --codename $CODENAME
-        --access-key-id $${AWS_ACCESS_KEY_ID}
-        --secret-access-key $${AWS_SECRET_ACCESS_KEY}
         libmatrix-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
 
   notify-always:
