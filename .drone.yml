@@ -17,17 +17,17 @@ pipeline:
     image: gcr.io/admobilize-testing/gce-builder:latest
     secrets: [aws_access_key_id, aws_secret_access_key]
     commands:
-      - mv libmatrix-creator-hal_${DRONE_TAG##v}_armhf.deb 
-           libmatrix-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
-      - mv libmatrix-creator-hal-dev_${DRONE_TAG##v}_armhf.deb
-           libmatrix-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+      - mv libmatrixio-creator-hal_${DRONE_TAG##v}_armhf.deb 
+           libmatrixio-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+      - mv libmatrixio-creator-hal-dev_${DRONE_TAG##v}_armhf.deb
+           libmatrixio-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
       - deb-s3 upload --bucket packages.matrixlabs.ai 
         --prefix $DISTRIBUTION
         --codename $CODENAME
         --access-key-id $${AWS_ACCESS_KEY_ID}
         --secret-access-key $${AWS_SECRET_ACCESS_KEY}
-        libmatrix-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
-        libmatrix-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+        libmatrixio-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+        libmatrixio-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
 
   notify-always:
     image: plugins/slack

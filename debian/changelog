@@ -1,17 +1,17 @@
-libmatrix-creator-hal (0.1.4) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.4) unstable; urgency=medium
 
   * Multiple frequency support in micarray has been supported
   * Read FPGA core information has been supported
 
  -- Admobilize <info@admobilize.com>  Thu, 14 Sep 2017 15:51:50 +0000
 
-libmatrix-creator-hal (0.1.3) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.3) unstable; urgency=medium
 
   * Fix missing dependency, matrix-creator-init
 
  -- Admobilize <info@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
 
-libmatrix-creator-hal (0.1.2) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.2) unstable; urgency=medium
 
   * MATRIX Creator Hardware Abstraction Layer 
   * Initial realease of Libraries.
@@ -19,7 +19,7 @@ libmatrix-creator-hal (0.1.2) unstable; urgency=medium
 
  -- Admobilize <info@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
 
-libmatrix-creator-hal (0.1.1) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.1) unstable; urgency=medium
 
   * Initial release.
 
