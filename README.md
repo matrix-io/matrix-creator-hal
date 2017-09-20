@@ -1,4 +1,5 @@
 # MATRIX Hardware Abstraction Layer (HAL)
+![Build Status](https://drone.matrix.one/api/badges/matrix-io/matrix-creator-hal/status.svg)
 
 HAL is the lowest-level abstraction for the MATRIX Creator drivers. You can interface directly with HAL, or use the higher level components like MALOS, and the MATRIX OS itself.
 
@@ -7,7 +8,7 @@ HAL is the lowest-level abstraction for the MATRIX Creator drivers. You can inte
 echo "deb http://packages.matrix.one/matrix-creator/ ./" | sudo tee --append /etc/apt/sources.list;
 sudo apt-get update;
 sudo apt-get upgrade;
-sudo apt-get install matrix-creator-hal matrix-creator-hal-dev
+sudo apt-get install libmatrixio-creator-hal libmatrixio-creator-hal-dev
 ```
 
 ## Install from source
@@ -16,7 +17,7 @@ sudo apt-get install matrix-creator-hal matrix-creator-hal-dev
 It does have some package dependencies, so please make sure to install the pre-requisites.
 
 ```
-sudo apt-get install cmake g++ git libfftw3-dev wiringpi
+sudo apt-get install cmake g++ git libfftw3-dev wiringpi matrixio-creator-init libgflags-dev
 ```
 
 To start working with HAL directly, you'll need to run `sudo make install` to get the build running. 
