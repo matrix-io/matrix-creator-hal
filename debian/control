@@ -1,12 +1,14 @@
 Source: libmatrixio-creator-hal
 Section: libs
 Priority: optional
-Maintainer: Admobilize <info@admobilize.com>
+Maintainer: MATRIX Labs <info@matrix.one>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.5
 Homepage: https://github.com/matrix-io/matrix-creator-hal
 
 Package: libmatrixio-creator-hal
+Conflicts: libmatrix-creator-hal
+Replaces: libmatrix-creator-hal
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
@@ -14,6 +16,8 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, wiringpi, libfftw3-dev, matrixio-cr
 Description: Hardware Abstraction Layer for MATRIX.
 
 Package: libmatrixio-creator-hal-dev
+Conflicts: libmatrix-creator-hal-dev
+Replaces: libmatrix-creator-hal-dev
 Section: libdevel
 Architecture: any
 Depends: libmatrix-creator-hal  (= ${binary:Version}), libc6-dev | libc-dev, ${misc:Depends}

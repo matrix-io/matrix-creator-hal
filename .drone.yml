@@ -11,23 +11,32 @@ pipeline:
       apt-get install --yes libfftw3-dev wiringpi libgflags-dev
       debuild -us -uc -b
       mv ../*.deb .
+
   upload-debs:
     when:
       event: tag
     image: gcr.io/admobilize-testing/gce-builder:latest
-    secrets: [aws_access_key_id, aws_secret_access_key]
+    secrets: [aws_access_key_id, aws_secret_access_key, gpg_key, gpg_pass]
     commands:
+      # Prepare GPG
+      - echo "$${GPG_KEY}" > /tmp/tmpkey && gpg --import /tmp/tmpkey && rm /tmp/tmpkey
+      - echo "personal-digest-preferences SHA512" >> /root/.gnupg/gpg.conf
+
+      # Upload packages
       - mv libmatrixio-creator-hal_${DRONE_TAG##v}_armhf.deb 
-           libmatrixio-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+           libmatrixio-creator-hal_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb
       - mv libmatrixio-creator-hal-dev_${DRONE_TAG##v}_armhf.deb
-           libmatrixio-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
-      - deb-s3 upload --bucket packages.matrixlabs.ai 
+           libmatrixio-creator-hal-dev_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb
+
+      - echo "$${GPG_PASS}" | deb-s3 upload --bucket apt.matrix.one 
         --prefix $DISTRIBUTION
         --codename $CODENAME
         --access-key-id $${AWS_ACCESS_KEY_ID}
         --secret-access-key $${AWS_SECRET_ACCESS_KEY}
-        libmatrixio-creator-hal_${DRONE_TAG##v}-${CODENAME}_armhf.deb
-        libmatrixio-creator-hal-dev_${DRONE_TAG##v}-${CODENAME}_armhf.deb
+        --sign info@matrix.one 
+        --gpg-options="--batch --passphrase-fd 0"
+        libmatrixio-creator-hal_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb
+        libmatrixio-creator-hal-dev_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb
 
   notify-always:
     image: plugins/slack
@@ -39,12 +48,13 @@ pipeline:
       event: tag 
     template: |
       {{#success build.status}}
-        {{build.author}} just built `{{repo.name}}:{{build.branch}}` from <{{repo.link}}|#{{truncate build.commit 8}}>
+        {{build.author}} just built `{{repo.name}}:{{build.branch}}` from <${DRONE_COMMIT_LINK}|#{{truncate build.commit 8}}>
         :new: {{build.message}}
-        :debian: The new `matrix-creator-hal_{{drone.tag}}_armhf.deb` was created
+        :debian: The new `matrixio-creator-hal_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb` was published to apt.matrix.one
       {{else}}
-        {{build.author}} just broke the build of `{{repo.name}}:{{build.branch}}` with <{{repo.link}}|#{{truncate build.commit 8}}>
+        {{build.author}} just broke the build of `{{repo.name}}:{{build.branch}}` with <${DRONE_COMMIT_LINK}|#{{truncate build.commit 8}}>
         :new: :zombie: {{build.message}}
+        :debian: The package `matrixio-creator-hal_${DISTRIBUTION}-${CODENAME}-${DRONE_TAG##v}_armhf.deb` failed to build.
       {{/success}}
       :stopwatch: {{ since build.started}}
       :gear: {{build.link}}
