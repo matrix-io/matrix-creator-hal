@@ -42,6 +42,10 @@ class IMUData {
   float mag_x;
   float mag_y;
   float mag_z;
+
+  float mag_x_offset;
+  float mag_y_offset;
+  float mag_z_offset;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_IMU_DATA_H_
