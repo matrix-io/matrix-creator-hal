@@ -64,11 +64,11 @@ matrix:
     - CODENAME: jessie
       DISTRIBUTION: raspbian
       MOUNTOFFSET: 48234496
-      MOUNTDIR: /drone/src/github.com/matrix-io/matrix-creator-hal
+      MOUNTDIR: /drone/src/bitbucket.org/admobilize/matrix-creator-hal
       MOUNTIMG: https://storage.googleapis.com/raspbian-images/2017-07-05-raspbian-jessie-debuild.img.gz
     - CODENAME: stretch
       MOUNTOFFSET: 48234496
-      MOUNTDIR: /drone/src/github.com/matrix-io/matrix-creator-hal
+      MOUNTDIR: /drone/src/bitbucket.org/admobilize/matrix-creator-hal
       DISTRIBUTION: raspbian
       MOUNTIMG: https://storage.googleapis.com/raspbian-images/2017-08-16-raspbian-stretch-debuild.img.gz
 
