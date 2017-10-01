@@ -16,6 +16,6 @@ Description: Hardware Abstraction Layer for MATRIX.
 Package: libmatrixio-creator-hal-dev
 Section: libdevel
 Architecture: any
-Depends: libmatrix-creator-hal  (= ${binary:Version}), libc6-dev | libc-dev, ${misc:Depends}
+Depends: libmatrixio-creator-hal  (= ${binary:Version}), libc6-dev | libc-dev, ${misc:Depends}
 Description:  Hardware Abstraction Layer for MATRIX (headers)
 
