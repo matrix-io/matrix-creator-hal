@@ -21,6 +21,7 @@ DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 namespace hal = matrix_hal;
 
 int main(int argc, char *agrv[]) {
+  
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
