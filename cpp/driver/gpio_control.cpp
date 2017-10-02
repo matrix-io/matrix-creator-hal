@@ -145,7 +145,7 @@ bool GPIOControl::SetIR(uint16_t value) {
   return wishbone_->SpiWrite16(kGPIOBaseAddress + 28, value);
 }
 
-bool GPIOControl::SetRIngIR(uint16_t value) {
+bool GPIOControl::SetRingIR(uint16_t value) {
   if (!wishbone_) return false;
   return wishbone_->SpiWrite16(kGPIOBaseAddress + 29, value);
 }
