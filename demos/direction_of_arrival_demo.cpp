@@ -2,7 +2,7 @@
  * Copyright 2016 <Admobilize>
  * All rights reserved.
  */
-
+#include <gflags/gflags.h>
 #include <fftw3.h>
 #include <stdint.h>
 #include <string.h>
@@ -19,12 +19,17 @@
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
+DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+
 namespace hal = matrix_hal;
 
 int led_offset[] = {23, 27, 32, 1, 6, 10, 14, 19};
 int lut[] = {1, 2, 10, 200, 10, 2, 1};
 
-int main() {
+int main(int argc, char *agrv[]) {
+  google::ParseCommandLineFlags(&argc, &agrv, true);
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -36,6 +41,10 @@ int main() {
 
   hal::EverloopImage image1d;
 
+  int sampling_rate = FLAGS_sampling_frequency;
+  mics.SetSamplingRate(sampling_rate);
+  mics.ShowConfiguration();
+  
   hal::DirectionOfArrival doa(mics);
 
   float azimutal_angle;
