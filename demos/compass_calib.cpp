@@ -84,6 +84,8 @@ enum States {
   DONE_CALIB,
 };
 
+// Functions
+
 OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
   OrientationType orientation = NONE;
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
@@ -108,6 +110,10 @@ OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
 float Distance(float ax, float ay, float bx, float by) {
   return sqrt(pow(bx - ax, 2) + pow(by - ay, 2));
 }
+
+float GetHypotenuse(float a, float b) { return sqrt(pow(a, 2) + pow(b, 2)); }
+
+// MAIN
 
 int main() {
   hal::WishboneBus bus;
@@ -153,21 +159,19 @@ int main() {
       mag_off_y = (mag_max_y + mag_min_y) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
-      amp_distance_xy = Distance(mag_max_x, mag_max_y, mag_min_x , mag_min_y);
-
-
-      offset_distance_xy = sqrt(pow(mag_off_x, 2) + pow(mag_off_y, 2));
+      amp_distance_xy = Distance(mag_max_x, mag_max_y, mag_min_x, mag_min_y);
+      offset_distance_xy = GetHypotenuse(mag_off_x, mag_off_y);
       xy_valid = offset_distance_xy / amp_distance_xy < 5;
 
       if (xy_valid) {
         // from rad to 0-360 deg
         xy_rot = atan2(mag_y - mag_off_y, mag_x - mag_off_x) * 180 / M_PI + 180;
         // saturation in 360 range
-        xy_angle_index = fmin(xy_rot, 359);  
+        xy_angle_index = fmin(xy_rot, 359);
         // saturation in 0 range
-        xy_angle_index = fmax(xy_rot, 0);    
+        xy_angle_index = fmax(xy_rot, 0);
         // making 24 slots of 360/24 = 15 deg
-        xy_angle_index = xy_angle_index / 10;  
+        xy_angle_index = xy_angle_index / 10;
 
         xy_count[xy_angle_index]++;
       }
@@ -182,22 +186,19 @@ int main() {
       mag_off_z = (mag_max_z + mag_min_z) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
-      amp_distance_xz =
-          sqrt(pow(mag_max_x - mag_min_x, 2) + pow(mag_max_z - mag_min_z, 2)) /
-          2;
-      offset_distance_xz = sqrt(pow(mag_off_x, 2) + pow(mag_off_z, 2));
+      amp_distance_xz = Distance(mag_max_x, mag_max_z, mag_min_x, mag_min_z);
+      offset_distance_xz = GetHypotenuse(mag_off_x, mag_off_z);
       xz_valid = offset_distance_xz / amp_distance_xz < 5;
 
       if (xz_valid) {
-        xz_rot =
-            atan2(mag_x - mag_off_x, mag_z - mag_off_z) * 180 / M_PI +
-            180;  // from rad to 0-360 deg
-
-        xz_angle_index = fmin(xz_rot, 359);  // saturation in 360 range
-        xz_angle_index = fmax(xz_rot, 0);    // saturation in 0 range
-
-        xz_angle_index =
-            xz_angle_index / 10;  // making 24 slots of 360/24 = 15 deg
+        // from rad to 0-360 deg
+        xz_rot = atan2(mag_x - mag_off_x, mag_z - mag_off_z) * 180 / M_PI + 180;
+        // saturation in 360 range
+        xz_angle_index = fmin(xz_rot, 359);
+        // saturation in 0 range
+        xz_angle_index = fmax(xz_rot, 0);
+        // making 24 slots of 360/24 = 15 deg
+        xz_angle_index = xz_angle_index / 10;
 
         xz_count[xz_angle_index]++;
       }
@@ -206,7 +207,6 @@ int main() {
     // *********************  PRINTING *********************************
 
     system("clear");
-
     std::cout << "**********************************************************\n";
     std::cout << "******************  Compass Calibration ******************\n";
     std::cout << "**********************************************************\n";
@@ -243,6 +243,7 @@ int main() {
           std::cout << " ";
         }
       }
+
       std::cout << "\n\n";
       std::cout << "Board Orientation: ";
       if (orientation == X_AXIS) {
@@ -254,8 +255,8 @@ int main() {
       } else {
         std::cout << "NONE\n";
       }
-      std::cout << "\n";
 
+      std::cout << "\n";
       std::cout << "Notes:\n";
       std::cout << "- Put the MATRIX Creator facing up (Z_AXIS Orientation)\n";
       std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
@@ -306,9 +307,7 @@ int main() {
         std::cout << "NONE\n";
       }
 
-      std::cout << std::endl;
-
-      std::cout << "Notes:\n";
+      std::cout << "\nNotes:\n";
       std::cout << "-  Creator in Y_AXIS Orientation\n";
       std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
                    "bar as a guide.\n";
