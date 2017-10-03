@@ -345,11 +345,11 @@ int main() {
       }
 
       if (tolower(choice) == 'y') {
-        std::cout << "Saving to sensor ...\n";
-        std::cout << "Calibration saved sucesfully !\n";
+        if (imu_sensor.SetCompassCalibration(mag_off_x, mag_off_y, mag_off_z))
+          std::cout << "Sucessfully saved...\n";
         break;
       } else if (tolower(choice) == 'n') {
-        std::cout << "Calibration not saved!\n";
+        std::cout << "Calibration not saved.\n";
         break;
       }
       std::cout << "\n";

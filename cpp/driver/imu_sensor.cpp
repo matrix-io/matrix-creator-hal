@@ -31,16 +31,14 @@ bool IMUSensor::Read(IMUData* data) {
   return true;
 }
 
-bool IMUSensor::SetCompassCalibration(float mag_x_offset, float mag_y_offset,
-                                      float mag_z_offset) {
-    return false;
-
+bool IMUSensor::SetCompassCalibration(float offset_x, float offset_y,
+                                      float offset_z) {
   uint16_t add_base = kMCUBaseAddress + kMemoryOffsetIMU;
 
-  wishbone_->SpiWrite16(add_base, (unsigned char *)mag_x_offset);
-  wishbone_->SpiWrite16(add_base + 2, (unsigned char *)mag_y_offset);
-  wishbone_->SpiWrite16(add_base + 4, (unsigned char *)mag_z_offset);
+  wishbone_->SpiWrite16();
+  // wishbone_->SpiWrite16(add_base + 2, (unsigned char *)mag_y_offset);
+  // wishbone_->SpiWrite16(add_base + 4, (unsigned char *)mag_z_offset);
 
   return true;
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal
