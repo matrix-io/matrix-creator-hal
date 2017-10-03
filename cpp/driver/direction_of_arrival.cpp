@@ -31,13 +31,13 @@ DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics)
       corr_(length_),
       current_mag_(4),
       current_index_(4),
-      buffer_1D_(mics_.Channels() * mics_.SamplingRate()),
+      buffer_1D_(mics_.Channels() * mics_.NumberOfSamples()),
       buffer_2D_(mics_.Channels()),
       mic_direction_(0),
       azimutal_angle_(0.0),
       polar_angle_(0.0) {
   for (uint16_t c = 0; c < mics_.Channels(); c++) {
-    buffer_2D_[c] = &buffer_1D_[c * mics_.SamplingRate()];
+    buffer_2D_[c] = &buffer_1D_[c * mics_.NumberOfSamples()];
   }
 }
 
