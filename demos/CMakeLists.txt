@@ -111,11 +111,6 @@ add_executable(uart_demo uart_demo.cpp)
   target_link_libraries(uart_demo ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(uart_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
 
-add_executable(imu_demo imu_demo.cpp)
-  set_property(TARGET imu_demo PROPERTY CXX_STANDARD 11)
-  target_link_libraries(imu_demo matrix_creator_hal)
-  target_link_libraries(imu_demo ${CMAKE_THREAD_LIBS_INIT})
-
 add_executable(compass_calib compass_calib.cpp)
   set_property(TARGET compass_calib PROPERTY CXX_STANDARD 11)
   target_link_libraries(compass_calib matrix_creator_hal)

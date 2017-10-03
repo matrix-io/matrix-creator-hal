@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <math.h>
+#include <unistd.h>
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <math.h>
-#include <unistd.h>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -40,17 +40,17 @@ namespace hal = matrix_hal;
 
 bool calibration_finished = false;
 
-float mag_x_max = std::numeric_limits<float>::min();
-float mag_y_max = std::numeric_limits<float>::min();
-float mag_z_max = std::numeric_limits<float>::min();
+float mag_max_x = std::numeric_limits<float>::min();
+float mag_max_y = std::numeric_limits<float>::min();
+float mag_max_z = std::numeric_limits<float>::min();
 
-float mag_x_min = std::numeric_limits<float>::max();
-float mag_y_min = std::numeric_limits<float>::max();
-float mag_z_min = std::numeric_limits<float>::max();
+float mag_min_x = std::numeric_limits<float>::max();
+float mag_min_y = std::numeric_limits<float>::max();
+float mag_min_z = std::numeric_limits<float>::max();
 
-float x_mag_offset;
-float y_mag_offset;
-float z_mag_offset;
+float mag_off_x;
+float mag_off_y;
+float mag_off_z;
 
 float acc_x = 0;
 float acc_y = 0;
@@ -66,10 +66,10 @@ std::vector<int> xz_count(36);
 bool xy_valid = false;
 bool xz_valid = false;
 
-float xy_amp_distance;
-float xy_offset_distance;
-float xz_amp_distance;
-float xz_offset_distance;
+float amp_distance_xy;
+float offset_distance_xy;
+float amp_distance_xz;
+float offset_distance_xz;
 
 enum OrientationType {
   NONE,
@@ -84,7 +84,7 @@ enum States {
   DONE_CALIB,
 };
 
-OrientationType calc_orientation(float acc_x, float acc_y, float acc_z) {
+OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
   OrientationType orientation = NONE;
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
 
@@ -105,8 +105,11 @@ OrientationType calc_orientation(float acc_x, float acc_y, float acc_z) {
   return orientation;
 }
 
-int main() {
+float Distance(float ax, float ay, float bx, float by) {
+  return sqrt(pow(bx - ax, 2) + pow(by - ay, 2));
+}
 
+int main() {
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -126,73 +129,7 @@ int main() {
   uint xy_angle_index = 0;
   uint xz_angle_index = 0;
 
-  int count = 0;
   while (true) {
-
-    imu_sensor.Read(&imu_data);
-
-    imu_data.yaw = 100;
-    imu_data.roll = 100;
-    imu_data.pitch = 100;
-    imu_data.accel_x = 100;
-    imu_data.accel_y = 100;
-    imu_data.accel_z = 100;
-    imu_data.gyro_x = 100;
-    imu_data.gyro_y = 100;
-    imu_data.gyro_z = 100;
-    imu_data.mag_x = 100;
-    imu_data.mag_y = 100;
-    imu_data.mag_z = 100;
-    imu_data.mag_x_offset = count;
-    imu_data.mag_y_offset = count + 1;
-    imu_data.mag_z_offset = count + 2;
-
-    imu_sensor.SetCompassCalibration(&imu_data);
-
-    imu_data.yaw = 0;
-    imu_data.roll = 0;
-    imu_data.pitch = 0;
-    imu_data.accel_x = 0;
-    imu_data.accel_y = 0;
-    imu_data.accel_z = 0;
-    imu_data.gyro_x = 0;
-    imu_data.gyro_y = 0;
-    imu_data.gyro_z = 0;
-    imu_data.mag_x = 0;
-    imu_data.mag_y = 0;
-    imu_data.mag_z = 0;
-    imu_data.mag_x_offset = 0;
-    imu_data.mag_y_offset = 0;
-    imu_data.mag_z_offset = 0;
-
-    imu_sensor.Read(&imu_data);
-
-    system("clear");
-    std::cout << "yaw: " << imu_data.yaw << "\n";
-    std::cout << "roll: " << imu_data.roll << "\n";
-    std::cout << "pitch: " << imu_data.pitch << "\n";
-    std::cout << "accel_x: " << imu_data.accel_x << "\n";
-    std::cout << "accel_y: " << imu_data.accel_y << "\n";
-    std::cout << "accel_z: " << imu_data.accel_z << "\n";
-    std::cout << "gyro_x: " << imu_data.gyro_x << "\n";
-    std::cout << "gyro_y: " << imu_data.gyro_y << "\n";
-    std::cout << "gyro_z: " << imu_data.gyro_z << "\n";
-    std::cout << "mag_x: " << imu_data.mag_x << "\n";
-    std::cout << "mag_y: " << imu_data.mag_y << "\n";
-    std::cout << "mag_z: " << imu_data.mag_z << "\n";
-    std::cout << "mag_x_offset: " << imu_data.mag_x_offset << "\n";
-    std::cout << "mag_y_offset: " << imu_data.mag_y_offset << "\n";
-    std::cout << "mag_z_offset: " << imu_data.mag_z_offset << "\n";
-    std::cout << "count: " << count << "\n";
-
-    count++;
-    usleep(1000000);
-  }
-
-  return 1;
-
-  while (true) {
-
     imu_sensor.Read(&imu_data);
 
     // Reading values from PFGA
@@ -204,65 +141,63 @@ int main() {
     mag_y = imu_data.mag_y;
     mag_z = imu_data.mag_z;
 
-    orientation = calc_orientation(acc_x, acc_y, acc_z);
+    orientation = CalcOrientation(acc_x, acc_y, acc_z);
 
     if (orientation == Z_AXIS) {
-      mag_x_max = (mag_x > mag_x_max) ? mag_x : mag_x_max;
-      mag_x_min = (mag_x < mag_x_min) ? mag_x : mag_x_min;
-      mag_y_max = (mag_y > mag_y_max) ? mag_y : mag_y_max;
-      mag_y_min = (mag_y < mag_y_min) ? mag_y : mag_y_min;
+      mag_max_x = (mag_x > mag_max_x) ? mag_x : mag_max_x;
+      mag_min_x = (mag_x < mag_min_x) ? mag_x : mag_min_x;
+      mag_max_y = (mag_y > mag_max_y) ? mag_y : mag_max_y;
+      mag_min_y = (mag_y < mag_min_y) ? mag_y : mag_min_y;
 
-      x_mag_offset = (mag_x_max + mag_x_min) / 2;
-      y_mag_offset = (mag_y_max + mag_y_min) / 2;
+      mag_off_x = (mag_max_x + mag_min_x) / 2;
+      mag_off_y = (mag_max_y + mag_min_y) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
-      xy_amp_distance =
-          sqrt(pow(mag_x_max - mag_x_min, 2) + pow(mag_y_max - mag_y_min, 2)) /
-          2;
-      xy_offset_distance = sqrt(pow(x_mag_offset, 2) + pow(y_mag_offset, 2));
-      xy_valid = xy_offset_distance / xy_amp_distance < 5;
+      amp_distance_xy = Distance(mag_max_x, mag_max_y, mag_min_x , mag_min_y);
+
+
+      offset_distance_xy = sqrt(pow(mag_off_x, 2) + pow(mag_off_y, 2));
+      xy_valid = offset_distance_xy / amp_distance_xy < 5;
 
       if (xy_valid) {
-        xy_rot =
-            atan2(mag_y - y_mag_offset, mag_x - x_mag_offset) * 180 / M_PI +
-            180; // from rad to 0-360 deg
-
-        xy_angle_index = fmin(xy_rot, 359); // saturation in 360 range
-        xy_angle_index = fmax(xy_rot, 0);   // saturation in 0 range
-
-        xy_angle_index =
-            xy_angle_index / 10; // making 24 slots of 360/24 = 15 deg
+        // from rad to 0-360 deg
+        xy_rot = atan2(mag_y - mag_off_y, mag_x - mag_off_x) * 180 / M_PI + 180;
+        // saturation in 360 range
+        xy_angle_index = fmin(xy_rot, 359);  
+        // saturation in 0 range
+        xy_angle_index = fmax(xy_rot, 0);    
+        // making 24 slots of 360/24 = 15 deg
+        xy_angle_index = xy_angle_index / 10;  
 
         xy_count[xy_angle_index]++;
       }
 
     } else if (orientation == Y_AXIS) {
-      mag_x_max = (mag_x > mag_x_max) ? mag_x : mag_x_max;
-      mag_x_min = (mag_x < mag_x_min) ? mag_x : mag_x_min;
-      mag_z_max = (mag_z > mag_z_max) ? mag_z : mag_z_max;
-      mag_z_min = (mag_z < mag_z_min) ? mag_z : mag_z_min;
+      mag_max_x = (mag_x > mag_max_x) ? mag_x : mag_max_x;
+      mag_min_x = (mag_x < mag_min_x) ? mag_x : mag_min_x;
+      mag_max_z = (mag_z > mag_max_z) ? mag_z : mag_max_z;
+      mag_min_z = (mag_z < mag_min_z) ? mag_z : mag_min_z;
 
-      x_mag_offset = (mag_x_max + mag_x_min) / 2;
-      z_mag_offset = (mag_z_max + mag_z_min) / 2;
+      mag_off_x = (mag_max_x + mag_min_x) / 2;
+      mag_off_z = (mag_max_z + mag_min_z) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
-      xz_amp_distance =
-          sqrt(pow(mag_x_max - mag_x_min, 2) + pow(mag_z_max - mag_z_min, 2)) /
+      amp_distance_xz =
+          sqrt(pow(mag_max_x - mag_min_x, 2) + pow(mag_max_z - mag_min_z, 2)) /
           2;
-      xz_offset_distance = sqrt(pow(x_mag_offset, 2) + pow(z_mag_offset, 2));
-      xz_valid = xz_offset_distance / xz_amp_distance < 5;
+      offset_distance_xz = sqrt(pow(mag_off_x, 2) + pow(mag_off_z, 2));
+      xz_valid = offset_distance_xz / amp_distance_xz < 5;
 
       if (xz_valid) {
-
         xz_rot =
-            atan2(mag_x - x_mag_offset, mag_z - z_mag_offset) * 180 / M_PI +
-            180; // from rad to 0-360 deg
+            atan2(mag_x - mag_off_x, mag_z - mag_off_z) * 180 / M_PI +
+            180;  // from rad to 0-360 deg
 
-        xz_angle_index = fmin(xz_rot, 359); // saturation in 360 range
-        xz_angle_index = fmax(xz_rot, 0);   // saturation in 0 range
+        xz_angle_index = fmin(xz_rot, 359);  // saturation in 360 range
+        xz_angle_index = fmax(xz_rot, 0);    // saturation in 0 range
 
         xz_angle_index =
-            xz_angle_index / 10; // making 24 slots of 360/24 = 15 deg
+            xz_angle_index / 10;  // making 24 slots of 360/24 = 15 deg
 
         xz_count[xz_angle_index]++;
       }
@@ -272,17 +207,13 @@ int main() {
 
     system("clear");
 
-    std::cout << "***********************************************************"
-              << "\n";
-    std::cout << "******************  Compass Calibration *******************"
-              << "\n";
-    std::cout << "***********************************************************"
-              << "\n\n";
+    std::cout << "**********************************************************\n";
+    std::cout << "******************  Compass Calibration ******************\n";
+    std::cout << "**********************************************************\n";
+    std::cout << "\n";
 
     if (state == XY_AXIS_CALIB) {
-      std::cout << "Step 1: Calibrate X and Y axis"
-                << "\n"
-                << "\n";
+      std::cout << "Step 1: Calibrate X and Y axis\n";
       std::cout << "STATUS BAR: ";
 
       int calib_done_count = 0;
@@ -312,43 +243,29 @@ int main() {
           std::cout << " ";
         }
       }
-      std::cout << std::endl;
-
-      std::cout << "\nBoard Orientation: ";
+      std::cout << "\n\n";
+      std::cout << "Board Orientation: ";
       if (orientation == X_AXIS) {
-        std::cout << "X_AXIS"
-                  << "\n";
+        std::cout << "X_AXIS\n";
       } else if (orientation == Y_AXIS) {
-        std::cout << "Y_AXIS"
-                  << "\n";
+        std::cout << "Y_AXIS\n";
       } else if (orientation == Z_AXIS) {
-        std::cout << "Z_AXIS"
-                  << "\n";
+        std::cout << "Z_AXIS\n";
       } else {
-        std::cout << "NONE"
-                  << "\n";
+        std::cout << "NONE\n";
       }
-      std::cout << std::endl;
+      std::cout << "\n";
 
-      std::cout << "Notes:"
-                << "\n";
-      std::cout << "- Put the MATRIX Creator facing up (Z_AXIS Orientation)"
-                << "\n";
+      std::cout << "Notes:\n";
+      std::cout << "- Put the MATRIX Creator facing up (Z_AXIS Orientation)\n";
       std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
-                   "bar as a guide."
-                << "\n";
+                   "bar as a guide.\n";
       std::cout << "- The Calibration for this axis is completed when all "
-                   "slots in the bar are \"|\""
-                << "\n";
+                   "slots in the bar are \"|\"\n";
 
     } else if (state == Z_AXIS_CALIB) {
-
-      std::cout << "Step 1: Calibrate X and Y axis : Done !"
-                << "\n"
-                << "\n";
-      std::cout << "Step 2: Calibrate Z axis"
-                << "\n"
-                << "\n";
+      std::cout << "Step 1: Calibrate X and Y axis : Done !\n\n";
+      std::cout << "Step 2: Calibrate Z axis\n\n";
 
       std::cout << "STATUS BAR: ";
       int calib_done_count = 0;
@@ -380,83 +297,62 @@ int main() {
 
       std::cout << "\nBoard Orientation: ";
       if (orientation == X_AXIS) {
-        std::cout << "X_AXIS"
-                  << "\n";
+        std::cout << "X_AXIS\n";
       } else if (orientation == Y_AXIS) {
-        std::cout << "Y_AXIS"
-                  << "\n";
+        std::cout << "Y_AXIS\n";
       } else if (orientation == Z_AXIS) {
-        std::cout << "Z_AXIS"
-                  << "\n";
+        std::cout << "Z_AXIS\n";
       } else {
-        std::cout << "NONE"
-                  << "\n";
+        std::cout << "NONE\n";
       }
 
       std::cout << std::endl;
 
-      std::cout << "Notes:"
-                << "\n";
-      std::cout << "-  Creator in Y_AXIS Orientation"
-                << "\n";
+      std::cout << "Notes:\n";
+      std::cout << "-  Creator in Y_AXIS Orientation\n";
       std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
-                   "bar as a guide."
-                << "\n";
+                   "bar as a guide.\n";
       std::cout << "- The Calibration for this axis is completed when all "
-                   "slots in the bar are \"|\""
-                << "\n";
+                   "slots in the bar are \"|\"\n";
 
     } else if (state == DONE_CALIB) {
+      std::cout << "CALIBRATION DONE !!!\n\n";
 
-      std::cout << "CALIBRATION DONE !!!"
-                << "\n"
-                << "\n";
+      std::cout << "Compass Axis X:\n";
+      std::cout << "- Max: " << mag_max_x << "\n";
+      std::cout << "- Min: " << mag_min_x << "\n";
+      std::cout << "- Offset : " << mag_off_x << "\n";
 
-      std::cout << "Compass Axis X:"
-                << "\n";
-      std::cout << "- Max: " << mag_x_max << "\n";
-      std::cout << "- Min: " << mag_x_min << "\n";
-      std::cout << "- Offset : " << x_mag_offset << "\n";
+      std::cout << "Compass Axis Y:\n";
+      std::cout << "- Max: " << mag_max_y << "\n";
+      std::cout << "- Min: " << mag_min_y << "\n";
+      std::cout << "- Offset : " << mag_off_y << "\n";
 
-      std::cout << "Compass Axis Y:"
-                << "\n";
-      std::cout << "- Max: " << mag_y_max << "\n";
-      std::cout << "- Min: " << mag_y_min << "\n";
-      std::cout << "- Offset : " << y_mag_offset << "\n";
+      std::cout << "Compass Axis Z:\n";
+      std::cout << "- Max: " << mag_max_z << "\n";
+      std::cout << "- Min: " << mag_min_z << "\n";
+      std::cout << "- Offset : " << mag_off_z << "\n";
 
-      std::cout << "Compass Axis Z:"
-                << "\n";
-      std::cout << "- Max: " << mag_z_max << "\n";
-      std::cout << "- Min: " << mag_z_min << "\n";
-      std::cout << "- Offset : " << z_mag_offset << "\n";
-
-      std::cout << "\n";
-      std::cout << " Do you want to save this calibration values to the MATRIX "
-                   "CREATOR? [y/n]: "
-                << "\n";
-      std::cout << " (Previous calibration data will be lost)"
-                << "\n";
+      std::cout << "\nDo you want to save this calibration values to the "
+                   "MATRIX CREATOR? [y/n]: \n";
+      std::cout << " (Previous calibration data will be lost)\n";
 
       char choice;
       std::cin >> choice;
       while (tolower(choice) != 'n' && tolower(choice) != 'y') {
-        std::cout << "\nPlease enter Y (Yes) or N (No): ";
+        std::cout << "\n";
+        std::cout << "Please enter Y (Yes) or N (No): ";
         std::cin >> choice;
       }
 
       if (tolower(choice) == 'y') {
-        std::cout << "Saving to sensor ..."
-                  << "\n";
-
-        std::cout << "Calibration saved sucesfully !"
-                  << "\n";
+        std::cout << "Saving to sensor ...\n";
+        std::cout << "Calibration saved sucesfully !\n";
         break;
       } else if (tolower(choice) == 'n') {
-        std::cout << "Calibration not saved!"
-                  << "\n";
+        std::cout << "Calibration not saved!\n";
         break;
       }
-
       std::cout << "\n";
     }
 
