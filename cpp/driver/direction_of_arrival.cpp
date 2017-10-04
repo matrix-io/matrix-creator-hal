@@ -25,19 +25,23 @@
 
 namespace matrix_hal {
 
-DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics)
-    : mics_(mics),
-      length_(mics_.NumberOfSamples()),
-      corr_(length_),
-      current_mag_(4),
-      current_index_(4),
-      buffer_1D_(mics_.Channels() * mics_.NumberOfSamples()),
-      buffer_2D_(mics_.Channels()),
-      mic_direction_(0),
-      azimutal_angle_(0.0),
-      polar_angle_(0.0) {
-  for (uint16_t c = 0; c < mics_.Channels(); c++) {
-    buffer_2D_[c] = &buffer_1D_[c * mics_.NumberOfSamples()];
+DirectionOfArrival::DirectionOfArrival(){}
+
+
+bool DirectionOfArrival::Init(MicrophoneArray& mics) {
+  mics_ = mics;
+  length_ = mics_->NumberOfSamples();
+  corr_ = new CrossCorrelation();
+  corr_->Init():
+  current_mag_ = 4;
+  current_index_ 4;
+  buffer_1D_.rezise(mics_->Channels() * mics_->NumberOfSamples());
+  buffer_2D_.rezise(mics_->Channels());
+  mic_direction_ = 0;
+  azimutal_angle_ = 0;
+  polar_angle_ = 0;
+  for (uint16_t c = 0; c < mics_->Channels(); c++) {
+    buffer_2D_[c] = &buffer_1D_[c * mics_->NumberOfSamples()];
   }
 }
 

@@ -20,22 +20,7 @@
 
 namespace matrix_hal {
 
-CrossCorrelation::CrossCorrelation(int N) : order_(N) {
-  /*
-  fftwf_malloc function that behave identically to malloc, except that they
-  guarantee that the returned pointer obeys any special alignment restrictions
-  imposed by any algorithm in FFTW (e.g. for SIMD acceleration).
-  */
-  in_ = (float*)fftwf_malloc(sizeof(float) * N);
-  A_ = (float*)fftwf_malloc(sizeof(float) * N);
-  B_ = (float*)fftwf_malloc(sizeof(float) * N);
-  C_ = (float*)fftwf_malloc(sizeof(float) * N);
-  c_ = (float*)fftwf_malloc(sizeof(float) * N);
-
-  forward_plan_a_ = fftwf_plan_r2r_1d(N, in_, A_, FFTW_R2HC, FFTW_ESTIMATE);
-  forward_plan_b_ = fftwf_plan_r2r_1d(N, in_, B_, FFTW_R2HC, FFTW_ESTIMATE);
-  inverse_plan_ = fftwf_plan_r2r_1d(N, C_, c_, FFTW_HC2R, FFTW_ESTIMATE);
-}
+CrossCorrelation::CrossCorrelation() {}
 
 CrossCorrelation::~CrossCorrelation() {
   fftwf_destroy_plan(forward_plan_a_);
@@ -48,6 +33,41 @@ CrossCorrelation::~CrossCorrelation() {
   fftwf_free(C_);
   fftwf_free(c_);
 }
+
+bool CrossCorrelation::Init(int N) {
+  order_ = N;
+  /*
+  fftwf_malloc function that behave identically to malloc, except that they
+  guarantee that the returned pointer obeys any special alignment restrictions
+  imposed by any algorithm in FFTW (e.g. for SIMD acceleration).
+  */
+  in_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  if(!in_) return false;
+
+  A_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  if(!A_) return false;
+
+  B_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  if(!B_) return false;
+
+  C_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  if(!C_) return false;
+
+  c_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  if(!c_) return false;
+
+  forward_plan_a_ = fftwf_plan_r2r_1d(order_, in_, A_, FFTW_R2HC, FFTW_ESTIMATE);
+  if(!forward_plan_a_) return false;
+
+  forward_plan_b_ = fftwf_plan_r2r_1d(order_, in_, B_, FFTW_R2HC, FFTW_ESTIMATE);
+  if(!forward_plan_b_) return false;
+   
+  inverse_plan_ = fftwf_plan_r2r_1d(order_, C_, c_, FFTW_HC2R, FFTW_ESTIMATE);
+  if(!inverse_plan_) return false;
+
+  return true;
+}
+
 
 float* CrossCorrelation::Result() { return c_; }
 

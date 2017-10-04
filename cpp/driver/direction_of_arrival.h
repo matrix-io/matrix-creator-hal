@@ -39,7 +39,7 @@ class DirectionOfArrival {
  private:
   MicrophoneArray& mics_;
   int length_;
-  CrossCorrelation corr_;
+  CrossCorrelation* corr_;
   std::valarray<float> current_mag_;
   std::valarray<float> current_index_;
   std::valarray<int16_t> buffer_1D_;
