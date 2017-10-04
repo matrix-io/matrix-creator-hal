@@ -37,7 +37,7 @@ bool IMUSensor::Read(IMUData* data) {
 }
 
 bool IMUSensor::SetCompassCalibration(float offset_x, float offset_y,
-                                      float offset_z, IMUData* data) {
+                                      float offset_z) {
   uint16_t add = kMCUBaseAddress + (kMemoryOffsetIMU >> 1);
 
   unsigned char* buffer = (unsigned char*)(&offset_x);
@@ -51,8 +51,6 @@ bool IMUSensor::SetCompassCalibration(float offset_x, float offset_y,
   buffer = (unsigned char*)(&offset_z);
   wishbone_->SpiWrite(add + kMagOffsetsZ, &buffer[0], 0);
   wishbone_->SpiWrite(add + kMagOffsetsZ + 1, &buffer[2], 0);
-
-  wishbone_->SpiRead(add, (unsigned char*)data, sizeof(IMUData));
 
   return true;
 }
