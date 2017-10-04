@@ -19,6 +19,11 @@
 #include "cpp/driver/imu_sensor.h"
 #include "cpp/driver/creator_memory_map.h"
 
+// Compass offset calibraiton values.12 values before * 2 indexes by value = 24
+const uint16_t kMagOffsetsX = 0x18;
+const uint16_t kMagOffsetsY = 0x1A;
+const uint16_t kMagOffsetsZ = 0x1C;
+
 namespace matrix_hal {
 
 bool IMUSensor::Read(IMUData* data) {
@@ -32,12 +37,22 @@ bool IMUSensor::Read(IMUData* data) {
 }
 
 bool IMUSensor::SetCompassCalibration(float offset_x, float offset_y,
-                                      float offset_z) {
-  uint16_t add_base = kMCUBaseAddress + kMemoryOffsetIMU;
+                                      float offset_z, IMUData* data) {
+  uint16_t add = kMCUBaseAddress + (kMemoryOffsetIMU >> 1);
 
-  wishbone_->SpiWrite16();
-  // wishbone_->SpiWrite16(add_base + 2, (unsigned char *)mag_y_offset);
-  // wishbone_->SpiWrite16(add_base + 4, (unsigned char *)mag_z_offset);
+  unsigned char* buffer = (unsigned char*)(&offset_x);
+  wishbone_->SpiWrite(add + kMagOffsetsX, &buffer[0], 0);
+  wishbone_->SpiWrite(add + kMagOffsetsX + 1, &buffer[2], 0);
+
+  buffer = (unsigned char*)(&offset_y);
+  wishbone_->SpiWrite(add + kMagOffsetsY, &buffer[0], 0);
+  wishbone_->SpiWrite(add + kMagOffsetsY + 1, &buffer[2], 0);
+
+  buffer = (unsigned char*)(&offset_z);
+  wishbone_->SpiWrite(add + kMagOffsetsZ, &buffer[0], 0);
+  wishbone_->SpiWrite(add + kMagOffsetsZ + 1, &buffer[2], 0);
+
+  wishbone_->SpiRead(add, (unsigned char*)data, sizeof(IMUData));
 
   return true;
 }
