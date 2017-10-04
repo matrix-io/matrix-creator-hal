@@ -31,8 +31,8 @@ bool DirectionOfArrival::Init() {
   length_ = mics_.NumberOfSamples();
   corr_ = new CrossCorrelation();
   corr_->Init(mics_.NumberOfSamples());
-  current_mag_ = 4;
-  current_index_ = 4;
+  current_mag_.resize(4);
+  current_index_.resize(4);
   buffer_1D_.resize(mics_.Channels() * mics_.NumberOfSamples());
   buffer_2D_.resize(mics_.Channels());
   mic_direction_ = 0;
@@ -82,7 +82,7 @@ void DirectionOfArrival::Calculate() {
   for (int channel = 1; channel < 4; channel++) {
     if (mag < current_mag_[channel]) {
       dir = channel;
-      mag = current_mag_[channel];
+	      mag = current_mag_[channel];
       index = current_index_[channel];
     }
   }

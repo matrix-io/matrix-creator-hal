@@ -45,8 +45,8 @@ int main(int argc, char *agrv[]) {
   mics.SetSamplingRate(sampling_rate);
   mics.ShowConfiguration();
   
-  hal::DirectionOfArrival doa();
-  doa.Init(mics);
+  hal::DirectionOfArrival doa(mics);
+  doa.Init();
 
   float azimutal_angle;
   float polar_angle;
