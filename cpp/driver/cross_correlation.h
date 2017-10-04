@@ -31,7 +31,7 @@ class CrossCorrelation {
   CrossCorrelation();
   ~CrossCorrelation();
   bool Init(int N);
-
+  void Release(); 
   void Exec(int16_t* a, int16_t* b);
   float* Result();
 

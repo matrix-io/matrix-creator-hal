@@ -33,7 +33,7 @@ CrossCorrelation::CrossCorrelation()
 
 CrossCorrelation::~CrossCorrelation() { Release(); }
 
-CrossCorrelation::Release() {
+void CrossCorrelation::Release() {
   if (forward_plan_a_) fftwf_destroy_plan(forward_plan_a_);
   if (forward_plan_b_) fftwf_destroy_plan(forward_plan_b_);
   if (inverse_plan_) fftwf_destroy_plan(inverse_plan_);
