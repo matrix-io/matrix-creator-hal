@@ -30,7 +30,7 @@ class CrossCorrelation {
  public:
   CrossCorrelation();
   ~CrossCorrelation();
-  Init(int N)
+  bool Init(int N);
 
   void Exec(int16_t* a, int16_t* b);
   float* Result();

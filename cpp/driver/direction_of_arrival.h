@@ -29,6 +29,7 @@ namespace matrix_hal {
 class DirectionOfArrival {
  public:
   DirectionOfArrival(MicrophoneArray& mics);
+  bool Init();
 
   void Calculate();
 
