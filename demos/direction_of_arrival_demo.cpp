@@ -46,6 +46,7 @@ int main(int argc, char *agrv[]) {
   mics.ShowConfiguration();
   
   hal::DirectionOfArrival doa(mics);
+  doa.Init();
 
   float azimutal_angle;
   float polar_angle;
