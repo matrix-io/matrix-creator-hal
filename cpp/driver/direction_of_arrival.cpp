@@ -82,7 +82,7 @@ void DirectionOfArrival::Calculate() {
   for (int channel = 1; channel < 4; channel++) {
     if (mag < current_mag_[channel]) {
       dir = channel;
-	      mag = current_mag_[channel];
+      mag = current_mag_[channel];
       index = current_index_[channel];
     }
   }
