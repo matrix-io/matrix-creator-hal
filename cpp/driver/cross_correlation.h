@@ -28,9 +28,10 @@ Cross-correlation between signals implemented in frequency domain.
 */
 class CrossCorrelation {
  public:
-  CrossCorrelation(int N);
+  CrossCorrelation();
   ~CrossCorrelation();
-
+  bool Init(int N);
+  void Release(); 
   void Exec(int16_t* a, int16_t* b);
   float* Result();
 

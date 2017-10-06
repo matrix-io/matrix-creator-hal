@@ -47,6 +47,8 @@ add_executable(mic_demo mic_demo.cpp)
   target_link_libraries(mic_demo matrix_creator_hal)
   target_link_libraries(mic_demo ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(mic_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+  target_link_libraries(mic_demo ${GFLAGS_LIB})
+
 
 add_executable(ir_demo ir_demo.cpp)
   set_property(TARGET ir_demo PROPERTY CXX_STANDARD 11)
@@ -70,12 +72,13 @@ add_executable(gpio_demo gpio_demo.cpp)
   set_property(TARGET gpio_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(gpio_demo matrix_creator_hal)
   target_link_libraries(gpio_demo ${CMAKE_THREAD_LIBS_INIT})
-
+  
 add_executable(mic_energy mic_energy.cpp)
   set_property(TARGET mic_energy PROPERTY CXX_STANDARD 11)
   target_link_libraries(mic_energy matrix_creator_hal)
   target_link_libraries(mic_energy ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(mic_energy ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+  target_link_libraries(mic_energy ${GFLAGS_LIB})
 
 add_executable(micarray_alsa_pipes micarray_alsa_pipes.cpp)
   set_property(TARGET micarray_alsa_pipes PROPERTY CXX_STANDARD 11)
@@ -104,6 +107,8 @@ add_executable(direction_of_arrival_demo direction_of_arrival_demo.cpp)
   target_link_libraries(direction_of_arrival_demo ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(direction_of_arrival_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
   target_link_libraries(direction_of_arrival_demo ${FFTW_LIBRARIES})
+  target_link_libraries(direction_of_arrival_demo ${GFLAGS_LIB})
+
 
 add_executable(uart_demo uart_demo.cpp)
   set_property(TARGET uart_demo PROPERTY CXX_STANDARD 11)
