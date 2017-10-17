@@ -61,10 +61,13 @@ int main() {
 
     for (int i = led_offset[mic] - 3, j = 0; i < led_offset[mic] + 3;
          ++i, ++j) {
-      if (i < 0) {
-        image1d.leds[image1d.leds.size() + i].blue = lut[j];
-      } else {
-        image1d.leds[i % image1d.leds.size()].blue = lut[j];
+
+      if (mic > 0) {
+	      if (i < 0) {
+		image1d.leds[image1d.leds.size() + i].blue = lut[j];
+	      } else {
+		image1d.leds[i % image1d.leds.size()].blue = lut[j];
+	      }
       }
 
       everloop.Write(&image1d);

@@ -22,6 +22,7 @@
 #include "cpp/driver/cross_correlation.h"
 #include "cpp/driver/direction_of_arrival.h"
 #include "cpp/driver/microphone_array_location.h"
+#include <iostream>
 
 namespace matrix_hal {
 
@@ -41,17 +42,30 @@ DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics)
   }
 }
 
+int DirectionOfArrival::getAbsDiff(int index) {
+  if (index < length_ / 2) {
+    return index;
+  }
+  return length_ - 1 - index;
+}
+
 void DirectionOfArrival::Calculate() {
   int max_tof = 6;
+  //std::cout << "Number of samples: " << mics_.NumberOfSamples() << std::endl;
 
+  double energy = 0;
   for (uint32_t s = 0; s < mics_.NumberOfSamples(); s++) {
     for (uint16_t c = 0; c < mics_.Channels(); c++) { /* mics_.Channels()=8 */
       buffer_2D_[c][s] = mics_.At(s, c);
+      energy += mics_.At(s, c) * mics_.At(s, c);
     }
   }
 
   for (int channel = 0; channel < 4; channel++) {
-    corr_.Exec(buffer_2D_[channel + 4], buffer_2D_[channel]);
+    if (!corr_.Exec(buffer_2D_[channel + 4], buffer_2D_[channel])) {
+        mic_direction_ = -1;
+        return;
+    }
 
     float* c = corr_.Result();
 
@@ -73,28 +87,36 @@ void DirectionOfArrival::Calculate() {
     current_index_[channel] = index;
   }
 
-  int dir = 0;
-  int index = current_index_[0];
+  int perp = 0;
+  float index = current_index_[0];
   float mag = current_mag_[0];
-  for (int channel = 1; channel < 4; channel++) {
-    if (mag < current_mag_[channel]) {
-      dir = channel;
+  for (int channel = 0; channel < 4; channel++) {
+    if (getAbsDiff(current_index_[channel]) < getAbsDiff(index)) {
+      perp = channel;
+      mag = current_mag_[channel];
+      index = current_index_[channel];
+    } else if (getAbsDiff(current_index_[channel]) < getAbsDiff(index) && current_mag_[channel] > mag) {
+      perp = channel;
       mag = current_mag_[channel];
       index = current_index_[channel];
     }
+    //std::cout << "Channel(" << channel << ")_sample_value: " << current_index_[channel] << ", mag: " << current_mag_[channel] << std::endl;
   }
 
-  if (index > 64) index = -(128 - index);
-  if (mag > 2e8) {
-    if (index < 0) {
-      mic_direction_ = (dir + 4);
-    } else {
-      mic_direction_ = dir;
+  //std::cout << "--> Channel perp " << perp << std::endl; 
+
+    int dir = (perp + 2) % 4;
+    if (current_index_[dir] > length_ / 2) {
+      dir = (dir + 4);
     }
+
+    //std::cout << "--> Channel towards speaker: " << dir << " --> max_amp_corr: " << current_mag_[dir] << std::endl;
+
+    mic_direction_ = dir;
     azimutal_angle_ = atan2(micarray_location[mic_direction_][1],
-                            micarray_location[mic_direction_][0]);
+		    micarray_location[mic_direction_][0]);
     polar_angle_ = fabs(index) * M_PI / 2.0 / float(max_tof - 1);
-  }
+
 }
 
 };  // namespace matrix_hal

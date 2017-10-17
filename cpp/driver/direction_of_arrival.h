@@ -44,8 +44,10 @@ class DirectionOfArrival {
   std::valarray<float> current_index_;
   std::valarray<int16_t> buffer_1D_;
   std::valarray<int16_t*> buffer_2D_;
+ 
+  int getAbsDiff(int index);
 
-  uint16_t mic_direction_;
+  int mic_direction_;
   float azimutal_angle_;
   float polar_angle_;
 };

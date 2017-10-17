@@ -31,7 +31,8 @@ int main() {
   int j = 0;
   uint64_t instantE = 0;
   uint64_t avgEnergy = 0;
-  std::valarray<uint64_t> localAverage (20);
+  size_t buffer_length = 10;
+  std::valarray<uint64_t> localAverage (buffer_length);
   localAverage = 0;
   mics.SetGain(8); 
   while (true) {
@@ -41,13 +42,13 @@ int main() {
       instantE = instantE + (mics.At(s, 0))*(mics.At(s, 0));
     }
     
-    localAverage[j%20] = instantE;
+    localAverage[j%buffer_length] = instantE;
     avgEnergy = 0;
     for(auto& data : localAverage){
       avgEnergy = (avgEnergy + data);
     }
     
-    avgEnergy = avgEnergy/20;
+    avgEnergy = avgEnergy/buffer_length;
     
     for (auto& led : image1d.leds) {
       led.red = avgEnergy>>24;
