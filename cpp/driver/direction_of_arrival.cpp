@@ -26,20 +26,23 @@
 
 namespace matrix_hal {
 
-DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics)
-    : mics_(mics),
-      length_(mics_.NumberOfSamples()),
-      corr_(length_),
-      current_mag_(4),
-      current_index_(4),
-      buffer_1D_(mics_.Channels() * mics_.SamplingRate()),
-      buffer_2D_(mics_.Channels()),
-      mic_direction_(0),
-      azimutal_angle_(0.0),
-      polar_angle_(0.0) {
+DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics) : mics_(mics) {}
+
+bool DirectionOfArrival::Init() {
+  length_ = mics_.NumberOfSamples();
+  corr_ = new CrossCorrelation();
+  corr_->Init(mics_.NumberOfSamples());
+  current_mag_.resize(4);
+  current_index_.resize(4);
+  buffer_1D_.resize(mics_.Channels() * mics_.NumberOfSamples());
+  buffer_2D_.resize(mics_.Channels());
+  mic_direction_ = 0;
+  azimutal_angle_ = 0;
+  polar_angle_ = 0;
   for (uint16_t c = 0; c < mics_.Channels(); c++) {
-    buffer_2D_[c] = &buffer_1D_[c * mics_.SamplingRate()];
+    buffer_2D_[c] = &buffer_1D_[c * mics_.NumberOfSamples()];
   }
+  return true;
 }
 
 int DirectionOfArrival::getAbsDiff(int index) {
@@ -67,7 +70,7 @@ void DirectionOfArrival::Calculate() {
         return;
     }
 
-    float* c = corr_.Result();
+    float* c = corr_->Result();
 
     int index = 0;
     float m = c[0];
@@ -103,7 +106,7 @@ void DirectionOfArrival::Calculate() {
     //std::cout << "Channel(" << channel << ")_sample_value: " << current_index_[channel] << ", mag: " << current_mag_[channel] << std::endl;
   }
 
-  //std::cout << "--> Channel perp " << perp << std::endl; 
+  //std::cout << "--> Channel perp " << perp << std::endl;
 
     int dir = (perp + 2) % 4;
     if (current_index_[dir] > length_ / 2) {

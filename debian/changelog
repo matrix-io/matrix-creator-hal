@@ -1,17 +1,28 @@
-libmatrix-creator-hal (0.1.2) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.4) unstable; urgency=medium
+
+  * Multiple frequency support in micarray has been supported
+  * Read FPGA core information has been supported
+  * Adjust endianess between FPGA and Raspberry
+
+ -- Admobilize <info@admobilize.com>  Thu, 14 Sep 2017 15:51:50 +0000
+
+libmatrixio-creator-hal (0.1.3) unstable; urgency=medium
+
+  * Fix missing dependency, matrix-creator-init
+
+ -- Admobilize <info@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
+
+libmatrixio-creator-hal (0.1.2) unstable; urgency=medium
 
   * MATRIX Creator Hardware Abstraction Layer 
   * Initial realease of Libraries.
   * Initial realease of Direction of Arrival (DoA)
 
- -- Kevin Patino <kevin.patino@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
+ -- Admobilize <info@admobilize.com>  Fri, 17 Feb 2017 16:14:49 +0000
 
-libmatrix-creator-hal (0.1.1) unstable; urgency=medium
+libmatrixio-creator-hal (0.1.1) unstable; urgency=medium
 
   * Initial release.
 
- -- Andres Calderon <andres.calderon@admobilize.com>  Thu, 16 Feb 2017 12:00:00 +0000
+ -- Admobilize <info@admobilize.com>  Thu, 16 Feb 2017 12:00:00 +0000
 
-Local variables:
-mode: debian-changelog
-End:

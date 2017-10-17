@@ -20,16 +20,18 @@
 
 #include <string>
 #include <valarray>
+#include "./circular_queue.h"
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
-#include "./circular_queue.h"
 
 namespace matrix_hal {
 
+const uint32_t kPDMFrequency = 3000000;
+const uint32_t kCICStages = 3;
+const uint16_t kCICWidth = 23;
 const uint16_t kMicarrayBufferSize = 1024;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
-const uint32_t kSamplingRate = 16000;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -38,14 +40,20 @@ class MicrophoneArray : public MatrixDriver {
   ~MicrophoneArray();
 
   void Setup(WishboneBus* wishbone);
-
   bool Read();
-
-  void SetGain(int16_t gain) { gain_ = gain; }
+  uint32_t SamplingRate() { return sampling_frequency_; }
+  uint16_t DecimationRatio() { return decimation_ratio_; }
+  uint16_t Gain() { return gain_; }
+  bool GetDecimationRatio();
+  bool GetPDMRatio();
+  bool SetPDMRatio(uint16_t pdm_ratio);
+  bool SetSamplingRate(uint32_t sampling_frequency);
+  bool SetDecimationRatio(uint16_t decimation_counter);
+  bool GetGain();
+  bool SetGain(uint16_t gain);
+  void ReadConfValues();
+  void ShowConfiguration();
   uint16_t Channels() { return kMicrophoneChannels; }
-
-  uint32_t SamplingRate() { return kSamplingRate; }
-
   uint32_t NumberOfSamples() {
     return kMicarrayBufferSize / kMicrophoneChannels;
   }
@@ -66,6 +74,9 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
+  uint16_t pdm_ratio_;
+  uint16_t sampling_frequency_;
+  uint16_t decimation_ratio_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;

@@ -23,6 +23,8 @@
 namespace matrix_hal {
 
 /* FPGA Wishbone address map */
+const uint32_t kConfBaseAddress = 0x0000;
+const uint32_t kUartBaseAddress = 0x0800;
 const uint32_t kMicrophoneArrayBaseAddress = 0x1800;
 const uint32_t kEverloopBaseAddress = 0x2000;
 const uint32_t kGPIOBaseAddress = 0x2800;

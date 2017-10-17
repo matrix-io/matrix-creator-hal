@@ -15,36 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
+#include "cpp/driver/wishbone_bus.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/spi/spidev.h>
+#include <linux/types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
 #include <string.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
-#include <string>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <iostream>
-#include "cpp/driver/wishbone_bus.h"
-
-#define WR0(a) ((a >> 6) & 0x0FF)
-#define WR1(a, i) (((a << 2) & 0xFC) | (i << 1))
-
-#define RD0(a) ((a >> 6) & 0x0FF)
-#define RD1(a, i) (((a << 2) & 0xFC) | 0x01 | (i << 1))
+#include <string>
+#include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
+
+struct hardware_address {
+  uint8_t readnwrite : 1;
+  uint8_t burst : 1;
+  uint16_t reg : 14;
+};
 
 WishboneBus::WishboneBus()
     : device_name_("/dev/spidev0.0"),
       spi_mode_(3),
       spi_bits_(8),
-      spi_speed_(18000000),
-      spi_delay_(0) {}
+      spi_speed_(10000000),
+      spi_delay_(0),
+      fpga_frequency_(125000000) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -82,12 +84,12 @@ bool WishboneBus::SpiInit() {
    * max speed hz
    */
   if (ioctl(spi_fd_, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed_) == -1) {
-    std::cerr << "can't set max speed hz" << std::endl;
+    std::cerr << "can't set max speed Hz" << std::endl;
     return false;
   }
 
   if (ioctl(spi_fd_, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed_) == -1) {
-    std::cerr << "can't get max speed hz" << std::endl;
+    std::cerr << "can't get max speed Hz" << std::endl;
     return false;
   }
 
@@ -117,10 +119,13 @@ bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
 bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
   std::unique_lock<std::mutex> lock(mutex_);
 
+  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hw_addr->reg = add;
+  hw_addr->burst = 0;
+  hw_addr->readnwrite = 0;
+
   uint8_t *p = (uint8_t *)&data;
 
-  tx_buffer_[0] = WR0(add);
-  tx_buffer_[1] = WR1(add, 0);
   tx_buffer_[2] = p[0];
   tx_buffer_[3] = p[1];
 
@@ -131,8 +136,12 @@ bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data,
                            unsigned char inc) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  tx_buffer_[0] = WR0(add);
-  tx_buffer_[1] = WR1(add, inc);
+
+  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hw_addr->reg = add;
+  hw_addr->burst = inc;
+  hw_addr->readnwrite = 0;
+
   memcpy(&tx_buffer_[2], data, 2);
   return SpiTransfer(tx_buffer_, rx_buffer_, 4);
 }
@@ -140,8 +149,11 @@ bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data,
 bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  tx_buffer_[0] = RD0(add);
-  tx_buffer_[1] = RD1(add, 1);
+  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hw_addr->reg = add;
+  hw_addr->burst = 1;
+  hw_addr->readnwrite = 1;
+
   if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
     memcpy(data, &rx_buffer_[2], length);
     return true;
@@ -162,13 +174,31 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
   std::unique_lock<std::mutex> lock(mutex_);
 
   const int length = 2;
-  tx_buffer_[0] = RD0(add);
-  tx_buffer_[1] = RD1(add, 0);
+
+  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hw_addr->reg = add;
+  hw_addr->burst = 0;
+  hw_addr->readnwrite = 1;
+
   if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
     memcpy(data, &rx_buffer_[2], length);
     return true;
   }
   return false;
+}
+
+bool WishboneBus::GetSoftwareVersion(char *version, int length) {
+  if (!SpiRead(kConfBaseAddress, (unsigned char *)version, length))
+    return false;
+  return true;
+}
+
+bool WishboneBus::GetFPGAFrequency() {
+  uint16_t values[2];
+  if (!SpiRead(kConfBaseAddress + 4, (unsigned char *)values, sizeof(values)))
+    return false;
+  fpga_frequency_ = (kFPGAClock * values[1]) / values[0];
+  return true;
 }
 
 void WishboneBus::SpiClose(void) { close(spi_fd_); }

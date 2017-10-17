@@ -2,7 +2,7 @@
  * Copyright 2016 <Admobilize>
  * All rights reserved.
  */
-
+#include <gflags/gflags.h>
 #include <wiringPi.h>
 
 #include <string>
@@ -16,9 +16,14 @@
 #include "../cpp/driver/wishbone_bus.h"
 #include "./fir.h"
 
+DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+
 namespace hal = matrix_hal;
 
-int main() {
+int main(int argc, char *agrv[]) {
+  google::ParseCommandLineFlags(&argc, &agrv, true);
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -29,6 +34,10 @@ int main() {
   mics.Setup(&bus);
 
   hal::EverloopImage image1d;
+
+  int sampling_rate = FLAGS_sampling_frequency;
+  mics.SetSamplingRate(sampling_rate);
+  mics.ShowConfiguration();
 
   std::valarray<int> lookup = {23, 27, 32, 1, 6, 10, 14, 19};
 

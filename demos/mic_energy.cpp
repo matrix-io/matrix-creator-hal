@@ -2,7 +2,7 @@
  * Copyright 2016 <Admobilize>
  * All rights reserved.
  */
-
+#include <gflags/gflags.h>
 #include <wiringPi.h>
 
 #include <string>
@@ -15,9 +15,15 @@
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 
+DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+
 namespace hal = matrix_hal;
 
-int main() {
+int main(int argc, char *agrv[]) {
+  
+  google::ParseCommandLineFlags(&argc, &agrv, true);
+
   hal::WishboneBus bus;
   bus.SpiInit();
 
@@ -34,7 +40,11 @@ int main() {
   size_t buffer_length = 10;
   std::valarray<uint64_t> localAverage (buffer_length);
   localAverage = 0;
-  mics.SetGain(8); 
+
+  int sampling_rate = FLAGS_sampling_frequency;
+  mics.SetSamplingRate(sampling_rate);
+  mics.ShowConfiguration();
+
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
     instantE  = 0; 

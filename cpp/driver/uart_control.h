@@ -15,42 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_CROSS_CORRELATION_H_
-#define CPP_CROSS_CORRELATION_H_
-
-#include <fftw3.h>
-#include <stdint.h>
+#ifndef CPP_DRIVER_UART_CONTROL_H_
+#define CPP_DRIVER_UART_CONTROL_H_
+#include <cstdint>
+#include <vector>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
-/*
-Cross-correlation between signals implemented in frequency domain.
-*/
-class CrossCorrelation {
+class UartControl : public MatrixDriver {
  public:
-  CrossCorrelation();
-  ~CrossCorrelation();
-
-  bool Init(int N);
-  void Release();
-  void Exec(int16_t* a, int16_t* b);
-
-  float* Result();
-
- private:
-  void Corr(float* out, float* x, float* y);
-
-  int order_;
-  float* in_;
-  float* A_;
-  float* B_;
-  float* C_;
-  float* c_;
-
-  fftwf_plan forward_plan_a_;
-  fftwf_plan forward_plan_b_;
-  fftwf_plan inverse_plan_;
+  UartControl();
+  void Setup(WishboneBus* wishbone);
+  uint16_t GetUartValue();
+  bool GetUartUCR();
+  bool SetUartValue(uint16_t data);
+  uint16_t ucr_;
 };
 
 };      // namespace matrix_hal
-#endif  // CPP_CROSS_CORRELATION_H_
+#endif  // CPP_DRIVER_UART_CONTROL_H_
