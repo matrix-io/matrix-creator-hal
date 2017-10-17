@@ -15,9 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include <iostream>
-#include <cstring>
 #include "cpp/driver/cross_correlation.h"
 #include <cstring>
 
@@ -100,11 +97,6 @@ void CrossCorrelation::Exec(int16_t* a, int16_t* b) {
   fftwf_execute(forward_plan_b_);
 
   Corr(C_, A_, B_);
-
-  double sum = 0;
-  for (size_t i = 0; i < 2; ++i) {
-    sum += A_[i] * A_[i];
-  }
 
   fftwf_execute(inverse_plan_);
 
