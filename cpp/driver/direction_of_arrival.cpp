@@ -65,10 +65,7 @@ void DirectionOfArrival::Calculate() {
   }
 
   for (int channel = 0; channel < 4; channel++) {
-    if (!corr_.Exec(buffer_2D_[channel + 4], buffer_2D_[channel])) {
-        mic_direction_ = -1;
-        return;
-    }
+    corr_->Exec(buffer_2D_[channel + 4], buffer_2D_[channel]);
 
     float* c = corr_->Result();
 

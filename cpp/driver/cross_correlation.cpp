@@ -86,7 +86,7 @@ bool CrossCorrelation::Init(int N) {
 
 float* CrossCorrelation::Result() { return c_; }
 
-bool CrossCorrelation::Exec(int16_t* a, int16_t* b) {
+void CrossCorrelation::Exec(int16_t* a, int16_t* b) {
   for (int i = 0; i < order_; i++) {
     in_[i] = a[i];
   }
@@ -111,8 +111,6 @@ bool CrossCorrelation::Exec(int16_t* a, int16_t* b) {
   for (int i = 0; i < order_; i++) {
     c_[i] = c_[i] / order_;
   }
-
-  return true;
 }
 
 void CrossCorrelation::Corr(float* out, float* x, float* y) {
