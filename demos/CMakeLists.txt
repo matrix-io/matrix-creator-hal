@@ -120,8 +120,3 @@ add_executable(compass_calib compass_calib.cpp)
   set_property(TARGET compass_calib PROPERTY CXX_STANDARD 11)
   target_link_libraries(compass_calib matrix_creator_hal)
   target_link_libraries(compass_calib ${CMAKE_THREAD_LIBS_INIT})
-
-add_executable(imu_test imu_test.cpp)
-  set_property(TARGET imu_test PROPERTY CXX_STANDARD 11)
-  target_link_libraries(imu_test matrix_creator_hal)
-  target_link_libraries(imu_test ${CMAKE_THREAD_LIBS_INIT})
