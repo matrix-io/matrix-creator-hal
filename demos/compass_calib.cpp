@@ -131,34 +131,6 @@ int main() {
   uint xy_angle_index = 0;
   uint xz_angle_index = 0;
 
-  imu_sensor.SetCompassCalibration(0.31892, 0.11487, -0.16793);
-  imu_sensor.Read(&imu_data);
-
-  printf("yaw\t");
-  printf("pitch\t");
-  printf("roll\t");
-  printf("mag_x\t");
-  printf("mag_y\t");
-  printf("mag_z\t");
-  printf("off_x\t");
-  printf("off_y\t");
-  printf("off_z\t");
-
-  printf("\n");
-
-  printf("%.2f\t",imu_data.yaw );
-  printf("%.2f\t",imu_data.pitch );
-  printf("%.2f\t",imu_data.roll );
-  printf("%.2f\t",imu_data.mag_x );
-  printf("%.2f\t",imu_data.mag_y );
-  printf("%.2f\t",imu_data.mag_z );
-  printf("%.2f\t",imu_data.mag_offset_x );
-  printf("%.2f\t",imu_data.mag_offset_y);
-  printf("%.2f\t",imu_data.mag_offset_z);
-  printf("\n");
-
-  return 0;
-
   while (true) {
     imu_sensor.Read(&imu_data);
 

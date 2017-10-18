@@ -52,19 +52,6 @@ int main() {
   hal::HumidityData humidity_data;
   hal::PressureData pressure_data;
 
-  std::cout << "yaw\t"
-            << "pitch\t"
-            << "roll\t"
-            << "gyro_x\t"
-            << "gyro_y\t"
-            << "gyro_z\t"
-            << "mag_x\t"
-            << "mag_y\t"
-            << "mag_z\t"
-            << "off_x\t"
-            << "off_y\t"
-            << "off_z\t" << std::endl;
-
   while (true) {
     for (hal::LedValue& led : image1d.leds) {
       led.red = 0;
@@ -89,32 +76,20 @@ int main() {
 
     everloop.Write(&image1d);
 
-    printf("%.2f\t",imu_data.yaw );
-    printf("%.2f\t",imu_data.pitch );
-    printf("%.2f\t",imu_data.roll );
-    printf("%.2f\t",imu_data.gyro_x );
-    printf("%.2f\t",imu_data.gyro_y );
-    printf("%.2f\t",imu_data.gyro_z );
-    printf("%.2f\t",imu_data.mag_x );
-    printf("%.2f\t",imu_data.mag_y );
-    printf("%.2f\t",imu_data.mag_z );
-    printf("%.2f\t",imu_data.mag_offset_x );
-    printf("%.2f\t",imu_data.mag_offset_x );
-    printf("%.2f\t",imu_data.mag_offset_x );
-    printf("\n");
+    std::cout << "yaw = " << imu_data.yaw << "\t";
+    std::cout << "roll = " << imu_data.roll << "\t";
+    std::cout << "pitch = " << imu_data.pitch << std::endl;
 
-    // std::cout << imu_data.yaw << "\t"
-    //           << imu_data.pitch << "\t"
-    //           << imu_data.roll<< "\t"
-    //           << imu_data.mag_x<< "\t"
-    //           << imu_data.mag_y<< "\t"
-    //           << imu_data.mag_z<< "\t"
-    //           << imu_data.mag_offset_x<< "\t"
-    //           << imu_data.mag_offset_x<< "\t"
-    //           << imu_data.mag_offset_x << "\t"
-    //           << std::endl;
+    std::cout << "a " << imu_data.accel_x << ", " << imu_data.accel_y << ", "<< imu_data.accel_z << std::endl;
+    std::cout << "g " << imu_data.gyro_x << ", " << imu_data.gyro_y << ", "<< imu_data.gyro_z << std::endl;
+    std::cout << "m " << imu_data.mag_x << ", " << imu_data.mag_y  << ", "<< imu_data.mag_z << std::endl;
+    std::cout << std::endl << std::endl;
+    std::cout << "humidity=" << humidity_data.humidity << " temperature=" << humidity_data.temperature << std::endl;
+    std::cout << std::endl << std::endl;
+    std::cout << "pressure=" << pressure_data.pressure << " temperature=" << pressure_data.temperature << std::endl;
+    std::cout << std::endl << std::endl;
 
-    usleep(100000);
+    usleep(200000);
   }
 
   return 0;
