@@ -81,18 +81,24 @@ enum States {
 };
 
 OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
+  
   OrientationType orientation = NONE;
+  // Getting distante of g vector thaht points always down 
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
-
+  // Getting angle from each axis to g vector
   float alpha_x = acos(acc_x / g) * 180 / M_PI;
   float alpha_y = acos(acc_y / g) * 180 / M_PI;
   float alpha_z = acos(acc_z / g) * 180 / M_PI;
+  // Converting angle (0-180) to (0-90)
+  float diff_alpha_x = 90 - abs(alpha_x - 90);
+  float diff_alpha_y = 90 - abs(alpha_y - 90);
+  float diff_alpha_z = 90 - abs(alpha_z - 90);
 
-  if (90 - abs(alpha_x - 90) < kAngleThreshold) {
+  if (diff_alpha_x < kAngleThreshold) {
     orientation = X_AXIS;
-  } else if (90 - abs(alpha_y - 90) < kAngleThreshold) {
+  } else if (diff_alpha_y < kAngleThreshold) {
     orientation = Y_AXIS;
-  } else if (90 - abs(alpha_z - 90) < kAngleThreshold) {
+  } else if (diff_alpha_z < kAngleThreshold) {
     orientation = Z_AXIS;
   } else {
     orientation = NONE;
