@@ -44,9 +44,9 @@ float mag_min_x = std::numeric_limits<float>::max();
 float mag_min_y = std::numeric_limits<float>::max();
 float mag_min_z = std::numeric_limits<float>::max();
 
-float mag_off_x;
-float mag_off_y;
-float mag_off_z;
+float mag_off_x = 0;
+float mag_off_y = 0;
+float mag_off_z = 0;
 
 float acc_x = 0;
 float acc_y = 0;
@@ -62,10 +62,10 @@ std::vector<int> xz_count(36);
 bool xy_valid = false;
 bool xz_valid = false;
 
-float amp_distance_xy;
-float offset_distance_xy;
-float amp_distance_xz;
-float offset_distance_xz;
+float amp_distance_xy = 0;
+float offset_distance_xy = 0;
+float amp_distance_xz = 0;
+float offset_distance_xz = 0;
 
 enum OrientationType {
   NONE,
