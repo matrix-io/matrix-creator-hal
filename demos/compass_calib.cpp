@@ -349,7 +349,8 @@ int main() {
       std::cerr << "\n";
     }
 
-    usleep(50000);
+    // Just a delay to control the speed of the printed interface
+    usleep(100000);
   }
 
   return 0;
