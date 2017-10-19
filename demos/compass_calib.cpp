@@ -80,8 +80,6 @@ enum States {
   DONE_CALIB,
 };
 
-// Functions
-
 OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
   OrientationType orientation = NONE;
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
@@ -108,8 +106,6 @@ float Distance(float ax, float ay, float bx, float by) {
 }
 
 float GetHypotenuse(float a, float b) { return sqrt(pow(a, 2) + pow(b, 2)); }
-
-// MAIN
 
 int main() {
   hal::WishboneBus bus;
