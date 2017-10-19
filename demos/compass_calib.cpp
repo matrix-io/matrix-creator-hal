@@ -165,7 +165,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xy_angle_index = xy_angle_index / 10;
 
-        if(xy_angle_index > 0)
+        if(xy_angle_index >= 0)
           xy_count[xy_angle_index]++;
       }
 
@@ -193,7 +193,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xz_angle_index = xz_angle_index / 10;
 
-        if(xz_angle_index > 0)
+        if(xz_angle_index >= 0)
           xz_count[xz_angle_index]++;
       }
     }
@@ -201,27 +201,27 @@ int main() {
     // *********************  PRINTING *********************************
 
     system("clear");
-    std::cout << "**********************************************************\n";
-    std::cout << "******************  Compass Calibration ******************\n";
-    std::cout << "**********************************************************\n";
-    std::cout << "\n";
+    std::cerr << "**********************************************************\n";
+    std::cerr << "******************  Compass Calibration ******************\n";
+    std::cerr << "**********************************************************\n";
+    std::cerr << "\n";
 
     if (state == XY_AXIS_CALIB) {
-      std::cout << "Step 1: Calibrate X and Y axis\n";
-      std::cout << "STATUS BAR: ";
+      std::cerr << "Step 1: Calibrate X and Y axis\n";
+      std::cerr << "STATUS BAR: ";
 
       int calib_done_count = 0;
       // Printing Status Bar
       for (int i = 0; i < static_cast<int>(xy_count.size()); ++i) {
         if (xy_count[i] > 5) {
-          std::cout << "|";
+          std::cerr << "|";
           calib_done_count++;
         } else if (xy_count[i] > 3) {
-          std::cout << ":";
+          std::cerr << ":";
         } else if (xy_count[i] > 0) {
-          std::cout << ".";
+          std::cerr << ".";
         } else
-          std::cout << "_";
+          std::cerr << "_";
       }
 
       // calibration done detection
@@ -229,51 +229,51 @@ int main() {
         state = Z_AXIS_CALIB;
       }
 
-      std::cout << "\n            ";
+      std::cerr << "\n            ";
       for (int i = 0; i < static_cast<int>(xy_count.size()); ++i) {
         if (xy_angle_index == i) {
-          std::cout << "^";
+          std::cerr << "^";
         } else {
-          std::cout << " ";
+          std::cerr << " ";
         }
       }
 
-      std::cout << "\n\n";
-      std::cout << "Board Orientation: ";
+      std::cerr << "\n\n";
+      std::cerr << "Board Orientation: ";
       if (orientation == X_AXIS) {
-        std::cout << "X_AXIS\n";
+        std::cerr << "X_AXIS\n";
       } else if (orientation == Y_AXIS) {
-        std::cout << "Y_AXIS\n";
+        std::cerr << "Y_AXIS\n";
       } else if (orientation == Z_AXIS) {
-        std::cout << "Z_AXIS\n";
+        std::cerr << "Z_AXIS\n";
       } else {
-        std::cout << "NONE\n";
+        std::cerr << "NONE\n";
       }
 
-      std::cout << "\n";
-      std::cout << "Notes:\n";
-      std::cout << "- Put the MATRIX Creator facing up (Z_AXIS Orientation)\n";
-      std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
+      std::cerr << "\n";
+      std::cerr << "Notes:\n";
+      std::cerr << "- Put the MATRIX Creator facing up (Z_AXIS Orientation)\n";
+      std::cerr << "- Turn the board slowly to cover 360 deg. Use de status "
                    "bar as a guide.\n";
-      std::cout << "- The Calibration for this axis is completed when all "
+      std::cerr << "- The Calibration for this axis is completed when all "
                    "slots in the bar are \"|\"\n";
 
     } else if (state == Z_AXIS_CALIB) {
-      std::cout << "Step 1: Calibrate X and Y axis : Done !\n\n";
-      std::cout << "Step 2: Calibrate Z axis\n\n";
+      std::cerr << "Step 1: Calibrate X and Y axis : Done !\n\n";
+      std::cerr << "Step 2: Calibrate Z axis\n\n";
 
-      std::cout << "STATUS BAR: ";
+      std::cerr << "STATUS BAR: ";
       int calib_done_count = 0;
-      for (int i = 0; i < static_cast<int>(xz_count.size()); ++i) {
+      for (int i = 0; i < static_cast<int>(xz_count.size()); i++) {
         if (xz_count[i] > 5) {
-          std::cout << "|";
+          std::cerr << "|";
           calib_done_count++;
         } else if (xz_count[i] > 3) {
-          std::cout << ":";
+          std::cerr << ":";
         } else if (xz_count[i] > 0) {
-          std::cout << ".";
+          std::cerr << ".";
         } else
-          std::cout << "_";
+          std::cerr << "_";
       }
 
       // calibration done detection
@@ -281,72 +281,72 @@ int main() {
         state = DONE_CALIB;
       }
 
-      std::cout << "\n            ";
-      for (int i = 0; i < static_cast<int>(xz_count.size()); ++i) {
+      std::cerr << "\n            ";
+      for (int i = 0; i < static_cast<int>(xz_count.size()); i++) {
         if (xz_angle_index == i) {
-          std::cout << "^";
+          std::cerr << "^";
         } else {
-          std::cout << " ";
+          std::cerr << " ";
         }
       }
 
-      std::cout << "\nBoard Orientation: ";
+      std::cerr << "\nBoard Orientation: ";
       if (orientation == X_AXIS) {
-        std::cout << "X_AXIS\n";
+        std::cerr << "X_AXIS\n";
       } else if (orientation == Y_AXIS) {
-        std::cout << "Y_AXIS\n";
+        std::cerr << "Y_AXIS\n";
       } else if (orientation == Z_AXIS) {
-        std::cout << "Z_AXIS\n";
+        std::cerr << "Z_AXIS\n";
       } else {
-        std::cout << "NONE\n";
+        std::cerr << "NONE\n";
       }
 
-      std::cout << "\nNotes:\n";
-      std::cout << "-  Creator in Y_AXIS Orientation\n";
-      std::cout << "- Turn the board slowly to cover 360 deg. Use de status "
+      std::cerr << "\nNotes:\n";
+      std::cerr << "-  Creator in Y_AXIS Orientation\n";
+      std::cerr << "- Turn the board slowly to cover 360 deg. Use de status "
                    "bar as a guide.\n";
-      std::cout << "- The Calibration for this axis is completed when all "
+      std::cerr << "- The Calibration for this axis is completed when all "
                    "slots in the bar are \"|\"\n";
 
     } else if (state == DONE_CALIB) {
-      std::cout << "CALIBRATION DONE !!!\n\n";
+      std::cerr << "CALIBRATION DONE !!!\n\n";
 
-      std::cout << "Compass Axis X:\n";
-      std::cout << "- Max: " << mag_max_x << "\n";
-      std::cout << "- Min: " << mag_min_x << "\n";
-      std::cout << "- Offset : " << mag_off_x << "\n";
+      std::cerr << "Compass Axis X:\n";
+      std::cerr << "- Max: " << mag_max_x << "\n";
+      std::cerr << "- Min: " << mag_min_x << "\n";
+      std::cout << "Offset X: " << mag_off_x << "\n";
 
-      std::cout << "Compass Axis Y:\n";
-      std::cout << "- Max: " << mag_max_y << "\n";
-      std::cout << "- Min: " << mag_min_y << "\n";
-      std::cout << "- Offset : " << mag_off_y << "\n";
+      std::cerr << "Compass Axis Y:\n";
+      std::cerr << "- Max: " << mag_max_y << "\n";
+      std::cerr << "- Min: " << mag_min_y << "\n";
+      std::cout << "Offset Y: " << mag_off_y << "\n";
 
-      std::cout << "Compass Axis Z:\n";
-      std::cout << "- Max: " << mag_max_z << "\n";
-      std::cout << "- Min: " << mag_min_z << "\n";
-      std::cout << "- Offset : " << mag_off_z << "\n";
+      std::cerr << "Compass Axis Z:\n";
+      std::cerr << "- Max: " << mag_max_z << "\n";
+      std::cerr << "- Min: " << mag_min_z << "\n";
+      std::cout << "Offset Z: " << mag_off_z << "\n";
 
-      std::cout << "\nDo you want to save this calibration values to the "
+      std::cerr << "\nDo you want to save this calibration values to the "
                    "MATRIX CREATOR? [y/n]: \n";
-      std::cout << " (Previous calibration data will be lost)\n";
+      std::cerr << " (Previous calibration data will be lost)\n";
 
       char choice;
       std::cin >> choice;
       while (tolower(choice) != 'n' && tolower(choice) != 'y') {
-        std::cout << "\n";
-        std::cout << "Please enter Y (Yes) or N (No): ";
+        std::cerr << "\n";
+        std::cerr << "Please enter Y (Yes) or N (No): ";
         std::cin >> choice;
       }
 
       if (tolower(choice) == 'y') {
         if (imu_sensor.SetCompassCalibration(mag_off_x, mag_off_y, mag_off_z))
-          std::cout << "Sucessfully saved...\n";
+          std::cerr << "Sucessfully saved...\n";
         break;
       } else if (tolower(choice) == 'n') {
-        std::cout << "Calibration not saved.\n";
+        std::cerr << "Calibration not saved.\n";
         break;
       }
-      std::cout << "\n";
+      std::cerr << "\n";
     }
 
     usleep(50000);
