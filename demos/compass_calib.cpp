@@ -34,7 +34,7 @@
 namespace hal = matrix_hal;
 
 // Max angle permited to continue in flat state. In Degrees.
-const int kAngleThreshold 15;
+const int kAngleThreshold = 15;
 
 float mag_max_x = std::numeric_limits<float>::min();
 float mag_max_y = std::numeric_limits<float>::min();
