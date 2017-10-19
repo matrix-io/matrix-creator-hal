@@ -223,7 +223,7 @@ int main() {
       }
 
       // calibration done detection
-      if (calib_done_count == (int)xy_count.size()) {
+      if (calib_done_count == static_cast<int>(xy_count.size())) {
         state = Z_AXIS_CALIB;
       }
 
@@ -275,7 +275,7 @@ int main() {
       }
 
       // calibration done detection
-      if (calib_done_count == (int)xy_count.size()) {
+      if (calib_done_count == static_cast<int>(xy_count.size())) {
         state = DONE_CALIB;
       }
 
