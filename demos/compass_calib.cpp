@@ -34,7 +34,7 @@
 namespace hal = matrix_hal;
 
 // Max angle permited to continue in flat state. In Degrees.
-#define ANGLE_THRESHOLD 15
+const int kAngleThreshold 15;
 
 float mag_max_x = std::numeric_limits<float>::min();
 float mag_max_y = std::numeric_limits<float>::min();
@@ -90,11 +90,11 @@ OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
   float alpha_y = acos(acc_y / g) * 180 / M_PI;
   float alpha_z = acos(acc_z / g) * 180 / M_PI;
 
-  if (90 - abs(alpha_x - 90) < ANGLE_THRESHOLD) {
+  if (90 - abs(alpha_x - 90) < kAngleThreshold) {
     orientation = X_AXIS;
-  } else if (90 - abs(alpha_y - 90) < ANGLE_THRESHOLD) {
+  } else if (90 - abs(alpha_y - 90) < kAngleThreshold) {
     orientation = Y_AXIS;
-  } else if (90 - abs(alpha_z - 90) < ANGLE_THRESHOLD) {
+  } else if (90 - abs(alpha_z - 90) < kAngleThreshold) {
     orientation = Z_AXIS;
   } else {
     orientation = NONE;
