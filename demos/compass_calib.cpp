@@ -124,8 +124,8 @@ int main() {
 
   float xy_rot = 0;
   float xz_rot = 0;
-  uint xy_angle_index = 0;
-  uint xz_angle_index = 0;
+  int xy_angle_index = 0;
+  int xz_angle_index = 0;
 
   while (true) {
     imu_sensor.Read(&imu_data);
@@ -165,7 +165,8 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xy_angle_index = xy_angle_index / 10;
 
-        xy_count[xy_angle_index]++;
+        if(xy_angle_index > 0)
+          xy_count[xy_angle_index]++;
       }
 
     } else if (orientation == Y_AXIS) {
@@ -192,7 +193,8 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xz_angle_index = xz_angle_index / 10;
 
-        xz_count[xz_angle_index]++;
+        if(xz_angle_index > 0)
+          xz_count[xz_angle_index]++;
       }
     }
 
@@ -210,7 +212,7 @@ int main() {
 
       int calib_done_count = 0;
       // Printing Status Bar
-      for (uint i = 0; i < xy_count.size(); i++) {
+      for (int i = 0; i < static_cast<int>(xy_count.size()); ++i) {
         if (xy_count[i] > 5) {
           std::cout << "|";
           calib_done_count++;
@@ -228,7 +230,7 @@ int main() {
       }
 
       std::cout << "\n            ";
-      for (uint i = 0; i < xy_count.size(); i++) {
+      for (int i = 0; i < static_cast<int>(xy_count.size()); ++i) {
         if (xy_angle_index == i) {
           std::cout << "^";
         } else {
@@ -262,7 +264,7 @@ int main() {
 
       std::cout << "STATUS BAR: ";
       int calib_done_count = 0;
-      for (uint i = 0; i < xz_count.size(); i++) {
+      for (int i = 0; i < static_cast<int>(xz_count.size()); ++i) {
         if (xz_count[i] > 5) {
           std::cout << "|";
           calib_done_count++;
@@ -280,7 +282,7 @@ int main() {
       }
 
       std::cout << "\n            ";
-      for (uint i = 0; i < xz_count.size(); i++) {
+      for (int i = 0; i < static_cast<int>(xz_count.size()); ++i) {
         if (xz_angle_index == i) {
           std::cout << "^";
         } else {
