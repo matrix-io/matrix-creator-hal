@@ -23,7 +23,7 @@ sudo apt install libmatrixio-creator-hal libmatrixio-creator-hal-dev
 It does have some package dependencies, so please make sure to install the pre-requisites.
 
 ```
-sudo apt-get install cmake g++ git libfftw3-dev wiringpi matrixio-creator-init libgflags-dev
+sudo apt-get install cmake g++ git libiio-dev libfftw3-dev wiringpi matrixio-creator-init libgflags-dev
 ```
 
 To start working with HAL directly, you'll need to run `sudo make install` to get the build running. 

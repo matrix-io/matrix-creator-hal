@@ -2,6 +2,7 @@ project(matrix_creator_hal C CXX)
 cmake_minimum_required(VERSION 2.8)
 
 find_library (FFTW_LIBRARIES NAMES fftw3f )
+find_library (IIO_LIBRARIES NAMES iio )
 
 add_compile_options(-std=c++11)
 
@@ -36,6 +37,7 @@ add_library(matrix_creator_hal ${matrix_creator_hal_src})
   set_property(TARGET matrix_creator_hal PROPERTY CXX_STANDARD 11)
   target_link_libraries(matrix_creator_hal ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(matrix_creator_hal ${FFTW_LIBRARIES})
+  target_link_libraries(matrix_creator_hal ${IIO_LIBRARIES})
 
 set (matrix_creator_hal_headers
   circular_queue.h
