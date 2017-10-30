@@ -44,10 +44,6 @@ float mag_min_x = std::numeric_limits<float>::max();
 float mag_min_y = std::numeric_limits<float>::max();
 float mag_min_z = std::numeric_limits<float>::max();
 
-float calib_data.mag_off_x = 0;
-float calib_data.mag_off_y = 0;
-float calib_data.mag_off_z = 0;
-
 float acc_x = 0;
 float acc_y = 0;
 float acc_z = 0;
@@ -153,19 +149,19 @@ int main() {
       mag_max_y = (mag_y > mag_max_y) ? mag_y : mag_max_y;
       mag_min_y = (mag_y < mag_min_y) ? mag_y : mag_min_y;
 
-      calib_data.mag_off_x = (mag_max_x + mag_min_x) / 2;
-      calib_data.mag_off_y = (mag_max_y + mag_min_y) / 2;
+      calib_data.mag_offset_x = (mag_max_x + mag_min_x) / 2;
+      calib_data.mag_offset_y = (mag_max_y + mag_min_y) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
       amp_distance_xy = Distance(mag_max_x, mag_max_y, mag_min_x, mag_min_y);
       offset_distance_xy =
-          GetHypotenuse(calib_data.mag_off_x, calib_data.mag_off_y);
+          GetHypotenuse(calib_data.mag_offset_x, calib_data.mag_offset_y);
       xy_valid = offset_distance_xy / amp_distance_xy < 5;
 
       if (xy_valid) {
         // from rad to 0-360 deg
         xy_rot =
-            atan2(mag_y - calib_data.mag_off_y, mag_x - calib_data.mag_off_x) *
+            atan2(mag_y - calib_data.mag_offset_y, mag_x - calib_data.mag_offset_x) *
                 180 / M_PI +
             180;
         // saturation in 360 range
@@ -184,19 +180,19 @@ int main() {
       mag_max_z = (mag_z > mag_max_z) ? mag_z : mag_max_z;
       mag_min_z = (mag_z < mag_min_z) ? mag_z : mag_min_z;
 
-      calib_data.mag_off_x = (mag_max_x + mag_min_x) / 2;
-      calib_data.mag_off_z = (mag_max_z + mag_min_z) / 2;
+      calib_data.mag_offset_x = (mag_max_x + mag_min_x) / 2;
+      calib_data.mag_offset_z = (mag_max_z + mag_min_z) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
       amp_distance_xz = Distance(mag_max_x, mag_max_z, mag_min_x, mag_min_z);
       offset_distance_xz =
-          GetHypotenuse(calib_data.mag_off_x, calib_data.mag_off_z);
+          GetHypotenuse(calib_data.mag_offset_x, calib_data.mag_offset_z);
       xz_valid = offset_distance_xz / amp_distance_xz < 5;
 
       if (xz_valid) {
         // from rad to 0-360 deg
         xz_rot =
-            atan2(mag_x - calib_data.mag_off_x, mag_z - calib_data.mag_off_z) *
+            atan2(mag_x - calib_data.mag_offset_x, mag_z - calib_data.mag_offset_z) *
                 180 / M_PI +
             180;
         // saturation in 360 range
@@ -326,17 +322,17 @@ int main() {
       std::cerr << "Compass Axis X:\n";
       std::cerr << "- Max: " << mag_max_x << "\n";
       std::cerr << "- Min: " << mag_min_x << "\n";
-      std::cout << "Offset X: " << calib_data.mag_off_x << "\n";
+      std::cout << "Offset X: " << calib_data.mag_offset_x << "\n";
 
       std::cerr << "Compass Axis Y:\n";
       std::cerr << "- Max: " << mag_max_y << "\n";
       std::cerr << "- Min: " << mag_min_y << "\n";
-      std::cout << "Offset Y: " << calib_data.mag_off_y << "\n";
+      std::cout << "Offset Y: " << calib_data.mag_offset_y << "\n";
 
       std::cerr << "Compass Axis Z:\n";
       std::cerr << "- Max: " << mag_max_z << "\n";
       std::cerr << "- Min: " << mag_min_z << "\n";
-      std::cout << "Offset Z: " << calib_data.mag_off_z << "\n";
+      std::cout << "Offset Z: " << calib_data.mag_offset_z << "\n";
 
       std::cerr << "\nDo you want to save this calibration values to the "
                    "MATRIX CREATOR? [y/n]: \n";

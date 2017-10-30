@@ -137,7 +137,7 @@ bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiWrite16(add + w, (unsigned char *)&words[w])) return false;
+    if (!SpiWrite16(add + w, words[w])) return false;
   }
   return true;
 }
@@ -161,7 +161,7 @@ bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiRead16(add + w, words[w])) return false;
+    if (!SpiRead16(add + w,  (unsigned char *)&words[w])) return false;
   }
   return true;
 }
