@@ -44,9 +44,9 @@ float mag_min_x = std::numeric_limits<float>::max();
 float mag_min_y = std::numeric_limits<float>::max();
 float mag_min_z = std::numeric_limits<float>::max();
 
-float mag_off_x = 0;
-float mag_off_y = 0;
-float mag_off_z = 0;
+float calib_data.mag_off_x = 0;
+float calib_data.mag_off_y = 0;
+float calib_data.mag_off_z = 0;
 
 float acc_x = 0;
 float acc_y = 0;
@@ -81,9 +81,8 @@ enum States {
 };
 
 OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
-  
   OrientationType orientation = NONE;
-  // Getting distante of g vector thaht points always down 
+  // Getting distante of g vector thaht points always down
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
   // Getting angle from each axis to g vector
   float alpha_x = acos(acc_x / g) * 180 / M_PI;
@@ -120,6 +119,7 @@ int main() {
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);
   hal::IMUData imu_data;
+  hal::IMUCalibrationData calib_data;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -153,17 +153,21 @@ int main() {
       mag_max_y = (mag_y > mag_max_y) ? mag_y : mag_max_y;
       mag_min_y = (mag_y < mag_min_y) ? mag_y : mag_min_y;
 
-      mag_off_x = (mag_max_x + mag_min_x) / 2;
-      mag_off_y = (mag_max_y + mag_min_y) / 2;
+      calib_data.mag_off_x = (mag_max_x + mag_min_x) / 2;
+      calib_data.mag_off_y = (mag_max_y + mag_min_y) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
       amp_distance_xy = Distance(mag_max_x, mag_max_y, mag_min_x, mag_min_y);
-      offset_distance_xy = GetHypotenuse(mag_off_x, mag_off_y);
+      offset_distance_xy =
+          GetHypotenuse(calib_data.mag_off_x, calib_data.mag_off_y);
       xy_valid = offset_distance_xy / amp_distance_xy < 5;
 
       if (xy_valid) {
         // from rad to 0-360 deg
-        xy_rot = atan2(mag_y - mag_off_y, mag_x - mag_off_x) * 180 / M_PI + 180;
+        xy_rot =
+            atan2(mag_y - calib_data.mag_off_y, mag_x - calib_data.mag_off_x) *
+                180 / M_PI +
+            180;
         // saturation in 360 range
         xy_angle_index = fmin(xy_rot, 359);
         // saturation in 0 range
@@ -171,8 +175,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xy_angle_index = xy_angle_index / 10;
 
-        if(xy_angle_index >= 0)
-          xy_count[xy_angle_index]++;
+        if (xy_angle_index >= 0) xy_count[xy_angle_index]++;
       }
 
     } else if (orientation == Y_AXIS) {
@@ -181,17 +184,21 @@ int main() {
       mag_max_z = (mag_z > mag_max_z) ? mag_z : mag_max_z;
       mag_min_z = (mag_z < mag_min_z) ? mag_z : mag_min_z;
 
-      mag_off_x = (mag_max_x + mag_min_x) / 2;
-      mag_off_z = (mag_max_z + mag_min_z) / 2;
+      calib_data.mag_off_x = (mag_max_x + mag_min_x) / 2;
+      calib_data.mag_off_z = (mag_max_z + mag_min_z) / 2;
 
       // validating : Waiting to have enough values to start calculating angle.
       amp_distance_xz = Distance(mag_max_x, mag_max_z, mag_min_x, mag_min_z);
-      offset_distance_xz = GetHypotenuse(mag_off_x, mag_off_z);
+      offset_distance_xz =
+          GetHypotenuse(calib_data.mag_off_x, calib_data.mag_off_z);
       xz_valid = offset_distance_xz / amp_distance_xz < 5;
 
       if (xz_valid) {
         // from rad to 0-360 deg
-        xz_rot = atan2(mag_x - mag_off_x, mag_z - mag_off_z) * 180 / M_PI + 180;
+        xz_rot =
+            atan2(mag_x - calib_data.mag_off_x, mag_z - calib_data.mag_off_z) *
+                180 / M_PI +
+            180;
         // saturation in 360 range
         xz_angle_index = fmin(xz_rot, 359);
         // saturation in 0 range
@@ -199,8 +206,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xz_angle_index = xz_angle_index / 10;
 
-        if(xz_angle_index >= 0)
-          xz_count[xz_angle_index]++;
+        if (xz_angle_index >= 0) xz_count[xz_angle_index]++;
       }
     }
 
@@ -320,17 +326,17 @@ int main() {
       std::cerr << "Compass Axis X:\n";
       std::cerr << "- Max: " << mag_max_x << "\n";
       std::cerr << "- Min: " << mag_min_x << "\n";
-      std::cout << "Offset X: " << mag_off_x << "\n";
+      std::cout << "Offset X: " << calib_data.mag_off_x << "\n";
 
       std::cerr << "Compass Axis Y:\n";
       std::cerr << "- Max: " << mag_max_y << "\n";
       std::cerr << "- Min: " << mag_min_y << "\n";
-      std::cout << "Offset Y: " << mag_off_y << "\n";
+      std::cout << "Offset Y: " << calib_data.mag_off_y << "\n";
 
       std::cerr << "Compass Axis Z:\n";
       std::cerr << "- Max: " << mag_max_z << "\n";
       std::cerr << "- Min: " << mag_min_z << "\n";
-      std::cout << "Offset Z: " << mag_off_z << "\n";
+      std::cout << "Offset Z: " << calib_data.mag_off_z << "\n";
 
       std::cerr << "\nDo you want to save this calibration values to the "
                    "MATRIX CREATOR? [y/n]: \n";
@@ -345,7 +351,7 @@ int main() {
       }
 
       if (tolower(choice) == 'y') {
-        if (imu_sensor.SetCompassCalibration(mag_off_x, mag_off_y, mag_off_z))
+        if (imu_sensor.SetCompassCalibration(&calib_data))
           std::cerr << "Sucessfully saved...\n";
         break;
       } else if (tolower(choice) == 'n') {

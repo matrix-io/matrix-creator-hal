@@ -34,12 +34,11 @@ bool Everloop::Write(const EverloopImage* led_image) {
   for (const LedValue& led : led_image->leds) {
     wb_data_buffer[0] = led.green;
     wb_data_buffer[1] = led.red;
-    wishbone_->SpiWrite(kEverloopBaseAddress + addr_offset, wb_data_buffer, 0);
+    wishbone_->SpiWrite16(kEverloopBaseAddress + addr_offset, wb_data_buffer);
 
     wb_data_buffer[0] = led.blue;
     wb_data_buffer[1] = led.white;
-    wishbone_->SpiWrite(kEverloopBaseAddress + addr_offset + 1, wb_data_buffer,
-                        0);
+    wishbone_->SpiWrite16(kEverloopBaseAddress + addr_offset + 1, wb_data_buffer);
 
     addr_offset = addr_offset + 2;
   }

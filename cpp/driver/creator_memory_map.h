@@ -35,6 +35,7 @@ const uint16_t kMemoryOffsetUV = 0x00;
 const uint16_t kMemoryOffsetPressure = 0x10;
 const uint16_t kMemoryOffsetHumidity = 0x20;
 const uint16_t kMemoryOffsetIMU = 0x30;
+const uint16_t kMemoryOffsetCalib = 0x50;
 const uint16_t kMemoryOffsetMCU = 0x90;
 
 };      // namespace matrix_hal
