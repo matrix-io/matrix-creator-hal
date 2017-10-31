@@ -39,4 +39,21 @@ bool IMUSensor::SetCompassCalibration(IMUCalibrationData* data) {
                      (unsigned char*)data, sizeof(IMUCalibrationData));
   return true;
 }
+
+bool IMUSensor::SetControl(IMUControl* data) {
+
+  wishbone_->SpiWrite(kMCUBaseAddress + (kMemoryOffsetControl >> 1),
+                     (unsigned char*)data, sizeof(IMUCalibrationData));
+  return true;
+}
+
+bool IMUSensor::ReadCalibration(IMUCalibrationData* data) {
+  if (!wishbone_) return false;
+
+  // TODO(andres.calderon@admobilize.com): error handler
+  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetCalib >> 1),
+                     (unsigned char*)data, sizeof(IMUCalibrationData));
+
+  return true;
+}
 };  // namespace matrix_hal
