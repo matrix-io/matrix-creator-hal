@@ -27,8 +27,9 @@ namespace matrix_hal {
 class IMUSensor : public MatrixDriver {
  public:
   bool Read(IMUData* data);
-  bool SetCompassCalibration(float mag_x_offset, float mag_y_offset,
-                             float mag_z_offset);
+  bool ReadCalibration(IMUCalibrationData* data);
+  bool SetCompassCalibration(IMUCalibrationData* data);
+  bool SetControl(IMUControl* data);
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_IMU_SENSOR_H_

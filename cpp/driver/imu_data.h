@@ -41,14 +41,22 @@ class IMUData {
 
   float mag_x;
   float mag_y;
-  float mag_z;
+  float mag_z;  
+};
 
+class IMUControl{
+  public:
+  int32_t mag_ofsset_wr_flag;
+};
+
+class IMUCalibrationData {
+public:
   // Calibration offset of compass x axis
-  float mag_offset_x;
+  int32_t mag_offset_x;
   // Calibration offset of compass y axis
-  float mag_offset_y;
+  int32_t mag_offset_y;
   // Calibration offset of compass z axis
-  float mag_offset_z;
+  int32_t mag_offset_z;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_IMU_DATA_H_

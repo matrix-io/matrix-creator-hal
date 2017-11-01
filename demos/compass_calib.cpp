@@ -120,6 +120,8 @@ int main() {
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);
   hal::IMUData imu_data;
+  hal::IMUControl imu_control;
+  hal::IMUCalibrationData imu_calib;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
