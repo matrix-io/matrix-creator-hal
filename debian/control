@@ -12,7 +12,7 @@ Replaces: libmatrix-creator-hal
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}, wiringpi, libfftw3-dev, matrixio-creator-init, libgflags-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, wiringpi, libfftw3-dev, libgflags-dev
 Description: Hardware Abstraction Layer for MATRIX.
 
 Package: libmatrixio-creator-hal-dev
