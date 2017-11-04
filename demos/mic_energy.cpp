@@ -37,8 +37,7 @@ int main(int argc, char *agrv[]) {
   int j = 0;
   uint64_t instantE = 0;
   uint64_t avgEnergy = 0;
-  size_t buffer_length = 10;
-  std::valarray<uint64_t> localAverage (buffer_length);
+  std::valarray<uint64_t> localAverage (20);
   localAverage = 0;
 
   int sampling_rate = FLAGS_sampling_frequency;
@@ -52,13 +51,13 @@ int main(int argc, char *agrv[]) {
       instantE = instantE + (mics.At(s, 0))*(mics.At(s, 0));
     }
     
-    localAverage[j%buffer_length] = instantE;
+    localAverage[j%20] = instantE;
     avgEnergy = 0;
     for(auto& data : localAverage){
       avgEnergy = (avgEnergy + data);
     }
     
-    avgEnergy = avgEnergy/buffer_length;
+    avgEnergy = avgEnergy/20;
     
     for (auto& led : image1d.leds) {
       led.red = avgEnergy>>24;
