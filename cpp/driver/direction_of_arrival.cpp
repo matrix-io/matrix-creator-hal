@@ -52,19 +52,24 @@ int DirectionOfArrival::getAbsDiff(int index) {
 }
 
 void DirectionOfArrival::Calculate() {
+  // Max delay in samples between microphones of a pair
   int max_tof = 6;
 
+  // Prepare buffer for cross correlation calculation between the microphones of a pair 
   for (uint32_t s = 0; s < mics_.NumberOfSamples(); s++) {
     for (uint16_t c = 0; c < mics_.Channels(); c++) { /* mics_.Channels()=8 */
       buffer_2D_[c][s] = mics_.At(s, c);
     }
   }
 
+  // Loop over each microphone pair
   for (int channel = 0; channel < 4; channel++) {
+    // Calculate the cross correlation
     corr_->Exec(buffer_2D_[channel + 4], buffer_2D_[channel]);
 
     float* c = corr_->Result();
 
+    // Find the sample index of the highest peak (beginning of the window)
     int index = 0;
     float m = c[0];
     for (int i = 1; i < max_tof; i++)
@@ -73,36 +78,38 @@ void DirectionOfArrival::Calculate() {
         m = c[i];
       }
 
+    // Find the sample index of the highest peak (end of the window)
     for (int i = length_ - max_tof; i < length_; i++)
       if (c[i] > m) {
         index = i;
         m = c[i];
       }
 
+    // Store the highest value with the index of this microphone pair
     current_mag_[channel] = m;
     current_index_[channel] = index;
   }
 
+  // Loop over all microphone pairs and find the microphone pair perpendicular to the source 
   int perp = 0;
   int index = current_index_[0];
   float mag = current_mag_[0];
   for (int channel = 0; channel < 4; channel++) {
     if (getAbsDiff(current_index_[channel]) < getAbsDiff(index)) {
       perp = channel;
-      mag = current_mag_[channel];
-      index = current_index_[channel];
-    } else if (getAbsDiff(current_index_[channel]) < getAbsDiff(index) && current_mag_[channel] > mag) {
-      perp = channel;
-      mag = current_mag_[channel];
+      if (current_mag_[channel] > mag)
+        mag = current_mag_[channel];
       index = current_index_[channel];
     }
   }
 
+  // Determine the direction of the source (mic index)
   int dir = (perp + 2) % 4;
   if (current_index_[dir] > length_ / 2) {
     dir = (dir + 4);
   }
 
+  // Calculate the physical angle
   mic_direction_ = dir;
   azimutal_angle_ = atan2(micarray_location[mic_direction_][1],
                           micarray_location[mic_direction_][0]);
