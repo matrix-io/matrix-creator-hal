@@ -18,6 +18,8 @@
 #ifndef CPP_DRIVER_IMU_DATA_H_
 #define CPP_DRIVER_IMU_DATA_H_
 
+const int32_t OFFSET_WRITE_ENABLE = 0x25352535;
+
 namespace matrix_hal {
 
 class IMUData {

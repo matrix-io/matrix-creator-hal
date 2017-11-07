@@ -81,9 +81,8 @@ enum States {
 };
 
 OrientationType CalcOrientation(float acc_x, float acc_y, float acc_z) {
-  
   OrientationType orientation = NONE;
-  // Getting distante of g vector thaht points always down 
+  // Getting distante of g vector thaht points always down
   float g = sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z);
   // Getting angle from each axis to g vector
   float alpha_x = acos(acc_x / g) * 180 / M_PI;
@@ -173,8 +172,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xy_angle_index = xy_angle_index / 10;
 
-        if(xy_angle_index >= 0)
-          xy_count[xy_angle_index]++;
+        if (xy_angle_index >= 0) xy_count[xy_angle_index]++;
       }
 
     } else if (orientation == Y_AXIS) {
@@ -201,8 +199,7 @@ int main() {
         // making 24 slots of 360/24 = 15 deg
         xz_angle_index = xz_angle_index / 10;
 
-        if(xz_angle_index >= 0)
-          xz_count[xz_angle_index]++;
+        if (xz_angle_index >= 0) xz_count[xz_angle_index]++;
       }
     }
 
@@ -347,7 +344,15 @@ int main() {
       }
 
       if (tolower(choice) == 'y') {
-        if (imu_sensor.SetCompassCalibration(mag_off_x, mag_off_y, mag_off_z))
+        imu_calib.mag_offset_x = (int)(mag_off_x * 1000);
+        imu_calib.mag_offset_x = (int)(mag_off_y * 1000);
+        imu_calib.mag_offset_x = (int)(mag_off_z * 1000);
+
+        imu_control.mag_ofsset_wr_flag = OFFSET_WRITE_ENABLE;
+
+        imu_sensor.SetControl(&imu_control);
+
+        if (imu_sensor.SetCompassCalibration(&imu_calib))
           std::cerr << "Sucessfully saved...\n";
         break;
       } else if (tolower(choice) == 'n') {
