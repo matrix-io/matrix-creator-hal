@@ -132,18 +132,14 @@ bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
   return SpiTransfer(tx_buffer_, rx_buffer_, 4);
 }
 
-bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data,
-                           unsigned char inc) {
-  std::unique_lock<std::mutex> lock(mutex_);
+bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
 
+  uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
-  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
-  hw_addr->reg = add;
-  hw_addr->burst = inc;
-  hw_addr->readnwrite = 0;
-
-  memcpy(&tx_buffer_[2], data, 2);
-  return SpiTransfer(tx_buffer_, rx_buffer_, 4);
+  for (uint16_t w = 0; w < (length / 2); w++) {
+    if (!SpiWrite16(add + w, words[w])) return false;
+  }
+  return true;
 }
 
 bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
@@ -165,7 +161,7 @@ bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiRead16(add + w, (unsigned char *)&words[w])) return false;
+    if (!SpiRead16(add + w,  (unsigned char *)&words[w])) return false;
   }
   return true;
 }
