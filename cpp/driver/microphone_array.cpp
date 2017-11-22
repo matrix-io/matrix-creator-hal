@@ -168,7 +168,7 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 }
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
-  sampling_frequency_ = sampling_frequency;
+/*  sampling_frequency_ = sampling_frequency;
   uint32_t systemClock = wishbone_->FPGAClock();
   pdm_ratio_ = std::floor(systemClock / kPDMFrequency) - 1;
   decimation_ratio_ =
@@ -180,18 +180,19 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   SetPDMRatio(pdm_ratio_);
   SetDecimationRatio(decimation_ratio_);
   SetGain(gain_);
-
+*/
   return true;
 }
 
 void MicrophoneArray::ReadConfValues() {
-  GetPDMRatio();
+ /* GetPDMRatio();
   GetDecimationRatio();
   GetGain();
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();
   sampling_frequency_ = std::floor((systemClock) / ((pdm_ratio_ + 1)*(decimation_ratio_ + 1)*1000))*1000;
-}
+*/
+  }
 
 void MicrophoneArray::ShowConfiguration() {
   std::cout << "Audio Configuration: " << std::endl;
