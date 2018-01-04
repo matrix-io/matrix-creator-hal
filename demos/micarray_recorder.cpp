@@ -17,7 +17,7 @@
 #include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
-DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+DEFINE_int32(sampling_frequency, 8000, "Sampling Frequency");
 
 namespace hal = matrix_hal;
 
@@ -50,11 +50,11 @@ int main(int argc, char *agrv[]) {
                 [(seconds_to_record + 1) * mics.SamplingRate()];
 
   mics.CalculateDelays(0, 0, 1000, 320 * 1000);
-
+  int irq = 0;
   uint32_t step = 0;
   while (true) {
     mics.Read(); /* Reading 8-mics buffer from de FPGA */
-
+    irq++;
     for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
       for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
         buffer[c][step] = mics.At(s, c);
@@ -62,10 +62,9 @@ int main(int argc, char *agrv[]) {
       buffer[mics.Channels()][step] = mics.Beam(s);
       step++;
     }
-
     if (step >= seconds_to_record * mics.SamplingRate()) break;
   }
-
+  std::cout << "IRQ number:" << irq << std::endl;
   for (uint16_t c = 0; c < mics.Channels() + 1; c++) {
     std::string filename = "mic_" + std::to_string(mics.SamplingRate()) +
                            "_s16le_channel_" + std::to_string(c) + ".raw";
