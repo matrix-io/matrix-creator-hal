@@ -24,15 +24,27 @@
 #include <map>
 #include <string>
 #include <valarray>
+#include <condition_variable>
+
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/microphone_array.h"
 #include "cpp/driver/microphone_array_location.h"
 
+static std::mutex irq_m;
+static std::condition_variable irq_cv;
+
+void irq_callback(void)
+{
+	//std::unique_lock<std::mutex> lk(irq_m);
+
+	irq_cv.notify_all();
+}
+
 namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray()
-    : gain_(0), pdm_ratio_(0), sampling_frequency_(0), decimation_ratio_(0) {
+    : lock_(irq_m), gain_(0), pdm_ratio_(0), sampling_frequency_(0), decimation_ratio_(0) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -49,13 +61,12 @@ MicrophoneArray::~MicrophoneArray() {}
 void MicrophoneArray::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
 
-  // TODO(andres.calderon@admobilize.com): avoid systems calls
-  std::system("gpio edge 168 both");
-
-  wiringPiSetupSys();
+  wiringPiSetup();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
   ReadConfValues();
+
+  wiringPiISR(kMicrophoneArrayIRQ, INT_EDGE_BOTH, &irq_callback);
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -63,7 +74,10 @@ bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
   if (!wishbone_) return false;
 
-  if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
+//   std::unique_lock<std::mutex> lk(irq_m);
+
+  irq_cv.wait(lock_);
+  
     if (!wishbone_->SpiReadBurst(
             kMicrophoneArrayBaseAddress,
             reinterpret_cast<unsigned char *>(&raw_data_[0]),
@@ -84,7 +98,7 @@ bool MicrophoneArray::Read() {
 
       beamformed_[s] = std::min(INT16_MAX, std::max(sum, INT16_MIN));
     }
-  }
+  
 
   return true;
 }

@@ -20,6 +20,7 @@
 
 #include <string>
 #include <valarray>
+#include <mutex>
 #include "./circular_queue.h"
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
@@ -30,7 +31,7 @@ const uint32_t kPDMFrequency = 3000000;
 const uint32_t kCICStages = 3;
 const uint16_t kCICWidth = 23;
 const uint16_t kMicarrayBufferSize = 1024;
-const uint16_t kMicrophoneArrayIRQ = 168;
+const uint16_t kMicrophoneArrayIRQ = 22;
 const uint16_t kMicrophoneChannels = 8;
 
 class MicrophoneArray : public MatrixDriver {
@@ -69,6 +70,8 @@ class MicrophoneArray : public MatrixDriver {
                        float sound_speed_mmseg = 320 * 1000.0);
 
  private:
+   std::unique_lock<std::mutex> lock_;
+
   //  delay and sum beamforming result
   std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;

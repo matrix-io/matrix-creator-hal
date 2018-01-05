@@ -17,7 +17,7 @@
 #include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
-DEFINE_int32(sampling_frequency, 8000, "Sampling Frequency");
+DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 
 namespace hal = matrix_hal;
 
