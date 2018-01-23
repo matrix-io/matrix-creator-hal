@@ -39,5 +39,16 @@ static float micarray_location[8][2] = {
     {48.5036755, -20.0908795}   /* M8 */
 };
 
+static float micarray_voice_location[8][2] = {
+    {  0.00,   0.00}, /* M1 */
+    {-38.13,   3.58}, /* M2 */
+    {-20.98,  32.04}, /* M3 */
+    { 11.97,  36.38}, /* M4 */
+    { 35.91,  13.32}, /* M5 */
+    { 32.81, -19.77}, /* M6 */
+    {  5.00, -37.97}, /* M7 */
+    {-26.57, -27.58}  /* M8 */
+};
+
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICARRAY_LOCATION_H_
