@@ -36,8 +36,7 @@ namespace matrix_hal {
 
 struct hardware_address {
   uint8_t readnwrite : 1;
-  uint8_t burst : 1;
-  uint16_t reg : 14;
+  uint16_t reg : 15;
 };
 
 WishboneBus::WishboneBus()
@@ -121,7 +120,6 @@ bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
 
   hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
   hw_addr->reg = add;
-  hw_addr->burst = 0;
   hw_addr->readnwrite = 0;
 
   uint8_t *p = (uint8_t *)&data;
@@ -147,11 +145,24 @@ bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
 
   hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
   hw_addr->reg = add;
-  hw_addr->burst = 1;
   hw_addr->readnwrite = 1;
 
   if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
     memcpy(data, &rx_buffer_[2], length);
+    return true;
+  }
+  return false;
+}
+
+bool WishboneBus::SpiWriteBurst(uint16_t add, unsigned char *data, int length) {
+  std::unique_lock<std::mutex> lock(mutex_);
+
+  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hw_addr->reg = add;
+  hw_addr->readnwrite = 0;
+  
+  memcpy(&tx_buffer_[2], data, length);
+  if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
     return true;
   }
   return false;
@@ -173,7 +184,6 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 
   hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
   hw_addr->reg = add;
-  hw_addr->burst = 0;
   hw_addr->readnwrite = 1;
 
   if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {

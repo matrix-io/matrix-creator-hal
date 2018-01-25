@@ -36,6 +36,7 @@ class WishboneBus {
   bool GetSoftwareVersion(char *version,int length);
   bool GetFPGAFrequency();
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
+  bool SpiWriteBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
   bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
