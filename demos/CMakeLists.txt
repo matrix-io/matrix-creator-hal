@@ -91,12 +91,6 @@ add_executable(firmware_info firmware_info.cpp)
   target_link_libraries(firmware_info matrix_creator_hal)
   target_link_libraries(firmware_info ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(read read.cpp)
-  set_property(TARGET read PROPERTY CXX_STANDARD 11)
-  target_link_libraries(read matrix_creator_hal)
-  target_link_libraries(read ${CMAKE_THREAD_LIBS_INIT})
-
-
 add_executable(ipaddress_demo ipaddress_demo.cpp)
   set_property(TARGET ipaddress_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(ipaddress_demo matrix_creator_hal)
