@@ -29,7 +29,7 @@ namespace matrix_hal {
 const uint32_t kPDMFrequency = 3000000;
 const uint32_t kCICStages = 3;
 const uint16_t kCICWidth = 23;
-const uint16_t kMicarrayBufferSize = 1024;
+const uint16_t kMicarrayBufferSize = 2048;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
 
