@@ -1,3 +1,10 @@
+libmatrixio-creator-hal (0.2.0) unstable; urgency=medium
+
+  * Update Memory map - aligned to the 0.4.1 of matrixio init
+  * Add SPI burst write function - Allowed to write more than 2 bytes.
+
+ -- Admobilize <info@admobilize.com>  Thu, 14 Sep 2017 15:51:50 +0000
+
 libmatrixio-creator-hal (0.1.4) unstable; urgency=medium
 
   * Multiple frequency support in micarray has been supported
