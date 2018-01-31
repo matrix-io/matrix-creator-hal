@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2017 <Admobilize>
  * All rights reserved.
  */
 
@@ -18,11 +18,11 @@
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
+DEFINE_int32(duration, 5, "Interrupt after N seconds");
 
 namespace hal = matrix_hal;
 
-int main(int argc, char *agrv[]) {
-
+int main(int argc, char* agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
@@ -34,53 +34,69 @@ int main(int argc, char *agrv[]) {
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image;
 
-  for (auto& led : image1d.leds) led.red = 10;
+  for (auto& led : image.leds) led.red = 10;
 
-  everloop.Write(&image1d);
+  everloop.Write(&image);
 
   int sampling_rate = FLAGS_sampling_frequency;
+  int seconds_to_record = FLAGS_duration;
+
   mics.SetSamplingRate(sampling_rate);
   mics.ShowConfiguration();
 
-  uint16_t seconds_to_record = 5;
+  std::cout << "Duration : " << seconds_to_record << "s" << std::endl;
 
   int16_t buffer[mics.Channels() + 1]
-                [(seconds_to_record + 1) * mics.SamplingRate()];
+                [mics.SamplingRate() + mics.NumberOfSamples()];
 
   mics.CalculateDelays(0, 0, 1000, 320 * 1000);
 
-  uint32_t step = 0;
-  while (true) {
-    mics.Read(); /* Reading 8-mics buffer from de FPGA */
-
-    for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
-      for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
-        buffer[c][step] = mics.At(s, c);
-      }
-      buffer[mics.Channels()][step] = mics.Beam(s);
-      step++;
-    }
-
-    if (step >= seconds_to_record * mics.SamplingRate()) break;
-  }
+  std::ofstream os[mics.Channels() + 1];
 
   for (uint16_t c = 0; c < mics.Channels() + 1; c++) {
     std::string filename = "mic_" + std::to_string(mics.SamplingRate()) +
                            "_s16le_channel_" + std::to_string(c) + ".raw";
-    std::ofstream os(filename, std::ofstream::binary);
-    os.write((const char*)buffer[c],
-             seconds_to_record * mics.SamplingRate() * sizeof(int16_t));
-
-    os.close();
+    os[c].open(filename, std::ofstream::binary);
   }
 
-  for (auto& led : image1d.leds) {
+  uint16_t samples = 0;
+  for (int s = 0; s < seconds_to_record; s++) {
+    for (;;) {
+      mics.Read(); /* Reading 8-mics buffer from de FPGA */
+
+      /* buffering */
+      for (uint32_t s = 0; s < mics.NumberOfSamples(); s++) {
+        for (uint16_t c = 0; c < mics.Channels(); c++) { /* mics.Channels()=8 */
+          buffer[c][samples] = mics.At(s, c);
+        }
+        buffer[mics.Channels()][samples] = mics.Beam(s);
+        samples++;
+      }
+
+      /* write to file */
+      if (samples >= mics.SamplingRate()) {
+        for (uint16_t c = 0; c < mics.Channels() + 1; c++) {
+          os[c].write((const char*)buffer[c], samples * sizeof(int16_t));
+        }
+        samples = 0;
+        break;
+      }
+    }
+
+    for (int l = 0; l < int(image.leds.size() * s / (seconds_to_record)); l++) {
+      image.leds[l].red = 0;
+      image.leds[l].green = 10;
+    }
+    everloop.Write(&image);
+  }
+
+  for (auto& led : image.leds) {
     led.red = 0;
     led.green = 10;
   }
-  everloop.Write(&image1d);
+  everloop.Write(&image);
 
   return 0;
 }
