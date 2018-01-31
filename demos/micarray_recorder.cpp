@@ -85,7 +85,7 @@ int main(int argc, char* agrv[]) {
       }
     }
 
-    for (int l = 0; l < int(image.leds.size() / (seconds_to_record)); l++) {
+    for (int l = 0; l < int(image.leds.size() * s / (seconds_to_record)); l++) {
       image.leds[l].red = 0;
       image.leds[l].green = 10;
     }
