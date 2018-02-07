@@ -18,6 +18,8 @@
 #ifndef CPP_DRIVER_IMU_DATA_H_
 #define CPP_DRIVER_IMU_DATA_H_
 
+const int32_t OFFSET_WRITE_ENABLE = 0x25352535;
+
 namespace matrix_hal {
 
 class IMUData {
@@ -41,7 +43,22 @@ class IMUData {
 
   float mag_x;
   float mag_y;
-  float mag_z;
+  float mag_z;  
+};
+
+class IMUControl{
+  public:
+  int32_t mag_ofsset_wr_flag;
+};
+
+class IMUCalibrationData {
+public:
+  // Calibration offset of compass x axis
+  int32_t mag_offset_x;
+  // Calibration offset of compass y axis
+  int32_t mag_offset_y;
+  // Calibration offset of compass z axis
+  int32_t mag_offset_z;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_IMU_DATA_H_

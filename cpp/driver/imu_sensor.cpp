@@ -19,6 +19,8 @@
 #include "cpp/driver/imu_sensor.h"
 #include "cpp/driver/creator_memory_map.h"
 
+// Compass offset calibraiton values.12 values before * 2 indexes by value = 24
+
 namespace matrix_hal {
 
 bool IMUSensor::Read(IMUData* data) {
@@ -27,6 +29,30 @@ bool IMUSensor::Read(IMUData* data) {
   // TODO(andres.calderon@admobilize.com): error handler
   wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetIMU >> 1),
                      (unsigned char*)data, sizeof(IMUData));
+
+  return true;
+}
+
+bool IMUSensor::SetCompassCalibration(IMUCalibrationData* data) {
+
+  wishbone_->SpiWrite(kMCUBaseAddress + (kMemoryOffsetCalib >> 1),
+                     (unsigned char*)data, sizeof(IMUCalibrationData));
+  return true;
+}
+
+bool IMUSensor::SetControl(IMUControl* data) {
+
+  wishbone_->SpiWrite(kMCUBaseAddress + (kMemoryOffsetControl >> 1),
+                     (unsigned char*)data, sizeof(IMUCalibrationData));
+  return true;
+}
+
+bool IMUSensor::ReadCalibration(IMUCalibrationData* data) {
+  if (!wishbone_) return false;
+
+  // TODO(andres.calderon@admobilize.com): error handler
+  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetCalib >> 1),
+                     (unsigned char*)data, sizeof(IMUCalibrationData));
 
   return true;
 }
