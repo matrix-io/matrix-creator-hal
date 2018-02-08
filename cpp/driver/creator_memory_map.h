@@ -23,12 +23,13 @@
 namespace matrix_hal {
 
 /* FPGA Wishbone address map */
-const uint32_t kConfBaseAddress = 0x0000;
-const uint32_t kUartBaseAddress = 0x1000;
-const uint32_t kMicrophoneArrayBaseAddress = 0x2000;
-const uint32_t kEverloopBaseAddress = 0x3000;
-const uint32_t kGPIOBaseAddress = 0x4000;
+const uint16_t kConfBaseAddress = 0x0000;
+const uint16_t kUartBaseAddress = 0x1000;
+const uint16_t kMicrophoneArrayBaseAddress = 0x2000;
+const uint16_t kEverloopBaseAddress = 0x3000;
+const uint16_t kGPIOBaseAddress = 0x4000;
 const uint16_t kMCUBaseAddress = 0x5000;
+const uint16_t kAudioOutputBaseAddress = 0x6000;
 
 /* MCU offsets map */
 const uint16_t kMemoryOffsetUV = 0x00;

@@ -30,6 +30,7 @@ set(matrix_creator_hal_src
   cross_correlation.cpp
   direction_of_arrival.cpp
   uart_control.cpp
+  audio_output.cpp
 )
 
 add_library(matrix_creator_hal ${matrix_creator_hal_src})
@@ -62,6 +63,7 @@ set (matrix_creator_hal_headers
   cross_correlation.h
   direction_of_arrival.h
   uart_control.h
+  audio_output.h
 )
 
 install (TARGETS matrix_creator_hal DESTINATION lib)
