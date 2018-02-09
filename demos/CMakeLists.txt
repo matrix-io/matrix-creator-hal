@@ -80,6 +80,12 @@ add_executable(mic_energy mic_energy.cpp)
   target_link_libraries(mic_energy ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
   target_link_libraries(mic_energy ${GFLAGS_LIB})
 
+add_executable(audio_output audio_output.cpp)
+  set_property(TARGET audio_output PROPERTY CXX_STANDARD 11)
+  target_link_libraries(audio_output matrix_creator_hal)
+  target_link_libraries(audio_output ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(audio_output ${GFLAGS_LIB})
+
 add_executable(micarray_alsa_pipes micarray_alsa_pipes.cpp)
   set_property(TARGET micarray_alsa_pipes PROPERTY CXX_STANDARD 11)
   target_link_libraries(micarray_alsa_pipes matrix_creator_hal)

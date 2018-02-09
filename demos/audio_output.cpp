@@ -12,6 +12,7 @@
 #include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_int32(sampling_frequency, 44100, "Sampling Frequency");
+DEFINE_string(output, "h", "Output Selector h=Headphone s=Speaker");
 DEFINE_string(raw_file, "song.raw", "Raw file song");
 DEFINE_int32(volumen, 50, "Volumen in %");
 
@@ -22,14 +23,27 @@ int main(int argc, char *agrv[]) {
 
   hal::WishboneBus bus;
   bus.SpiInit();
-
-  int sampling_rate = FLAGS_sampling_frequency;
+  
   std::ifstream is(FLAGS_raw_file);
-
+  
   hal::AudioOutput dac;
   dac.Setup(&bus);
   dac.SetVolumen(FLAGS_volumen);
-  dac.SetOutputSelector(matrix_hal::kSpeaker);
+  dac.SetPCMSamplingFrequency(FLAGS_sampling_frequency);
+ 
+  switch (FLAGS_output[0]) {
+    case 'h':
+    case 'H':
+      dac.SetOutputSelector(matrix_hal::kHeadPhone); 
+      break;
+    case 's':
+    case 'S':
+      dac.SetOutputSelector(matrix_hal::kSpeaker);
+      break;
+    default:
+      std::cout << "Invalid Selection. Please try again" << std::endl;
+  }
+
   while (true) {
     is.read(reinterpret_cast<char *>(&dac.write_data_[0]),
             sizeof(uint16_t) * (matrix_hal::kMaxWriteLength));
