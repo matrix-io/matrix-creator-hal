@@ -42,6 +42,7 @@ AudioOutput::~AudioOutput() {}
 
 void AudioOutput::Setup(WishboneBus *wishbone) {
   MatrixDriver::Setup(wishbone);
+  FIFOFlush();
 }
 
 bool AudioOutput::Mute() {
@@ -62,6 +63,13 @@ bool AudioOutput::SetOutputSelector(OutputSelector output_selector) {
   if (!wishbone_) return false;
   wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x806, output_selector);
   selector_hp_nspk_ = output_selector;
+  return true;
+}
+
+bool AudioOutput::FIFOFlush() {
+  if (!wishbone_) return false;
+  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x800, 0x0001);
+  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x800, 0x0000);
   return true;
 }
 

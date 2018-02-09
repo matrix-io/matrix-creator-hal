@@ -59,7 +59,8 @@ class AudioOutput : public MatrixDriver {
   bool UnMute();
 
   bool SetOutputSelector(OutputSelector output_selector);
-
+  
+  bool FIFOFlush();
   bool GetPCMSamplingFrequency();
   bool SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency);
   uint32_t PCMSamplingFrequency() { return PCM_sampling_frequency_; }
