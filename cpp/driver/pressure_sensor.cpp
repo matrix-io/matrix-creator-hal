@@ -16,8 +16,9 @@
  */
 
 #include <string>
-#include "cpp/driver/pressure_sensor.h"
+
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/pressure_sensor.h"
 
 namespace matrix_hal {
 

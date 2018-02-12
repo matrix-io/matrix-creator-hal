@@ -5,14 +5,14 @@
 #include <gflags/gflags.h>
 #include <wiringPi.h>
 
-#include <string>
 #include <cmath>
 #include <iostream>
+#include <string>
 #include <valarray>
 
-#include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 #include "./fir.h"
 
@@ -21,7 +21,7 @@ DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 
 namespace hal = matrix_hal;
 
-int main(int argc, char *agrv[]) {
+int main(int argc, char* agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
@@ -44,10 +44,9 @@ int main(int argc, char *agrv[]) {
   std::valarray<float> magnitude(mics.Channels());
 
   std::valarray<float> coeff_hp = {
-   0.0599851024734,-1.300381417101e-17,  -0.1549721713331,  -0.1626987043005,
-     0.1053874898562,   0.2920599418361,   0.1053874898562,  -0.1626987043005,
-    -0.1549721713331,-1.300381417101e-17,   0.0599851024734
-  };
+      0.0599851024734,  -1.300381417101e-17, -0.1549721713331, -0.1626987043005,
+      0.1053874898562,  0.2920599418361,     0.1053874898562,  -0.1626987043005,
+      -0.1549721713331, -1.300381417101e-17, 0.0599851024734};
   std::valarray<FIR> filter_bank_hp(mics.Channels());
   for (auto& iir : filter_bank_hp) iir.Setup(coeff_hp);
 

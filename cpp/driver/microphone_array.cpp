@@ -65,10 +65,11 @@ bool MicrophoneArray::Read() {
 
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
     for (int c = 0; c < kMicrophoneChannels; c++) {
-      if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress+c*NumberOfSamples(),
-                                   reinterpret_cast<unsigned char *>(
-                                       &raw_data_[c * NumberOfSamples()]),
-                                   sizeof(int16_t) * NumberOfSamples())) {
+      if (!wishbone_->SpiReadBurst(
+              kMicrophoneArrayBaseAddress + c * NumberOfSamples(),
+              reinterpret_cast<unsigned char *>(
+                  &raw_data_[c * NumberOfSamples()]),
+              sizeof(int16_t) * NumberOfSamples())) {
         return false;
       }
     }
@@ -78,7 +79,7 @@ bool MicrophoneArray::Read() {
       for (int c = 0; c < kMicrophoneChannels; c++) {
         // delaying data for beamforming 'delay & sum' algorithm
         delayed_data_[s * kMicrophoneChannels + c] =
-            fifos_[c].PushPop(raw_data_[c*NumberOfSamples() + s]);
+            fifos_[c].PushPop(raw_data_[c * NumberOfSamples() + s]);
 
         // accumulation data for beamforming 'delay & sum' algorithm
         sum += delayed_data_[s * kMicrophoneChannels + c];

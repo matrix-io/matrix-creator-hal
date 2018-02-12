@@ -55,7 +55,8 @@ void DirectionOfArrival::Calculate() {
   // Max delay in samples between microphones of a pair
   int max_tof = 6;
 
-  // Prepare buffer for cross correlation calculation between the microphones of a pair 
+  // Prepare buffer for cross correlation calculation between the microphones of
+  // a pair
   for (uint32_t s = 0; s < mics_.NumberOfSamples(); s++) {
     for (uint16_t c = 0; c < mics_.Channels(); c++) { /* mics_.Channels()=8 */
       buffer_2D_[c][s] = mics_.At(s, c);
@@ -90,15 +91,15 @@ void DirectionOfArrival::Calculate() {
     current_index_[channel] = index;
   }
 
-  // Loop over all microphone pairs and find the microphone pair perpendicular to the source 
+  // Loop over all microphone pairs and find the microphone pair perpendicular
+  // to the source
   int perp = 0;
   int index = current_index_[0];
   float mag = current_mag_[0];
   for (int channel = 0; channel < 4; channel++) {
     if (getAbsDiff(current_index_[channel]) < getAbsDiff(index)) {
       perp = channel;
-      if (current_mag_[channel] > mag)
-        mag = current_mag_[channel];
+      if (current_mag_[channel] > mag) mag = current_mag_[channel];
       index = current_index_[channel];
     }
   }
@@ -114,7 +115,6 @@ void DirectionOfArrival::Calculate() {
   azimutal_angle_ = atan2(micarray_location[mic_direction_][1],
                           micarray_location[mic_direction_][0]);
   polar_angle_ = fabs(index) * M_PI / 2.0 / float(max_tof - 1);
-
 }
 
 };  // namespace matrix_hal

@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
-#include <iostream>
-#include <sys/types.h>
+#include <arpa/inet.h>
 #include <ifaddrs.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <cstring>
+#include <iostream>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
@@ -76,8 +76,7 @@ int main() {
       }
     }
   }
-  if (ifaddr_struct != nullptr)
-    freeifaddrs(ifaddr_struct);
+  if (ifaddr_struct != nullptr) freeifaddrs(ifaddr_struct);
 
   for (hal::LedValue &led : image.leds) {
     led.red = 0;

@@ -17,20 +17,20 @@
 
 #include <unistd.h>
 #include <cstdlib>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
-#include "../cpp/driver/wishbone_bus.h"
 #include "../cpp/driver/fw_data.h"
-#include "../cpp/driver/mcu_firmware.h"
-#include "../cpp/driver/imu_data.h"
-#include "../cpp/driver/imu_sensor.h"
-#include "../cpp/driver/pressure_data.h"
-#include "../cpp/driver/pressure_sensor.h"
 #include "../cpp/driver/humidity_data.h"
 #include "../cpp/driver/humidity_sensor.h"
-#include "../cpp/driver/uv_sensor.h"
+#include "../cpp/driver/imu_data.h"
+#include "../cpp/driver/imu_sensor.h"
+#include "../cpp/driver/mcu_firmware.h"
+#include "../cpp/driver/pressure_data.h"
+#include "../cpp/driver/pressure_sensor.h"
 #include "../cpp/driver/uv_data.h"
+#include "../cpp/driver/uv_sensor.h"
+#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -71,22 +71,26 @@ int main() {
     std::cout << "yaw = " << imu_data.yaw << "°\t";
     std::cout << "roll = " << imu_data.roll << "°\t";
     std::cout << "pitch = " << imu_data.pitch << "°" << std::endl;
-    std::cout << "accel = {" << imu_data.accel_x << ", " <<  imu_data.accel_y << "," << imu_data.accel_z <<  "}"  << std::endl << std::endl;
-
+    std::cout << "accel = {" << imu_data.accel_x << ", " << imu_data.accel_y
+              << "," << imu_data.accel_z << "}" << std::endl
+              << std::endl;
 
     std::cout << "humidity = " << humidity_data.humidity << " %" << std::endl;
     std::cout << "temperature (from humidity sensor) = "
-              << humidity_data.temperature << " °C" << std::endl << std::endl;
+              << humidity_data.temperature << " °C" << std::endl
+              << std::endl;
 
     std::cout << "pressure = " << pressure_data.pressure << " kPa" << std::endl;
     std::cout << "altitude = " << pressure_data.altitude << " meters"
               << std::endl;
     std::cout << "temperature (from altimeter) = " << pressure_data.temperature
-              << " °C" << std::endl << std::endl;
+              << " °C" << std::endl
+              << std::endl;
     std::cout << "UV = " << uv_data.uv << std::endl << std::endl;
 
-    std::cout << "MCU ID = 0x" <<  std::hex <<  mcu_data.ID  << std::endl;
-    std::cout << "MCU version = 0x" << mcu_data.version   << std::endl << std::endl;
+    std::cout << "MCU ID = 0x" << std::hex << mcu_data.ID << std::endl;
+    std::cout << "MCU version = 0x" << mcu_data.version << std::endl
+              << std::endl;
 
     usleep(200000);
   }

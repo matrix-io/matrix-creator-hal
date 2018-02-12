@@ -16,10 +16,11 @@
  */
 
 #include <unistd.h>
-#include <string>
 #include <iostream>
-#include "cpp/driver/everloop.h"
+#include <string>
+
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/everloop.h"
 
 namespace matrix_hal {
 
@@ -29,7 +30,7 @@ bool Everloop::Write(const EverloopImage* led_image) {
   if (!wishbone_) return false;
 
   uint16_t wb_data_buffer;
-  char * data_buffer = reinterpret_cast<char *>(&wb_data_buffer);
+  char* data_buffer = reinterpret_cast<char*>(&wb_data_buffer);
 
   uint32_t addr_offset = 0;
   for (const LedValue& led : led_image->leds) {
@@ -39,7 +40,8 @@ bool Everloop::Write(const EverloopImage* led_image) {
 
     data_buffer[0] = led.blue;
     data_buffer[1] = led.white;
-    wishbone_->SpiWrite16(kEverloopBaseAddress + addr_offset + 1, wb_data_buffer);
+    wishbone_->SpiWrite16(kEverloopBaseAddress + addr_offset + 1,
+                          wb_data_buffer);
 
     addr_offset = addr_offset + 2;
   }

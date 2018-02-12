@@ -60,8 +60,7 @@ int main(int argc, char *agrv[]) {
 
         hal::EverloopImage image;
 
-        for (auto &led : image.leds)
-          led.red = 10;
+        for (auto &led : image.leds) led.red = 10;
         everloop.Write(&image);
 
         int sleep = int(1000.0 * seconds_to_record / image.leds.size());

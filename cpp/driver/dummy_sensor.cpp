@@ -16,6 +16,7 @@
  */
 
 #include <string>
+
 #include "cpp/driver/dummy_sensor.h"
 
 namespace matrix_hal {

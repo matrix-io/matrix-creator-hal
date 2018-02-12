@@ -16,6 +16,7 @@
  */
 
 #include <string>
+
 #include "cpp/driver/matrix_driver.h"
 
 namespace matrix_hal {
