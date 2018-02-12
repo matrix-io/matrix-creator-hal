@@ -85,7 +85,7 @@ bool AudioOutput::SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency) {
   if (!wishbone_) return false;
   uint16_t PCM_constant;
   for (int i = 0;; i++) {
-    if (i >= 7) return false;
+    if(PCM_sampling_frequencies[i][0]==0) return false;
     if (PCM_sampling_frequency == PCM_sampling_frequencies[i][0]) {
       PCM_sampling_frequency_ = PCM_sampling_frequencies[i][0];
       PCM_constant = PCM_sampling_frequencies[i][1];

@@ -30,7 +30,7 @@ const uint32_t kMaxWriteLength = 1024;
 
 const uint32_t PCM_sampling_frequencies[][2] = {
     {8000, 975},  {16000, 487}, {32000, 243}, {44100, 176},
-    {48000, 162}, {88200, 88},  {96000, 81}};
+    {48000, 162}, {88200, 88},  {96000, 81}, {0,0}};
 
 enum MuteStatus : uint16_t { kMute = 0x0001, kUnMute = 0x0000 };
 
