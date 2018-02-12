@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <iostream>
 #include "cpp/driver/gpio_control.h"
+#include <iostream>
+#include <string>
 #include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {

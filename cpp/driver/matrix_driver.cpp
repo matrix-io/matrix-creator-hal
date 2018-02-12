@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
 #include "cpp/driver/matrix_driver.h"
+#include <string>
 
 namespace matrix_hal {
 

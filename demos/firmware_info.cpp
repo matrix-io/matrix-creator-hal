@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
-#include "../cpp/driver/wishbone_bus.h"
 #include "../cpp/driver/fw_data.h"
 #include "../cpp/driver/mcu_firmware.h"
+#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 

@@ -28,18 +28,11 @@ const uint16_t kMaxVolumenValue = 25;
 const uint32_t kFIFOSize = 4096;
 const uint32_t kMaxWriteLength = 1024;
 
-const uint32_t PCM_sampling_frequencies[7][2] = {{8000, 975},
-                                       {16000, 487},
-                                       {32000, 243},
-                                       {44100, 176},
-                                       {48000, 162},
-				       {88200, 88},
-                                       {96000, 81}};
+const uint32_t PCM_sampling_frequencies[][2] = {
+    {8000, 975},  {16000, 487}, {32000, 243}, {44100, 176},
+    {48000, 162}, {88200, 88},  {96000, 81}};
 
-enum MuteStatus : uint16_t {
-  kMute = 0x0001,
-  kUnMute = 0x0000
-};
+enum MuteStatus : uint16_t { kMute = 0x0001, kUnMute = 0x0000 };
 
 enum OutputSelector : uint16_t {
   kHeadPhone = 0x0001,
@@ -59,7 +52,7 @@ class AudioOutput : public MatrixDriver {
   bool UnMute();
 
   bool SetOutputSelector(OutputSelector output_selector);
-  
+
   bool FIFOFlush();
   bool GetPCMSamplingFrequency();
   bool SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency);
@@ -72,6 +65,7 @@ class AudioOutput : public MatrixDriver {
   bool SetVolumen(int volumen_percentage);
 
   std::valarray<uint16_t> write_data_;
+
  private:
   MuteStatus mute_status_;
   int16_t volumen_percentage_;

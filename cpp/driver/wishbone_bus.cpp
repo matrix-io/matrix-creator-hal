@@ -118,7 +118,7 @@ bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
 bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
   hw_addr->reg = add;
   hw_addr->readnwrite = 0;
 
@@ -131,7 +131,6 @@ bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
 }
 
 bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
-
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
@@ -143,7 +142,7 @@ bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
 bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
   hw_addr->reg = add;
   hw_addr->readnwrite = 1;
 
@@ -157,10 +156,10 @@ bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
 bool WishboneBus::SpiWriteBurst(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
   hw_addr->reg = add;
   hw_addr->readnwrite = 0;
-  
+
   memcpy(&tx_buffer_[2], data, length);
   if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
     return true;
@@ -172,7 +171,7 @@ bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiRead16(add + w,  (unsigned char *)&words[w])) return false;
+    if (!SpiRead16(add + w, (unsigned char *)&words[w])) return false;
   }
   return true;
 }
@@ -182,7 +181,7 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 
   const int length = 2;
 
-  hardware_address* hw_addr = reinterpret_cast<hardware_address*>(tx_buffer_);
+  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
   hw_addr->reg = add;
   hw_addr->readnwrite = 1;
 

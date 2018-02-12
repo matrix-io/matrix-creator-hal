@@ -18,12 +18,12 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
-#include "../cpp/driver/imu_data.h"
-#include "../cpp/driver/imu_sensor.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/humidity_data.h"
 #include "../cpp/driver/humidity_sensor.h"
+#include "../cpp/driver/imu_data.h"
+#include "../cpp/driver/imu_sensor.h"
 #include "../cpp/driver/pressure_data.h"
 #include "../cpp/driver/pressure_sensor.h"
 #include "../cpp/driver/wishbone_bus.h"
@@ -80,13 +80,18 @@ int main() {
     std::cout << "roll = " << imu_data.roll << "\t";
     std::cout << "pitch = " << imu_data.pitch << std::endl;
 
-    std::cout << "a " << imu_data.accel_x << ", " << imu_data.accel_y << ", "<< imu_data.accel_z << std::endl;
-    std::cout << "g " << imu_data.gyro_x << ", " << imu_data.gyro_y << ", "<< imu_data.gyro_z << std::endl;
-    std::cout << "m " << imu_data.mag_x << ", " << imu_data.mag_y  << ", "<< imu_data.mag_z << std::endl;
+    std::cout << "a " << imu_data.accel_x << ", " << imu_data.accel_y << ", "
+              << imu_data.accel_z << std::endl;
+    std::cout << "g " << imu_data.gyro_x << ", " << imu_data.gyro_y << ", "
+              << imu_data.gyro_z << std::endl;
+    std::cout << "m " << imu_data.mag_x << ", " << imu_data.mag_y << ", "
+              << imu_data.mag_z << std::endl;
     std::cout << std::endl << std::endl;
-    std::cout << "humidity=" << humidity_data.humidity << " temperature=" << humidity_data.temperature << std::endl;
+    std::cout << "humidity=" << humidity_data.humidity
+              << " temperature=" << humidity_data.temperature << std::endl;
     std::cout << std::endl << std::endl;
-    std::cout << "pressure=" << pressure_data.pressure << " temperature=" << pressure_data.temperature << std::endl;
+    std::cout << "pressure=" << pressure_data.pressure
+              << " temperature=" << pressure_data.temperature << std::endl;
     std::cout << std::endl << std::endl;
 
     usleep(200000);

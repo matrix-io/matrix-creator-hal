@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <unistd.h>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <unistd.h>
 
 #include "../cpp/driver/fw_data.h"
 #include "../cpp/driver/humidity_data.h"

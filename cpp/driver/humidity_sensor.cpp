@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
 #include "cpp/driver/humidity_sensor.h"
+#include <string>
 #include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {

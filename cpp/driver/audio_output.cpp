@@ -15,12 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wiringPi.h>
-#include <cmath>
-#include <cstdint>
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
 #include <string>
 #include <thread>
 #include <valarray>
@@ -91,6 +85,7 @@ bool AudioOutput::SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency) {
   if (!wishbone_) return false;
   uint16_t PCM_constant;
   for (int i = 0;; i++) {
+    if (i >= 7) return false;
     if (PCM_sampling_frequency == PCM_sampling_frequencies[i][0]) {
       PCM_sampling_frequency_ = PCM_sampling_frequencies[i][0];
       PCM_constant = PCM_sampling_frequencies[i][1];
@@ -135,7 +130,8 @@ void AudioOutput::Write() {
 bool AudioOutput::SetVolumen(int volumen_percentage) {
   if (!wishbone_) return false;
   if (volumen_percentage > 100) return false;
-  uint16_t volumen_constant = (100-volumen_percentage) * kMaxVolumenValue / 100;
+  uint16_t volumen_constant =
+      (100 - volumen_percentage) * kMaxVolumenValue / 100;
   wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x804, volumen_constant);
   return true;
 }

@@ -3,18 +3,18 @@
  * All rights reserved.
  */
 
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <wiringPi.h>
 
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <valarray>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/wishbone_bus.h"
 

@@ -16,14 +16,14 @@
  */
 
 #include <unistd.h>
-#include <valarray>
 #include <cstdlib>
 #include <iostream>
+#include <valarray>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
-#include "../cpp/driver/uv_sensor.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/uv_data.h"
+#include "../cpp/driver/uv_sensor.h"
 #include "../cpp/driver/wishbone_bus.h"
 
 /* UV Index

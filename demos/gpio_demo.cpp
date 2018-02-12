@@ -18,11 +18,11 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/gpio_control.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
-#include "../cpp/driver/gpio_control.h"
 #include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;

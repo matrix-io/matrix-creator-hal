@@ -16,11 +16,11 @@
  */
 
 #include <unistd.h>
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
-#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/everloop.h"
+#include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
@@ -28,8 +28,8 @@ namespace hal = matrix_hal;
 int main(int argc, char* argv[]) {
   if (argc < 2) {
     std::cout << "Device has not been specified" << std::endl
-              << "Usage:" << std::endl << "   " << argv[0] << " device"
-              << std::endl;
+              << "Usage:" << std::endl
+              << "   " << argv[0] << " device" << std::endl;
     return -1;
   }
 
