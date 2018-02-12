@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cpp/driver/dummy_sensor.h"
 #include <string>
+
+#include "cpp/driver/dummy_sensor.h"
 
 namespace matrix_hal {
 
