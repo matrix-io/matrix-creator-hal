@@ -177,7 +177,7 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   if(sampling_frequency == 0) {
-    std::cerr << "Bad Configuration, Sound Speed must be greather than 0" << std::endl;
+    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0" << std::endl;
     return false;
   }
 
