@@ -1,3 +1,9 @@
+libmatrixio-creator-hal (0.2.2) unstable; urgency=medium
+
+  * Bug Fix: Handle bad configurations
+
+ -- Admobilize <info@admobilize.com>  Mon, 12 Feb 2018 10:45:50 +0000
+ 
 libmatrixio-creator-hal (0.2.1) unstable; urgency=medium
 
   * Adding Audio Output Driver
