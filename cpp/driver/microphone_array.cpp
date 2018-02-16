@@ -96,6 +96,11 @@ bool MicrophoneArray::Read() {
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
                                       float radial_distance_mm,
                                       float sound_speed_mmseg) {
+  
+  if(sound_speed_mmseg == 0) {
+    std::cerr << "Bad Configuration, Sound Speed must be greather than 0" << std::endl;
+    return;
+  }
   //  sound source position
   float x, y, z;
   x = radial_distance_mm * std::sin(azimutal_angle) * std::cos(polar_angle);
@@ -171,6 +176,11 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 }
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
+  if(sampling_frequency == 0) {
+    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0" << std::endl;
+    return false;
+  }
+
   sampling_frequency_ = sampling_frequency;
   uint32_t systemClock = wishbone_->FPGAClock();
   pdm_ratio_ = std::floor(systemClock / kPDMFrequency) - 1;
