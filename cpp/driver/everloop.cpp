@@ -36,7 +36,7 @@ Everloop::Everloop() {}
 bool Everloop::Write(const EverloopImage* led_image) {
   if (!wishbone_) return false;
 
-  int fd = open("/dev/everloop", O_WRONLY);
+  int fd = open("/dev/matrixio_everloop", O_WRONLY);
 
   char buff[4*35];
   uint32_t addr_offset = 0;
