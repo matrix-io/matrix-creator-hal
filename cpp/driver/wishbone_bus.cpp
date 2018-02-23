@@ -45,7 +45,7 @@ WishboneBus::WishboneBus()
       spi_bits_(8),
       spi_speed_(10000000),
       spi_delay_(0),
-      fpga_frequency_(125000000) {}
+      fpga_frequency_(16000000) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);

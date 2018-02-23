@@ -19,6 +19,8 @@
 
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
+DEFINE_int32(gain, 0, "Microphone Gain");
+
 
 namespace hal = matrix_hal;
 
@@ -35,6 +37,7 @@ int main(int argc, char *agrv[]) {
   int seconds_to_record = FLAGS_duration;
 
   mics.SetSamplingRate(sampling_rate);
+  mics.SetGain(FLAGS_gain);
   mics.ShowConfiguration();
 
   std::cout << "Duration : " << seconds_to_record << "s" << std::endl;

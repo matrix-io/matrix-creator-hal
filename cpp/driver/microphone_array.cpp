@@ -127,37 +127,6 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   }
 }
 
-bool MicrophoneArray::GetPDMRatio() {
-  if (!wishbone_) return false;
-  uint16_t value;
-  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 0x803,
-                       (unsigned char *)&value);
-  pdm_ratio_ = value;
-  return true;
-}
-
-bool MicrophoneArray::SetPDMRatio(uint16_t pdm_ratio) {
-  if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 0x803, pdm_ratio);
-  pdm_ratio_ = pdm_ratio;
-  return true;
-}
-
-bool MicrophoneArray::GetDecimationRatio() {
-  if (!wishbone_) return false;
-  uint16_t value;
-  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 0x801,
-                       (unsigned char *)&value);
-  decimation_ratio_ = value;
-  return true;
-}
-
-bool MicrophoneArray::SetDecimationRatio(uint16_t decimation_ratio) {
-  if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 0x801, decimation_ratio);
-  decimation_ratio_ = decimation_ratio;
-  return true;
-}
 
 bool MicrophoneArray::GetGain() {
   if (!wishbone_) return false;
@@ -182,24 +151,12 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   }
 
   sampling_frequency_ = sampling_frequency;
-  uint32_t systemClock = wishbone_->FPGAClock();
-  pdm_ratio_ = std::floor(systemClock / kPDMFrequency) - 1;
-  decimation_ratio_ =
-      std::floor((systemClock) / (sampling_frequency * (pdm_ratio_ + 1))) - 1;
-  uint16_t maxCICBits =
-      std::floor(kCICStages * (std::log(decimation_ratio_) / std::log(2)));
-  gain_ = kCICWidth - maxCICBits + 1;
-
-  SetPDMRatio(pdm_ratio_);
-  SetDecimationRatio(decimation_ratio_);
-  SetGain(gain_);
-
+  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 0x, gain);
+  
   return true;
 }
 
 void MicrophoneArray::ReadConfValues() {
-  GetPDMRatio();
-  GetDecimationRatio();
   GetGain();
   wishbone_->GetFPGAFrequency();
   uint32_t systemClock = wishbone_->FPGAClock();

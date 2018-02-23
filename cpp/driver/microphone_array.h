@@ -26,10 +26,16 @@
 
 namespace matrix_hal {
 
+const uint32_t PCM_sampling_frequencies[][3] = {
+    {8000, 380, 0}, {12000, 253, 0} {16000, 189, 3}, {22050,243}, {44100, 176},
+    {48000, 162}, {88200, 88},  {96000, 81}, {0,0}};
+
+
+
 const uint32_t kPDMFrequency = 3000000;
 const uint32_t kCICStages = 3;
 const uint16_t kCICWidth = 23;
-const uint16_t kMicarrayBufferSize = 2048;
+const uint16_t kMicarrayBufferSize = 4096;
 const uint16_t kMicrophoneArrayIRQ = 6;
 const uint16_t kMicrophoneChannels = 8;
 
