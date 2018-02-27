@@ -41,37 +41,36 @@ void AudioOutput::Setup(WishboneBus *wishbone) {
 
 bool AudioOutput::Mute() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x805, kMute);
+  wishbone_->SpiWrite16(kConfBaseAddress+ 10, kMute);
   mute_status_ = kMute;
   return true;
 }
 
 bool AudioOutput::UnMute() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x805, kUnMute);
+  wishbone_->SpiWrite16(kConfBaseAddress+ 10, kUnMute);
   mute_status_ = kUnMute;
-  return true;
-}
-
-bool AudioOutput::SetOutputSelector(OutputSelector output_selector) {
-  if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x806, output_selector);
-  selector_hp_nspk_ = output_selector;
   return true;
 }
 
 bool AudioOutput::FIFOFlush() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x800, 0x0001);
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x800, 0x0000);
+  wishbone_->SpiWrite16(kConfBaseAddress+ 12, 0x0001);
+  wishbone_->SpiWrite16(kConfBaseAddress+ 12, 0x0000);
+  return true;
+}
+
+bool AudioOutput::SetOutputSelector(OutputSelector output_selector) {
+  if (!wishbone_) return false;
+  wishbone_->SpiWrite16(kConfBaseAddress + 11, output_selector);
+  selector_hp_nspk_ = output_selector;
   return true;
 }
 
 bool AudioOutput::GetPCMSamplingFrequency() {
   if (!wishbone_) return false;
   uint16_t PCM_constant;
-  wishbone_->SpiRead16(kAudioOutputBaseAddress + 0x801,
-                       (unsigned char *)&PCM_constant);
+  wishbone_->SpiRead16(kConfBaseAddress + 9, (unsigned char *)&PCM_constant);
   for (int i = 0;; i++) {
     if (PCM_constant == PCM_sampling_frequencies[i][1]) {
       PCM_sampling_frequency_ = PCM_sampling_frequencies[i][0];
@@ -85,14 +84,14 @@ bool AudioOutput::SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency) {
   if (!wishbone_) return false;
   uint16_t PCM_constant;
   for (int i = 0;; i++) {
-    if(PCM_sampling_frequencies[i][0]==0) return false;
+    if (PCM_sampling_frequencies[i][0] == 0) return false;
     if (PCM_sampling_frequency == PCM_sampling_frequencies[i][0]) {
       PCM_sampling_frequency_ = PCM_sampling_frequencies[i][0];
       PCM_constant = PCM_sampling_frequencies[i][1];
       break;
     }
   }
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x801, PCM_constant);
+  wishbone_->SpiWrite16(kConfBaseAddress + 9, PCM_constant);
   return true;
 }
 
@@ -132,7 +131,7 @@ bool AudioOutput::SetVolumen(int volumen_percentage) {
   if (volumen_percentage > 100) return false;
   uint16_t volumen_constant =
       (100 - volumen_percentage) * kMaxVolumenValue / 100;
-  wishbone_->SpiWrite16(kAudioOutputBaseAddress + 0x804, volumen_constant);
+  wishbone_->SpiWrite16(kConfBaseAddress + 8, volumen_constant);
   return true;
 }
 

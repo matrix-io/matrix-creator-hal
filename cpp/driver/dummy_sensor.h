@@ -18,10 +18,10 @@
 #ifndef CPP_DRIVER_DUMMY_SENSOR_H_
 #define CPP_DRIVER_DUMMY_SENSOR_H_
 
-#include <string>
 #include <random>
-#include "./matrix_driver.h"
+#include <string>
 #include "./dummy_data.h"
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 

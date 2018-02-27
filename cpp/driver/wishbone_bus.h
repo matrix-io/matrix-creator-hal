@@ -19,8 +19,8 @@
 #define CPP_DRIVER_WISHBONE_BUS_H_
 
 #include <stdint.h>
-#include <string>
 #include <mutex>
+#include <string>
 
 namespace matrix_hal {
 
@@ -33,20 +33,20 @@ class WishboneBus {
   bool SpiInit();
   bool SpiWrite(uint16_t add, unsigned char* data, int length);
   bool SpiWrite16(uint16_t add, uint16_t data);
-  bool GetSoftwareVersion(char *version,int length);
+  bool GetSoftwareVersion(char* version, int length);
   bool GetFPGAFrequency();
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiWriteBurst(uint16_t add, unsigned char* data, int length);
   bool SpiRead(uint16_t add, unsigned char* data, int length);
-  bool SpiRead16(uint16_t add, unsigned char* data);   //TODO(andres.calderon):Change type to uint16_t
+  bool SpiRead16(
+      uint16_t add,
+      unsigned char* data);  // TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
   uint32_t FPGAClock() { return fpga_frequency_; }
-
 
  private:
   bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
                    unsigned int size);
-
 
  private:
   std::string device_name_;

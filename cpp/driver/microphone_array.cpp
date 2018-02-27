@@ -31,8 +31,7 @@
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray()
-    : gain_(0), pdm_ratio_(0), sampling_frequency_(0), decimation_ratio_(0) {
+MicrophoneArray::MicrophoneArray() : gain_(3), sampling_frequency_(16000) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -96,9 +95,9 @@ bool MicrophoneArray::Read() {
 void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
                                       float radial_distance_mm,
                                       float sound_speed_mmseg) {
-  
-  if(sound_speed_mmseg == 0) {
-    std::cerr << "Bad Configuration, Sound Speed must be greather than 0" << std::endl;
+  if (sound_speed_mmseg == 0) {
+    std::cerr << "Bad Configuration, Sound Speed must be greather than 0"
+              << std::endl;
     return;
   }
   //  sound source position
@@ -127,50 +126,69 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
   }
 }
 
-
 bool MicrophoneArray::GetGain() {
   if (!wishbone_) return false;
   uint16_t value;
-  wishbone_->SpiRead16(kMicrophoneArrayBaseAddress + 0x802,
-                       (unsigned char *)&value);
+  wishbone_->SpiRead16(kConfBaseAddress + 0x07, (unsigned char *)&value);
   gain_ = value;
   return true;
 }
 
 bool MicrophoneArray::SetGain(uint16_t gain) {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 0x802, gain);
+  wishbone_->SpiWrite16(kConfBaseAddress + 0x07, gain);
   gain_ = gain;
   return true;
 }
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
-  if(sampling_frequency == 0) {
-    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0" << std::endl;
+  if (sampling_frequency == 0) {
+    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
+              << std::endl;
     return false;
   }
 
+  uint16_t MIC_gain, MIC_constant;
+  for (int i = 0;; i++) {
+    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (sampling_frequency == MIC_sampling_frequencies[i][0]) {
+      sampling_frequency_ = MIC_sampling_frequencies[i][0];
+      MIC_constant = MIC_sampling_frequencies[i][1];
+      MIC_gain = MIC_sampling_frequencies[i][2];
+      break;
+    }
+  }
+
   sampling_frequency_ = sampling_frequency;
-  wishbone_->SpiWrite16(kMicrophoneArrayBaseAddress + 0x, gain);
-  
+  SetGain(MIC_gain);
+  wishbone_->SpiWrite16(kConfBaseAddress + 0x06, MIC_constant);
+
   return true;
 }
 
+bool MicrophoneArray::GetSamplingRate() {
+  if (!wishbone_) return false;
+  uint16_t value;
+  wishbone_->SpiRead16(kConfBaseAddress + 0x06, (unsigned char *)&value);
+
+  for (int i = 0;; i++) {
+    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (value == MIC_sampling_frequencies[i][0]) {
+      sampling_frequency_ = MIC_sampling_frequencies[i][0];
+      break;
+    }
+  }
+
+  return true;
+}
 void MicrophoneArray::ReadConfValues() {
   GetGain();
-  wishbone_->GetFPGAFrequency();
-  uint32_t systemClock = wishbone_->FPGAClock();
-  sampling_frequency_ =
-      std::floor((systemClock) /
-                 ((pdm_ratio_ + 1) * (decimation_ratio_ + 1) * 1000)) *
-      1000;
+  GetSamplingRate();
 }
 
 void MicrophoneArray::ShowConfiguration() {
   std::cout << "Audio Configuration: " << std::endl;
   std::cout << "Sampling Frequency: " << sampling_frequency_ << std::endl;
-  std::cout << "PDM Ratio: " << pdm_ratio_ << std::endl;
-  std::cout << "Decimation Ratio: " << decimation_ratio_ << std::endl;
   std::cout << "Gain : " << gain_ << std::endl;
 }
 
