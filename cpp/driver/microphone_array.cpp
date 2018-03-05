@@ -63,15 +63,18 @@ bool MicrophoneArray::Read() {
   if (!wishbone_) return false;
 
   if (waitForInterrupt(kMicrophoneArrayIRQ, -1) > 0) {
-    for (int c = 0; c < kMicrophoneChannels; c++) {
+    for (int c = 0; c < 2; c++) {
       if (!wishbone_->SpiReadBurst(
-              kMicrophoneArrayBaseAddress + c * NumberOfSamples(),
-              reinterpret_cast<unsigned char *>(
-                  &raw_data_[c * NumberOfSamples()]),
-              sizeof(int16_t) * NumberOfSamples())) {
+              kMicrophoneArrayBaseAddress + c * 2046,
+              reinterpret_cast<unsigned char *>(&raw_data_[c * 2046]),
+              sizeof(int16_t) * 2046)) {
         return false;
       }
     }
+    wishbone_->SpiReadBurst(
+        kMicrophoneArrayBaseAddress + 4092,
+        reinterpret_cast<unsigned char *>(&raw_data_[4092]),
+        sizeof(int16_t) * 4);
 
     for (uint32_t s = 0; s < NumberOfSamples(); s++) {
       int sum = 0;
