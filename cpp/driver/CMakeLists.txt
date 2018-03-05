@@ -1,7 +1,12 @@
 project(matrix_creator_hal C CXX)
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_BUILD_TYPE Release)
+
 find_library (FFTW_LIBRARIES NAMES fftw3f )
+FIND_LIBRARY(WIRINGPI_LIB NAMES wiringPi)
+FIND_LIBRARY(WIRINGPI_DEV_LIB NAMES wiringPiDev)
+FIND_LIBRARY(CRYPT_LIB NAMES crypt)
 
 add_compile_options(-std=c++11)
 
@@ -33,10 +38,11 @@ set(matrix_creator_hal_src
   audio_output.cpp
 )
 
-add_library(matrix_creator_hal ${matrix_creator_hal_src})
+add_library(matrix_creator_hal SHARED ${matrix_creator_hal_src})
   set_property(TARGET matrix_creator_hal PROPERTY CXX_STANDARD 11)
   target_link_libraries(matrix_creator_hal ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(matrix_creator_hal ${FFTW_LIBRARIES})
+  target_link_libraries(matrix_creator_hal ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
 
 set (matrix_creator_hal_headers
   circular_queue.h
