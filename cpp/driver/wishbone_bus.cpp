@@ -45,7 +45,7 @@ WishboneBus::WishboneBus()
       spi_bits_(8),
       spi_speed_(20000000),
       spi_delay_(0),
-      fpga_frequency_(150000000) {}
+      fpga_frequency_(0) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -89,6 +89,15 @@ bool WishboneBus::SpiInit() {
 
   if (ioctl(spi_fd_, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed_) == -1) {
     std::cerr << "can't get max speed Hz" << std::endl;
+    return false;
+  }
+
+  /*
+   * set FPGA frequency
+   */
+  lock.unlock();
+  if (!GetFPGAFrequency()) {
+    std::cerr << "can't get FPGA frequency" << std::endl;
     return false;
   }
 
