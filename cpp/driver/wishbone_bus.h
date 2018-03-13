@@ -24,7 +24,7 @@
 
 namespace matrix_hal {
 
-const uint32_t kFPGAClock = 50000000;
+const uint32_t kFPGAClock = 50000000; //Physical OSC = 50MHz
 
 class WishboneBus {
  public:
@@ -58,7 +58,7 @@ class WishboneBus {
   unsigned int spi_delay_;
   unsigned char rx_buffer_[4096];
   unsigned char tx_buffer_[4096];
-  uint32_t fpga_frequency_;
+  uint32_t fpga_frequency_; // Internal FPGA clock - DCM
   mutable std::mutex mutex_;
 };
 };      // namespace matrix_hal
