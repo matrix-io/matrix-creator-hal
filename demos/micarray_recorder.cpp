@@ -42,7 +42,6 @@ int main(int argc, char *agrv[]) {
   mics.ReadConfValues();
   mics.ShowConfiguration();
 
-#if 1
   std::cout << "Duration : " << seconds_to_record << "s" << std::endl;
 
   int16_t buffer[mics.Channels() + 1]
@@ -108,6 +107,5 @@ int main(int argc, char *agrv[]) {
   }
 
   et.join();
-#endif
   return 0;
 }
