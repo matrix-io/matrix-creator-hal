@@ -21,7 +21,6 @@ DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
 DEFINE_int32(gain, -1, "Microphone Gain");
 
-
 namespace hal = matrix_hal;
 
 int main(int argc, char *agrv[]) {
@@ -37,9 +36,8 @@ int main(int argc, char *agrv[]) {
   int seconds_to_record = FLAGS_duration;
 
   mics.SetSamplingRate(sampling_rate);
-  
-  if(FLAGS_gain > 0)
-    mics.SetGain(FLAGS_gain);
+
+  if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
 
   mics.ReadConfValues();
   mics.ShowConfiguration();
@@ -110,6 +108,6 @@ int main(int argc, char *agrv[]) {
   }
 
   et.join();
-#endif 
+#endif
   return 0;
 }
