@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include <unistd.h>
+#include <iostream>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -28,9 +28,9 @@ int main() {
   hal::WishboneBus bus;
 
   if (!bus.SpiInit()) return false;
-  
+
   hal::EverloopImage image1d(bus.MatrixLeds());
-  
+
   hal::Everloop everloop;
 
   everloop.Setup(&bus);
@@ -38,7 +38,6 @@ int main() {
   unsigned counter = 0;
 
   while (1) {
-
     for (hal::LedValue& led : image1d.leds) {
       led.red = 0;
       led.green = 0;
@@ -48,7 +47,8 @@ int main() {
     image1d.leds[(counter / 2) % image1d.leds.size()].red = 20;
     image1d.leds[(counter / 7) % image1d.leds.size()].green = 30;
     image1d.leds[(counter / 11) % image1d.leds.size()].blue = 30;
-    image1d.leds[image1d.leds.size() - 1 - (counter % image1d.leds.size())].white = 10;
+    image1d.leds[image1d.leds.size() - 1 - (counter % image1d.leds.size())]
+        .white = 10;
 
     everloop.Write(&image1d);
     ++counter;
