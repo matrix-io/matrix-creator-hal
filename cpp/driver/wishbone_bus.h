@@ -25,6 +25,8 @@
 namespace matrix_hal {
 
 const uint32_t kFPGAClock = 50000000; //Physical OSC = 50MHz
+const int kMatrixCreatorNLeds = 35;
+const int kMatrixVoiceNLeds = 18;
 
 class WishboneBus {
  public:
@@ -33,7 +35,7 @@ class WishboneBus {
   bool SpiInit();
   bool SpiWrite(uint16_t add, unsigned char* data, int length);
   bool SpiWrite16(uint16_t add, uint16_t data);
-  bool GetSoftwareVersion(char* version, int length);
+  bool GetMatrixName();
   bool GetFPGAFrequency();
   bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
   bool SpiWriteBurst(uint16_t add, unsigned char* data, int length);
@@ -43,6 +45,8 @@ class WishboneBus {
       unsigned char* data);  // TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
   uint32_t FPGAClock() { return fpga_frequency_; }
+  uint32_t MatrixName() {return matrix_name_;}
+  int MatrixLeds() {return matrix_leds_;}
 
  private:
   bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
@@ -59,6 +63,8 @@ class WishboneBus {
   unsigned char rx_buffer_[4096];
   unsigned char tx_buffer_[4096];
   uint32_t fpga_frequency_; // Internal FPGA clock - DCM
+  uint32_t matrix_name_;
+  int matrix_leds_;
   mutable std::mutex mutex_;
 };
 };      // namespace matrix_hal

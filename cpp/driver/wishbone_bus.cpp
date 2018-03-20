@@ -45,7 +45,9 @@ WishboneBus::WishboneBus()
       spi_bits_(8),
       spi_speed_(20000000),
       spi_delay_(0),
-      fpga_frequency_(0) {}
+      fpga_frequency_(0),
+      matrix_name_(0),
+      matrix_leds_(0) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -96,6 +98,10 @@ bool WishboneBus::SpiInit() {
    * set FPGA frequency
    */
   lock.unlock();
+  if (!GetMatrixName()){
+    return false;
+  }
+
   if (!GetFPGAFrequency()) {
     std::cerr << "can't get FPGA frequency" << std::endl;
     return false;
@@ -201,9 +207,19 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
   return false;
 }
 
-bool WishboneBus::GetSoftwareVersion(char *version, int length) {
-  if (!SpiRead(kConfBaseAddress, (unsigned char *)version, length))
+bool WishboneBus::GetMatrixName() {
+  uint32_t data = 0;
+  if (!SpiReadBurst(kConfBaseAddress, (unsigned char *)&data, sizeof(data)))
     return false;
+  matrix_name_ = data;
+  if(matrix_name_ == 0x05C344E8)
+     matrix_leds_ = kMatrixCreatorNLeds;
+  else if (matrix_name_ == 0x6032BAD2)
+     matrix_leds_ = kMatrixVoiceNLeds;
+  else {
+    std::cerr << "MATRIX device has not been detected" << std::endl;
+    return false;
+  }
   return true;
 }
 
