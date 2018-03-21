@@ -41,22 +41,22 @@ void AudioOutput::Setup(WishboneBus *wishbone) {
 
 bool AudioOutput::Mute() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kConfBaseAddress+ 10, kMute);
+  wishbone_->SpiWrite16(kConfBaseAddress + 10, kMute);
   mute_status_ = kMute;
   return true;
 }
 
 bool AudioOutput::UnMute() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kConfBaseAddress+ 10, kUnMute);
+  wishbone_->SpiWrite16(kConfBaseAddress + 10, kUnMute);
   mute_status_ = kUnMute;
   return true;
 }
 
 bool AudioOutput::FIFOFlush() {
   if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kConfBaseAddress+ 12, 0x0001);
-  wishbone_->SpiWrite16(kConfBaseAddress+ 12, 0x0000);
+  wishbone_->SpiWrite16(kConfBaseAddress + 12, 0x0001);
+  wishbone_->SpiWrite16(kConfBaseAddress + 12, 0x0000);
   return true;
 }
 

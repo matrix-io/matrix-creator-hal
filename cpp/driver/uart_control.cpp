@@ -65,4 +65,4 @@ void UartControl::Setup(WishboneBus *wishbone) {
 
   pinMode(kUartIRQ, INPUT);
 }
-}
+}  // namespace matrix_hal
