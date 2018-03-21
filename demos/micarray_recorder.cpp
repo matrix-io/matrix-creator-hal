@@ -63,7 +63,7 @@ int main(int argc, char *agrv[]) {
         hal::Everloop everloop;
         everloop.Setup(bus);
 
-        hal::EverloopImage image(bus.MatrixLeds());
+        hal::EverloopImage image(bus->MatrixLeds());
 
         for (auto &led : image.leds) led.red = 10;
         everloop.Write(&image);

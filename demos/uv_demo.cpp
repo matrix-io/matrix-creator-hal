@@ -52,11 +52,11 @@ struct UVTable {
 
 int main() {
   std::valarray<UVTable> who_uv_table = {
-      {11.0, {255, 0, 255, 0}}, /* Violet "Extreme" */
-      {8.0, {255, 0, 0, 0}},    /* Red    "Very high" */
-      {6.0, {255, 128, 0, 0}},  /* Orange "High" */
-      {3.0, {255, 255, 0, 0}},  /* Yellow "Moderate" */
-      {0.0, {0, 255, 0, 0}}     /* Green  "Low" */
+      {11.0, {50, 0, 50, 0}}, /* Violet "Extreme" */
+      {8.0, {50, 0, 0, 0}},    /* Red    "Very high" */
+      {6.0, {50, 30, 0, 0}},  /* Orange "High" */
+      {3.0, {50, 50, 0, 0}},  /* Yellow "Moderate" */
+      {0.0, {0, 50, 0, 0}}     /* Green  "Low" */
   };
 
   hal::WishboneBus bus;
