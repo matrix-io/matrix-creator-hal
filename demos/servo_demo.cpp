@@ -47,12 +47,12 @@ int main() {
   std::cout << "Set desired Angle in degrees" << std::endl << std::endl;
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);
@@ -82,7 +82,7 @@ int main() {
 
     uint16_t ledAngle = -angle / 10 + 18;
 
-    for (int i = 17; i >= ledAngle; i--) {
+    for (int i = (image1d.leds.size()/2); i >= ledAngle; i--) {
       image1d.leds[i].blue = 50;
     }
 

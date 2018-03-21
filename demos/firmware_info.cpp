@@ -26,7 +26,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::MCUFirmware mcu_firmware;
   mcu_firmware.Setup(&bus);

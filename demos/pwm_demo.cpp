@@ -36,7 +36,7 @@ int main() {
   std::cout << "Set desired Duty cycle in percentage" << std::endl << std::endl;
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);

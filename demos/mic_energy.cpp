@@ -24,7 +24,7 @@ int main(int argc, char* agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -32,7 +32,7 @@ int main(int argc, char* agrv[]) {
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
   int j = 0;
   uint64_t instantE = 0;
   uint64_t avgEnergy = 0;

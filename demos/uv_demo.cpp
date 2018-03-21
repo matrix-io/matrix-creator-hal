@@ -60,7 +60,7 @@ int main() {
   };
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::UVSensor uv_sensor;
   uv_sensor.Setup(&bus);
@@ -68,7 +68,7 @@ int main() {
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
   hal::UVData uv_data;
 
   while (true) {

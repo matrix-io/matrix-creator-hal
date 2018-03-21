@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
   hal::WishboneBus bus;
 
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::Everloop everloop;
   hal::EverloopImage image1d;

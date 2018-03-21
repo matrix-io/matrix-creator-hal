@@ -27,6 +27,8 @@ namespace matrix_hal {
 const uint32_t kFPGAClock = 50000000;  // Physical OSC = 50MHz
 const int kMatrixCreatorNLeds = 35;
 const int kMatrixVoiceNLeds = 18;
+const int kMatrixCreator = 0x05C344E8;
+const int kMatrixVoice = 0x6032BAD2;
 
 class WishboneBus {
  public:

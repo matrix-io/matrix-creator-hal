@@ -31,7 +31,7 @@ int main(int argc, char* agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -39,7 +39,7 @@ int main(int argc, char* agrv[]) {
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   int sampling_rate = FLAGS_sampling_frequency;
   mics.SetSamplingRate(sampling_rate);
