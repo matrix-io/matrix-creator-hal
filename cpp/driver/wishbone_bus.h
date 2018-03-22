@@ -66,6 +66,7 @@ class WishboneBus {
   unsigned char tx_buffer_[12000];
   uint32_t fpga_frequency_;  // Internal FPGA clock - DCM
   uint32_t matrix_name_;
+  uint32_t matrix_version_;
   int matrix_leds_;
   mutable std::mutex mutex_;
 };

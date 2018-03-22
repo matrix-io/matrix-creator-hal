@@ -208,10 +208,10 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 }
 
 bool WishboneBus::GetMatrixName() {
-  uint32_t data = 0;
+  uint32_t data[2] = 0;
   if (!SpiReadBurst(kConfBaseAddress, (unsigned char *)&data, sizeof(data)))
     return false;
-  matrix_name_ = data;
+  matrix_name_ = data[0];
   if (matrix_name_ == kMatrixCreator)
     matrix_leds_ = kMatrixCreatorNLeds;
   else if (matrix_name_ == kMatrixVoice)
@@ -220,6 +220,7 @@ bool WishboneBus::GetMatrixName() {
     std::cerr << "MATRIX device has not been detected" << std::endl;
     return false;
   }
+  matrix_version_ = data[1];
   return true;
 }
 
