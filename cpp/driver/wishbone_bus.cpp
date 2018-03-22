@@ -208,7 +208,7 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
 }
 
 bool WishboneBus::GetMatrixName() {
-  uint32_t data[2] = 0;
+  uint32_t data[2];
   if (!SpiReadBurst(kConfBaseAddress, (unsigned char *)&data, sizeof(data)))
     return false;
   matrix_name_ = data[0];
