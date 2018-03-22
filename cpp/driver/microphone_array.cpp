@@ -69,11 +69,11 @@ bool MicrophoneArray::Read() {
 
   irq_cv.wait(lock_);
 
-    if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
-                          reinterpret_cast<unsigned char *>(&raw_data_[0]),
-                          sizeof(int16_t) * kMicarrayBufferSize)){
-	    return false;
-    }
+  if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
+                               reinterpret_cast<unsigned char *>(&raw_data_[0]),
+                               sizeof(int16_t) * kMicarrayBufferSize)) {
+    return false;
+  }
 
   for (uint32_t s = 0; s < NumberOfSamples(); s++) {
     int sum = 0;
@@ -181,6 +181,7 @@ bool MicrophoneArray::GetSamplingRate() {
 
   return true;
 }
+
 void MicrophoneArray::ReadConfValues() {
   GetGain();
   GetSamplingRate();
