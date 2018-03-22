@@ -48,6 +48,8 @@ class WishboneBus {
   void SpiClose();
   uint32_t FPGAClock() { return fpga_frequency_; }
   uint32_t MatrixName() { return matrix_name_; }
+  uint32_t MatrixVersion() { return matrix_version_; }
+
   int MatrixLeds() { return matrix_leds_; }
 
  private:
