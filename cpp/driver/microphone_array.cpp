@@ -69,17 +69,11 @@ bool MicrophoneArray::Read() {
 
   irq_cv.wait(lock_);
 
-  for (int c = 0; c < 2; c++) {
-    if (!wishbone_->SpiReadBurst(
-            kMicrophoneArrayBaseAddress + c * 2047,
-            reinterpret_cast<unsigned char *>(&raw_data_[c * 2047]),
-            sizeof(int16_t) * 2047)) {
-      return false;
+    if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
+                          reinterpret_cast<unsigned char *>(&raw_data_[0]),
+                          sizeof(int16_t) * kMicarrayBufferSize)){
+	    return false;
     }
-  }
-  wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
-                          reinterpret_cast<unsigned char *>(&raw_data_[4094]),
-                          sizeof(int16_t) * 2);
 
   for (uint32_t s = 0; s < NumberOfSamples(); s++) {
     int sum = 0;

@@ -62,8 +62,8 @@ class WishboneBus {
   unsigned int spi_bits_;
   uint32_t spi_speed_;
   unsigned int spi_delay_;
-  unsigned char rx_buffer_[4096];
-  unsigned char tx_buffer_[4096];
+  unsigned char rx_buffer_[12000];
+  unsigned char tx_buffer_[12000];
   uint32_t fpga_frequency_;  // Internal FPGA clock - DCM
   uint32_t matrix_name_;
   int matrix_leds_;
