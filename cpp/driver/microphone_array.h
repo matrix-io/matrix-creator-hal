@@ -18,19 +18,23 @@
 #ifndef CPP_DRIVER_MICROPHONE_ARRAY_H_
 #define CPP_DRIVER_MICROPHONE_ARRAY_H_
 
+#include <mutex>
 #include <string>
 #include <valarray>
+
 #include "./circular_queue.h"
 #include "./matrix_driver.h"
 #include "./pressure_data.h"
 
 namespace matrix_hal {
 
-const uint32_t kPDMFrequency = 3000000;
-const uint32_t kCICStages = 3;
-const uint16_t kCICWidth = 23;
-const uint16_t kMicarrayBufferSize = 2048;
-const uint16_t kMicrophoneArrayIRQ = 6;
+static const uint32_t MIC_sampling_frequencies[][3] = {
+    {8000, 374, 0},  {12000, 249, 2}, {16000, 186, 3}, {22050, 135, 5},
+    {24000, 124, 5}, {32000, 92, 6},  {44100, 67, 7},  {48000, 61, 7},
+    {96000, 30, 9},  {0, 0, 0}};
+
+const uint16_t kMicarrayBufferSize = 4096;
+const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
 const uint16_t kMicrophoneChannels = 8;
 
 class MicrophoneArray : public MatrixDriver {
@@ -42,13 +46,9 @@ class MicrophoneArray : public MatrixDriver {
   void Setup(WishboneBus* wishbone);
   bool Read();
   uint32_t SamplingRate() { return sampling_frequency_; }
-  uint16_t DecimationRatio() { return decimation_ratio_; }
   uint16_t Gain() { return gain_; }
-  bool GetDecimationRatio();
-  bool GetPDMRatio();
-  bool SetPDMRatio(uint16_t pdm_ratio);
   bool SetSamplingRate(uint32_t sampling_frequency);
-  bool SetDecimationRatio(uint16_t decimation_counter);
+  bool GetSamplingRate();
   bool GetGain();
   bool SetGain(uint16_t gain);
   void ReadConfValues();
@@ -69,14 +69,13 @@ class MicrophoneArray : public MatrixDriver {
                        float sound_speed_mmseg = 320 * 1000.0);
 
  private:
+  std::unique_lock<std::mutex> lock_;
   //  delay and sum beamforming result
   std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   int16_t gain_;
-  uint16_t pdm_ratio_;
-  uint16_t sampling_frequency_;
-  uint16_t decimation_ratio_;
+  uint32_t sampling_frequency_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t> > fifos_;

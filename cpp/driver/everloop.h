@@ -19,8 +19,8 @@
 #define CPP_DRIVER_EVERLOOP_H_
 
 #include <string>
-#include "./matrix_driver.h"
 #include "./everloop_image.h"
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 

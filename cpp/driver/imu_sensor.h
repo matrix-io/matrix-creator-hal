@@ -19,8 +19,8 @@
 #define CPP_DRIVER_IMU_SENSOR_H_
 
 #include <string>
-#include "./matrix_driver.h"
 #include "./imu_data.h"
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 

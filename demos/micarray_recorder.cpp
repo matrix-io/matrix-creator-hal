@@ -19,6 +19,7 @@
 
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
+DEFINE_int32(gain, -1, "Microphone Gain");
 
 namespace hal = matrix_hal;
 
@@ -26,7 +27,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -35,6 +36,10 @@ int main(int argc, char *agrv[]) {
   int seconds_to_record = FLAGS_duration;
 
   mics.SetSamplingRate(sampling_rate);
+
+  if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
+
+  mics.ReadConfValues();
   mics.ShowConfiguration();
 
   std::cout << "Duration : " << seconds_to_record << "s" << std::endl;
@@ -58,7 +63,7 @@ int main(int argc, char *agrv[]) {
         hal::Everloop everloop;
         everloop.Setup(bus);
 
-        hal::EverloopImage image;
+        hal::EverloopImage image(bus->MatrixLeds());
 
         for (auto &led : image.leds) led.red = 10;
         everloop.Write(&image);
@@ -102,6 +107,5 @@ int main(int argc, char *agrv[]) {
   }
 
   et.join();
-
   return 0;
 }

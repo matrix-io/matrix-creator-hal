@@ -27,10 +27,10 @@ namespace hal = matrix_hal;
 int main() {
   hal::WishboneBus bus;
 
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::Everloop everloop;
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   everloop.Setup(&bus);
 

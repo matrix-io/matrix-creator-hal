@@ -18,8 +18,8 @@
 #ifndef CPP_DRIVER_MATRIX_DRIVER_H_
 #define CPP_DRIVER_MATRIX_DRIVER_H_
 
-#include <string>
 #include <memory>
+#include <string>
 #include "./wishbone_bus.h"
 
 namespace matrix_hal {

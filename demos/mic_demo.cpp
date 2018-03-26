@@ -25,7 +25,7 @@ int main(int argc, char* agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -33,13 +33,19 @@ int main(int argc, char* agrv[]) {
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   int sampling_rate = FLAGS_sampling_frequency;
   mics.SetSamplingRate(sampling_rate);
   mics.ShowConfiguration();
 
-  std::valarray<int> lookup = {23, 27, 32, 1, 6, 10, 14, 19};
+  std::valarray<int> lookup(mics.Channels());
+  if(bus.MatrixName() == matrix_hal::kMatrixCreator)
+    lookup = {23, 27, 32, 1, 6, 10, 14, 19};
+  else if (bus.MatrixName() == matrix_hal::kMatrixVoice)
+     lookup = {4, 0, 2, 5, 7, 10, 13, 15};
+   else
+    return false;
 
   std::valarray<float> magnitude(mics.Channels());
 

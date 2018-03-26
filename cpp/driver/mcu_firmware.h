@@ -19,8 +19,8 @@
 #define CPP_DRIVER_MCU_FIRMWARE_H_
 
 #include <string>
-#include "./matrix_driver.h"
 #include "./fw_data.h"
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 

@@ -36,7 +36,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   std::ifstream is(FLAGS_raw_file);
 

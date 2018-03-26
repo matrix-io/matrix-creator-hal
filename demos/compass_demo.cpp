@@ -32,7 +32,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);
@@ -46,7 +46,7 @@ int main() {
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
-  hal::EverloopImage image1d;
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   hal::IMUData imu_data;
   hal::HumidityData humidity_data;

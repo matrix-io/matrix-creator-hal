@@ -17,8 +17,8 @@
 
 #include <string>
 
-#include "cpp/driver/mcu_firmware.h"
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/mcu_firmware.h"
 
 namespace matrix_hal {
 

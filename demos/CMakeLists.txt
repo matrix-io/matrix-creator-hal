@@ -72,6 +72,11 @@ add_executable(gpio_demo gpio_demo.cpp)
   set_property(TARGET gpio_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(gpio_demo matrix_creator_hal)
   target_link_libraries(gpio_demo ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(pwm_demo pwm_demo.cpp)
+  set_property(TARGET pwm_demo PROPERTY CXX_STANDARD 11)
+  target_link_libraries(pwm_demo matrix_creator_hal)
+  target_link_libraries(pwm_demo ${CMAKE_THREAD_LIBS_INIT})
   
 add_executable(mic_energy mic_energy.cpp)
   set_property(TARGET mic_energy PROPERTY CXX_STANDARD 11)
@@ -114,7 +119,6 @@ add_executable(direction_of_arrival_demo direction_of_arrival_demo.cpp)
   target_link_libraries(direction_of_arrival_demo ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
   target_link_libraries(direction_of_arrival_demo ${FFTW_LIBRARIES})
   target_link_libraries(direction_of_arrival_demo ${GFLAGS_LIB})
-
 
 add_executable(uart_demo uart_demo.cpp)
   set_property(TARGET uart_demo PROPERTY CXX_STANDARD 11)

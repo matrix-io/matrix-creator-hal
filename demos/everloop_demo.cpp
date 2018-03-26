@@ -27,10 +27,11 @@ namespace hal = matrix_hal;
 int main() {
   hal::WishboneBus bus;
 
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
+
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   hal::Everloop everloop;
-  hal::EverloopImage image1d;
 
   everloop.Setup(&bus);
 
@@ -43,10 +44,11 @@ int main() {
       led.blue = 0;
       led.white = 0;
     }
-    image1d.leds[(counter / 2) % 35].red = 20;
-    image1d.leds[(counter / 7) % 35].green = 30;
-    image1d.leds[(counter / 11) % 35].blue = 30;
-    image1d.leds[34 - (counter % 35)].white = 10;
+    image1d.leds[(counter / 2) % image1d.leds.size()].red = 20;
+    image1d.leds[(counter / 7) % image1d.leds.size()].green = 30;
+    image1d.leds[(counter / 11) % image1d.leds.size()].blue = 30;
+    image1d.leds[image1d.leds.size() - 1 - (counter % image1d.leds.size())]
+        .white = 10;
 
     everloop.Write(&image1d);
     ++counter;

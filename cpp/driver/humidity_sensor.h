@@ -19,8 +19,8 @@
 #define CPP_DRIVER_HUMIDITY_SENSOR_H_
 
 #include <string>
-#include "./matrix_driver.h"
 #include "./humidity_data.h"
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 

@@ -29,8 +29,8 @@ const uint32_t kFIFOSize = 4096;
 const uint32_t kMaxWriteLength = 1024;
 
 const uint32_t PCM_sampling_frequencies[][2] = {
-    {8000, 975},  {16000, 487}, {32000, 243}, {44100, 176},
-    {48000, 162}, {88200, 88},  {96000, 81}, {0,0}};
+    {8000, 975},  {16000, 492}, {32000, 245}, {44100, 177},
+    {48000, 163}, {88200, 88},  {96000, 81},  {0, 0}};
 
 enum MuteStatus : uint16_t { kMute = 0x0001, kUnMute = 0x0000 };
 

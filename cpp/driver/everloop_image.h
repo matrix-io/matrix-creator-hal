@@ -21,6 +21,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "./wishbone_bus.h"
+
 namespace matrix_hal {
 
 class LedValue {
@@ -37,8 +39,6 @@ class LedValue {
   uint32_t blue;
   uint32_t white;
 };
-
-const int kMatrixCreatorNLeds = 35;
 
 class EverloopImage {
  public:

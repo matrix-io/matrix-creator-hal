@@ -36,7 +36,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
 
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);

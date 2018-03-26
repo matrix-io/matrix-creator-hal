@@ -43,9 +43,11 @@ WishboneBus::WishboneBus()
     : device_name_("/dev/spidev0.0"),
       spi_mode_(3),
       spi_bits_(8),
-      spi_speed_(10000000),
+      spi_speed_(20000000),
       spi_delay_(0),
-      fpga_frequency_(125000000) {}
+      fpga_frequency_(0),
+      matrix_name_(0),
+      matrix_leds_(0) {}
 
 bool WishboneBus::SpiInit() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -89,6 +91,19 @@ bool WishboneBus::SpiInit() {
 
   if (ioctl(spi_fd_, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed_) == -1) {
     std::cerr << "can't get max speed Hz" << std::endl;
+    return false;
+  }
+
+  /*
+   * set FPGA frequency
+   */
+  lock.unlock();
+  if (!GetMatrixName()) {
+    return false;
+  }
+
+  if (!GetFPGAFrequency()) {
+    std::cerr << "can't get FPGA frequency" << std::endl;
     return false;
   }
 
@@ -192,9 +207,20 @@ bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
   return false;
 }
 
-bool WishboneBus::GetSoftwareVersion(char *version, int length) {
-  if (!SpiRead(kConfBaseAddress, (unsigned char *)version, length))
+bool WishboneBus::GetMatrixName() {
+  uint32_t data[2];
+  if (!SpiReadBurst(kConfBaseAddress, (unsigned char *)&data, sizeof(data)))
     return false;
+  matrix_name_ = data[0];
+  if (matrix_name_ == kMatrixCreator)
+    matrix_leds_ = kMatrixCreatorNLeds;
+  else if (matrix_name_ == kMatrixVoice)
+    matrix_leds_ = kMatrixVoiceNLeds;
+  else {
+    std::cerr << "MATRIX device has not been detected" << std::endl;
+    return false;
+  }
+  matrix_version_ = data[1];
   return true;
 }
 

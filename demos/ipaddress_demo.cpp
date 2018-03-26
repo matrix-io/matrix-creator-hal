@@ -44,9 +44,9 @@ void SetNumber(int position, int value, hal::EverloopImage *image) {
 int main() {
   int last_integer = 0;
   hal::WishboneBus bus;
-  bus.SpiInit();
+  if (!bus.SpiInit()) return false;
   hal::Everloop everloop;
-  hal::EverloopImage image;
+  hal::EverloopImage image(bus.MatrixLeds());
 
   everloop.Setup(&bus);
 
