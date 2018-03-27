@@ -27,6 +27,11 @@ add_executable(everloop_demo everloop_demo.cpp)
   target_link_libraries(everloop_demo matrix_creator_hal)
   target_link_libraries(everloop_demo ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(rainbow_demo rainbow_demo.cpp)
+  set_property(TARGET rainbow_demo PROPERTY CXX_STANDARD 11)
+  target_link_libraries(rainbow_demo matrix_creator_hal)
+  target_link_libraries(rainbow_demo ${CMAKE_THREAD_LIBS_INIT})
+
 add_executable(arc_demo arc_demo.cpp)
   set_property(TARGET arc_demo PROPERTY CXX_STANDARD 11)
   target_link_libraries(arc_demo matrix_creator_hal)
