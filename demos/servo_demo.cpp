@@ -82,7 +82,7 @@ int main() {
 
     uint16_t ledAngle = -angle / 10 + 18;
 
-    for (int i = (image1d.leds.size()/2); i >= ledAngle; i--) {
+    for (int i = (image1d.leds.size() / 2); i >= ledAngle; i--) {
       image1d.leds[i].blue = 50;
     }
 
