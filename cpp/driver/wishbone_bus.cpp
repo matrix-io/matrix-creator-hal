@@ -16,21 +16,21 @@
  */
 
 #include "cpp/driver/wishbone_bus.h"
+#include "cpp/driver/creator_memory_map.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <iostream>
 #include <linux/spi/spidev.h>
 #include <linux/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <iostream>
-#include <string>
-#include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
 
@@ -40,13 +40,8 @@ struct hardware_address {
 };
 
 WishboneBus::WishboneBus()
-    : device_name_("/dev/spidev0.0"),
-      spi_mode_(3),
-      spi_bits_(8),
-      spi_speed_(20000000),
-      spi_delay_(0),
-      fpga_frequency_(0),
-      matrix_name_(0),
+    : device_name_("/dev/spidev0.0"), spi_mode_(3), spi_bits_(8),
+      spi_speed_(20000000), spi_delay_(0), fpga_frequency_(0), matrix_name_(0),
       matrix_leds_(0) {}
 
 bool WishboneBus::SpiInit() {
@@ -149,7 +144,8 @@ bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiWrite16(add + w, words[w])) return false;
+    if (!SpiWrite16(add + w, words[w]))
+      return false;
   }
   return true;
 }
@@ -186,7 +182,8 @@ bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
   uint16_t *words = reinterpret_cast<uint16_t *>(data);
 
   for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiRead16(add + w, (unsigned char *)&words[w])) return false;
+    if (!SpiRead16(add + w, (unsigned char *)&words[w]))
+      return false;
   }
   return true;
 }
@@ -233,4 +230,4 @@ bool WishboneBus::GetFPGAFrequency() {
 }
 
 void WishboneBus::SpiClose(void) { close(spi_fd_); }
-};  // namespace matrix_hal
+}; // namespace matrix_hal

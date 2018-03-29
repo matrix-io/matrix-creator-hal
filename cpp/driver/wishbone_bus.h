@@ -18,33 +18,33 @@
 #ifndef CPP_DRIVER_WISHBONE_BUS_H_
 #define CPP_DRIVER_WISHBONE_BUS_H_
 
-#include <stdint.h>
 #include <mutex>
+#include <stdint.h>
 #include <string>
 
 namespace matrix_hal {
 
-const uint32_t kFPGAClock = 50000000;  // Physical OSC = 50MHz
+const uint32_t kFPGAClock = 50000000; // Physical OSC = 50MHz
 const int kMatrixCreatorNLeds = 35;
 const int kMatrixVoiceNLeds = 18;
 const int kMatrixCreator = 0x05C344E8;
 const int kMatrixVoice = 0x6032BAD2;
 
 class WishboneBus {
- public:
+public:
   WishboneBus();
 
   bool SpiInit();
-  bool SpiWrite(uint16_t add, unsigned char* data, int length);
+  bool SpiWrite(uint16_t add, unsigned char *data, int length);
   bool SpiWrite16(uint16_t add, uint16_t data);
   bool GetMatrixName();
   bool GetFPGAFrequency();
-  bool SpiReadBurst(uint16_t add, unsigned char* data, int length);
-  bool SpiWriteBurst(uint16_t add, unsigned char* data, int length);
-  bool SpiRead(uint16_t add, unsigned char* data, int length);
+  bool SpiReadBurst(uint16_t add, unsigned char *data, int length);
+  bool SpiWriteBurst(uint16_t add, unsigned char *data, int length);
+  bool SpiRead(uint16_t add, unsigned char *data, int length);
   bool SpiRead16(
       uint16_t add,
-      unsigned char* data);  // TODO(andres.calderon):Change type to uint16_t
+      unsigned char *data); // TODO(andres.calderon):Change type to uint16_t
   void SpiClose();
   uint32_t FPGAClock() { return fpga_frequency_; }
   uint32_t MatrixName() { return matrix_name_; }
@@ -52,11 +52,11 @@ class WishboneBus {
 
   int MatrixLeds() { return matrix_leds_; }
 
- private:
-  bool SpiTransfer(unsigned char* send_buffer, unsigned char* receive_buffer,
+private:
+  bool SpiTransfer(unsigned char *send_buffer, unsigned char *receive_buffer,
                    unsigned int size);
 
- private:
+private:
   std::string device_name_;
   int spi_fd_;
   unsigned int spi_fifo_size_;
@@ -66,11 +66,11 @@ class WishboneBus {
   unsigned int spi_delay_;
   unsigned char rx_buffer_[12000];
   unsigned char tx_buffer_[12000];
-  uint32_t fpga_frequency_;  // Internal FPGA clock - DCM
+  uint32_t fpga_frequency_; // Internal FPGA clock - DCM
   uint32_t matrix_name_;
   uint32_t matrix_version_;
   int matrix_leds_;
   mutable std::mutex mutex_;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_WISHBONE_BUS_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_WISHBONE_BUS_H_

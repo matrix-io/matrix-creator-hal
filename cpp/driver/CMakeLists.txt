@@ -37,6 +37,7 @@ set(matrix_creator_hal_src
   uart_control.cpp
   audio_output.cpp
   bus_direct.cpp
+  bus_kernel.cpp
 )
 
 add_library(matrix_creator_hal SHARED ${matrix_creator_hal_src})
@@ -69,6 +70,7 @@ set (matrix_creator_hal_headers
   matrixio_bus.h
   bus.h
   bus_direct.h
+  bus_kernel.h
   cross_correlation.h
   direction_of_arrival.h
   uart_control.h
