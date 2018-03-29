@@ -18,22 +18,22 @@
 #ifndef CPP_DRIVER_DUMMY_SENSOR_H_
 #define CPP_DRIVER_DUMMY_SENSOR_H_
 
-#include <random>
-#include <string>
 #include "./dummy_data.h"
 #include "./matrix_driver.h"
+#include <random>
+#include <string>
 
 namespace matrix_hal {
 
 class DummySensor : public MatrixDriver {
- public:
+public:
   DummySensor();
-  bool Read(DummyData* dummy);
+  bool Read(DummyData *dummy);
 
- private:
+private:
   std::random_device random_device_;
   std::mt19937 random_engine_;
   std::uniform_real_distribution<> random_distribution_;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_DUMMY_SENSOR_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_DUMMY_SENSOR_H_

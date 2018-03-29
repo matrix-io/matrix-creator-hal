@@ -12,8 +12,8 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/wishbone_bus.h"
 #include "./fir.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
@@ -21,11 +21,12 @@ DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 
 namespace hal = matrix_hal;
 
-int main(int argc, char* agrv[]) {
+int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -80,8 +81,9 @@ int main(int argc, char* agrv[]) {
       0.000193193060168428};
 
   std::valarray<FIR> filter_bandpass(mics.Channels());
-  
-  for (auto& fir : filter_bandpass) fir.Setup(num_coeff);
+
+  for (auto &fir : filter_bandpass)
+    fir.Setup(num_coeff);
 
   while (true) {
     mics.Read();
@@ -93,7 +95,7 @@ int main(int argc, char* agrv[]) {
       }
     }
 
-    for (auto& m : magnitude) {
+    for (auto &m : magnitude) {
       m = std::sqrt(1.0 / (float)mics.NumberOfSamples() * m);
     }
 

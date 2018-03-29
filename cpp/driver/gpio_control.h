@@ -17,14 +17,14 @@
 
 #ifndef CPP_DRIVER_GPIO_CONTROL_H_
 #define CPP_DRIVER_GPIO_CONTROL_H_
+#include "./matrix_driver.h"
 #include <cstdint>
 #include <vector>
-#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
 class GPIOBank : public MatrixDriver {
- public:
+public:
   GPIOBank();
   bool SetupTimer(uint16_t channel, uint16_t init_event, uint16_t final_event);
   bool SetPeriod(uint16_t period);
@@ -36,22 +36,22 @@ class GPIOBank : public MatrixDriver {
 };
 
 class GPIOControl : public MatrixDriver {
- public:
+public:
   GPIOControl();
-  void Setup(WishboneBus* wishbone);
-  bool SetMode(unsigned char* pinList, int length, uint16_t mode);
+  void Setup(MatrixIOBus *wishbone);
+  bool SetMode(unsigned char *pinList, int length, uint16_t mode);
   bool SetMode(uint16_t pin, uint16_t mode);
   bool SetFunction(uint16_t pin, uint16_t function);
   uint16_t GetGPIOValue(uint16_t pin);
   uint16_t GetGPIOValues();
   bool SetGPIOValue(uint16_t pin, uint16_t value);
-  bool SetGPIOValues(unsigned char* pinList, int length, uint16_t value);
+  bool SetGPIOValues(unsigned char *pinList, int length, uint16_t value);
   uint16_t GetIRValue();
   bool SetIR(uint16_t value);
   bool SetRingIR(uint16_t value);
 
   bool SetPrescaler(uint16_t bank, uint16_t prescaler);
-  GPIOBank& Bank(uint16_t bank) { return banks_[bank]; }
+  GPIOBank &Bank(uint16_t bank) { return banks_[bank]; }
 
   std::vector<GPIOBank> banks_;
   uint16_t mode_;
@@ -60,5 +60,5 @@ class GPIOControl : public MatrixDriver {
   uint16_t prescaler_;
 };
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_GPIO_CONTROL_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_GPIO_CONTROL_H_

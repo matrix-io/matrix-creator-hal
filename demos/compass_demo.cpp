@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -24,15 +24,16 @@
 #include "../cpp/driver/humidity_sensor.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/pressure_data.h"
 #include "../cpp/driver/pressure_sensor.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);
@@ -53,7 +54,7 @@ int main() {
   hal::PressureData pressure_data;
 
   while (true) {
-    for (hal::LedValue& led : image1d.leds) {
+    for (hal::LedValue &led : image1d.leds) {
       led.red = 0;
       led.blue = 0;
     }

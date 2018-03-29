@@ -21,8 +21,8 @@
 namespace matrix_hal {
 
 class UVData {
- public:
+public:
   float uv;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_PRESSURE_DATA_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_PRESSURE_DATA_H_

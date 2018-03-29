@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include <valarray>
 
 #include "cpp/driver/creator_memory_map.h"
@@ -27,21 +27,21 @@ namespace matrix_hal {
 
 Everloop::Everloop() {}
 
-bool Everloop::Write(const EverloopImage* led_image) {
-  if (!wishbone_) return false;
+bool Everloop::Write(const EverloopImage *led_image) {
+  if (!bus_)
+    return false;
 
   std::valarray<unsigned char> write_data(led_image->leds.size() * 4);
 
   uint32_t led_offset = 0;
-  for (const LedValue& led : led_image->leds) {
+  for (const LedValue &led : led_image->leds) {
     write_data[led_offset + 0] = led.red;
     write_data[led_offset + 1] = led.green;
     write_data[led_offset + 2] = led.blue;
     write_data[led_offset + 3] = led.white;
     led_offset += 4;
   }
-  wishbone_->SpiWriteBurst(kEverloopBaseAddress, &write_data[0],
-                           write_data.size());
+  bus_->Write(kEverloopBaseAddress, &write_data[0], write_data.size());
   return true;
 }
-};  // namespace matrix_hal
+}; // namespace matrix_hal

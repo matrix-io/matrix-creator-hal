@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gflags/gflags.h>
 #include <fstream>
+#include <gflags/gflags.h>
 #include <iostream>
 #include <valarray>
 
 #include "../cpp/driver/audio_output.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 DEFINE_int32(
     sampling_frequency, 44100,
@@ -35,8 +35,9 @@ namespace hal = matrix_hal;
 int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   std::ifstream is(FLAGS_raw_file);
 
@@ -51,17 +52,17 @@ int main(int argc, char *agrv[]) {
   }
 
   switch (FLAGS_output[0]) {
-    case 'h':
-    case 'H':
-      dac.SetOutputSelector(matrix_hal::kHeadPhone);
-      break;
-    case 's':
-    case 'S':
-      dac.SetOutputSelector(matrix_hal::kSpeaker);
-      break;
-    default:
-      std::cout << "Invalid Selection. Please try again" << std::endl;
-      return 1;
+  case 'h':
+  case 'H':
+    dac.SetOutputSelector(matrix_hal::kHeadPhone);
+    break;
+  case 's':
+  case 'S':
+    dac.SetOutputSelector(matrix_hal::kSpeaker);
+    break;
+  default:
+    std::cout << "Invalid Selection. Please try again" << std::endl;
+    return 1;
   }
 
   while (true) {

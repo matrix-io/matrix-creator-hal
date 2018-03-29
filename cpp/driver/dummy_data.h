@@ -21,8 +21,8 @@
 namespace matrix_hal {
 
 class DummyData {
- public:
+public:
   float value;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_DUMMY_DATA_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_DUMMY_DATA_H_

@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
 #include <cstdio>
 #include <iostream>
+#include <unistd.h>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cout << "Device has not been specified" << std::endl
               << "Usage:" << std::endl
@@ -39,9 +39,10 @@ int main(int argc, char* argv[]) {
             << "Press \"u\" to Volume UP " << std::endl
             << "Press \"d\" to Volume Down" << std::endl;
 
-  hal::WishboneBus bus;
+  hal::MatrixIOBus bus;
 
-  if (!bus.SpiInit()) return false;
+  if (!bus.Init())
+    return false;
 
   hal::Everloop everloop;
   hal::EverloopImage image1d;
@@ -53,56 +54,57 @@ int main(int argc, char* argv[]) {
   while (1) {
     std::string cmd;
     switch (std::getchar()) {
-      case 'p':
-        std::cout << "Power \n";
-        for (hal::LedValue& led : image1d.leds) {
-          led.red = 0;
-          led.green = 0;
-          led.blue = 0;
-          led.white = 0;
-        }
+    case 'p':
+      std::cout << "Power \n";
+      for (hal::LedValue &led : image1d.leds) {
+        led.red = 0;
+        led.green = 0;
+        led.blue = 0;
+        led.white = 0;
+      }
+      everloop.Write(&image1d);
+      cmd = "irsend SEND_ONCE " + irdevice + " KEY_POWER";
+      system(cmd.c_str());
+      for (auto &led : image1d.leds) {
+        led.red = 20;
         everloop.Write(&image1d);
-        cmd = "irsend SEND_ONCE " + irdevice + " KEY_POWER";
-        system(cmd.c_str());
-        for (auto& led : image1d.leds) {
-          led.red = 20;
-          everloop.Write(&image1d);
-          usleep(90000);
-        }
-        for (auto& led : image1d.leds) {
-          led.red = 0;
-          led.green = 0;
-          led.blue = 0;
-          led.white = 0;
-        }
         usleep(90000);
-        everloop.Write(&image1d);
+      }
+      for (auto &led : image1d.leds) {
+        led.red = 0;
+        led.green = 0;
+        led.blue = 0;
+        led.white = 0;
+      }
+      usleep(90000);
+      everloop.Write(&image1d);
+      counter = 0;
+      break;
+
+    case 'u':
+      std::cout << "Volume up \n";
+      counter++;
+      if (counter > (image1d.leds.size() - 1))
         counter = 0;
-        break;
+      cmd = "irsend SEND_ONCE " + irdevice + " KEY_VOLUMEUP";
+      system(cmd.c_str());
+      image1d.leds[counter].blue = 0;
+      image1d.leds[counter].green = 30;
+      everloop.Write(&image1d);
+      break;
 
-      case 'u':
-        std::cout << "Volume up \n";
-        counter++;
-        if (counter > (image1d.leds.size() - 1)) counter = 0;
-        cmd = "irsend SEND_ONCE " + irdevice + " KEY_VOLUMEUP";
-        system(cmd.c_str());
-        image1d.leds[counter].blue = 0;
-        image1d.leds[counter].green = 30;
-        everloop.Write(&image1d);
-        break;
-
-      case 'd':
-        std::cout << "Volume Down \n";
-        cmd = "irsend SEND_ONCE " + irdevice + " KEY_VOLUMEDOWN";
-        system(cmd.c_str());
-        image1d.leds[counter].green = 0;
-        image1d.leds[counter].blue = 30;
-        everloop.Write(&image1d);
-        if (counter == 0)
-          counter = image1d.leds.size() - 1;
-        else
-          counter--;
-        break;
+    case 'd':
+      std::cout << "Volume Down \n";
+      cmd = "irsend SEND_ONCE " + irdevice + " KEY_VOLUMEDOWN";
+      system(cmd.c_str());
+      image1d.leds[counter].green = 0;
+      image1d.leds[counter].blue = 30;
+      everloop.Write(&image1d);
+      if (counter == 0)
+        counter = image1d.leds.size() - 1;
+      else
+        counter--;
+      break;
     }
   }
 

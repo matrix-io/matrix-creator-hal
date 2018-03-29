@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/gpio_control.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -36,7 +36,7 @@ const uint16_t kPin0 = 0;
 const uint16_t kGPIOPrescaler = 0x5;
 const uint16_t kPWMFunction = 1;
 
-const float kPWMPeriod = 0.02;  // Seconds
+const float kPWMPeriod = 0.02; // Seconds
 
 /* Constants Values based on 9g ServoMotor Calibration */
 
@@ -46,8 +46,9 @@ const int kServoOffset = 1800;
 int main() {
   std::cout << "Set desired Angle in degrees" << std::endl << std::endl;
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -75,7 +76,7 @@ int main() {
     std::cout << " Angle :";
     std::cin >> angle;
     std::cout << std::endl;
-    for (hal::LedValue& led : image1d.leds) {
+    for (hal::LedValue &led : image1d.leds) {
       led.red = 0;
       led.blue = 0;
     }

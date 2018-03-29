@@ -21,10 +21,10 @@
 namespace matrix_hal {
 
 class MCUData {
- public:
+public:
   uint32_t ID;
   uint32_t version;
 };
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_MCU_DATA_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_MCU_DATA_H_

@@ -3,20 +3,20 @@
  * All rights reserved.
  */
 
-#include <wiringPi.h>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <valarray>
+#include <wiringPi.h>
 
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/uart_control.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus bus;
-  bus.SpiInit();
+  hal::MatrixIOBus bus;
+  bus.Init();
 
   hal::UartControl uart;
   uart.Setup(&bus);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2016-2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -21,12 +21,12 @@
 #include <cstdint>
 #include <vector>
 
-#include "./wishbone_bus.h"
+#include "./matrixio_bus.h"
 
 namespace matrix_hal {
 
 class LedValue {
- public:
+public:
   LedValue() {
     red = 0;
     green = 0;
@@ -41,10 +41,10 @@ class LedValue {
 };
 
 class EverloopImage {
- public:
+public:
   EverloopImage(int nleds = kMatrixCreatorNLeds) { leds.resize(nleds); }
   std::vector<LedValue> leds;
 };
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_EVERLOOP_IMAGE_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_EVERLOOP_IMAGE_H_

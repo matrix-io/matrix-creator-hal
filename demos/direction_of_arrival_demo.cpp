@@ -16,8 +16,8 @@
 #include "../cpp/driver/direction_of_arrival.h"
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
@@ -27,11 +27,12 @@ namespace hal = matrix_hal;
 int led_offset[] = {23, 27, 32, 1, 6, 10, 14, 19};
 int lut[] = {1, 2, 10, 200, 10, 2, 1};
 
-int main(int argc, char* agrv[]) {
+int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -65,7 +66,7 @@ int main(int argc, char* agrv[]) {
               << ", polar angle = " << polar_angle << ", mic = " << mic
               << std::endl;
 
-    for (hal::LedValue& led : image1d.leds) {
+    for (hal::LedValue &led : image1d.leds) {
       led.blue = 0;
     }
 

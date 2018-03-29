@@ -22,13 +22,14 @@
 
 namespace matrix_hal {
 
-bool UVSensor::Read(UVData* data) {
-  if (!wishbone_) return false;
+bool UVSensor::Read(UVData *data) {
+  if (!bus_)
+    return false;
 
   // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetUV >> 1),
-                     (unsigned char*)data, sizeof(UVData));
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetUV >> 1), (unsigned char *)data,
+             sizeof(UVData));
 
   return true;
 }
-};  // namespace matrix_hal
+}; // namespace matrix_hal

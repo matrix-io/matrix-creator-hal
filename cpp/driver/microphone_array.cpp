@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wiringPi.h>
 #include <cmath>
 #include <condition_variable>
 #include <cstdint>
@@ -25,6 +24,7 @@
 #include <map>
 #include <string>
 #include <valarray>
+#include <wiringPi.h>
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/microphone_array.h"
@@ -52,8 +52,8 @@ MicrophoneArray::MicrophoneArray()
 
 MicrophoneArray::~MicrophoneArray() {}
 
-void MicrophoneArray::Setup(WishboneBus *wishbone) {
-  MatrixDriver::Setup(wishbone);
+void MicrophoneArray::Setup(MatrixIOBus *bus) {
+  MatrixDriver::Setup(bus);
 
   wiringPiSetup();
 
@@ -65,13 +65,14 @@ void MicrophoneArray::Setup(WishboneBus *wishbone) {
 //  Read audio from the FPGA and calculate beam using delay & sum method
 bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
 
   irq_cv.wait(lock_);
 
-  if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
-                               reinterpret_cast<unsigned char *>(&raw_data_[0]),
-                               sizeof(int16_t) * kMicarrayBufferSize)) {
+  if (!bus_->Read(kMicrophoneArrayBaseAddress,
+                  reinterpret_cast<unsigned char *>(&raw_data_[0]),
+                  sizeof(int16_t) * kMicarrayBufferSize)) {
     return false;
   }
 
@@ -127,16 +128,18 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
 }
 
 bool MicrophoneArray::GetGain() {
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
   uint16_t value;
-  wishbone_->SpiRead16(kConfBaseAddress + 0x07, (unsigned char *)&value);
+  bus_->Read(kConfBaseAddress + 0x07, &value);
   gain_ = value;
   return true;
 }
 
 bool MicrophoneArray::SetGain(uint16_t gain) {
-  if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kConfBaseAddress + 0x07, gain);
+  if (!bus_)
+    return false;
+  bus_->Write(kConfBaseAddress + 0x07, gain);
   gain_ = gain;
   return true;
 }
@@ -150,7 +153,8 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
 
   uint16_t MIC_gain, MIC_constant;
   for (int i = 0;; i++) {
-    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (MIC_sampling_frequencies[i][0] == 0)
+      return false;
     if (sampling_frequency == MIC_sampling_frequencies[i][0]) {
       sampling_frequency_ = MIC_sampling_frequencies[i][0];
       MIC_constant = MIC_sampling_frequencies[i][1];
@@ -161,18 +165,20 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
 
   sampling_frequency_ = sampling_frequency;
   SetGain(MIC_gain);
-  wishbone_->SpiWrite16(kConfBaseAddress + 0x06, MIC_constant);
+  bus_->Write(kConfBaseAddress + 0x06, MIC_constant);
 
   return true;
 }
 
 bool MicrophoneArray::GetSamplingRate() {
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
   uint16_t value;
-  wishbone_->SpiRead16(kConfBaseAddress + 0x06, (unsigned char *)&value);
+  bus_->Read(kConfBaseAddress + 0x06, &value);
 
   for (int i = 0;; i++) {
-    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (MIC_sampling_frequencies[i][0] == 0)
+      return false;
     if (value == MIC_sampling_frequencies[i][0]) {
       sampling_frequency_ = MIC_sampling_frequencies[i][0];
       break;
@@ -193,4 +199,4 @@ void MicrophoneArray::ShowConfiguration() {
   std::cout << "Gain : " << gain_ << std::endl;
 }
 
-};  // namespace matrix_hal
+}; // namespace matrix_hal

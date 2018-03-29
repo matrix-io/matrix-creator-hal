@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wiringPi.h>
 #include <iostream>
 #include <string>
+#include <wiringPi.h>
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/uart_control.h"
@@ -28,36 +28,39 @@ const uint16_t kUartIRQ = 5;
 const uint16_t UART_BUSY = 0x0010;
 
 uint16_t UartControl::GetUartValue() {
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
   uint16_t value;
   if (waitForInterrupt(kUartIRQ, -1) > 0) {
-    wishbone_->SpiRead16(kUartBaseAddress + 1, (unsigned char *)&value);
+    bus_->Read(kUartBaseAddress + 1, &value);
     return value;
   }
   return false;
 }
 
 bool UartControl::GetUartUCR() {
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
   uint16_t value;
-  wishbone_->SpiRead16(kUartBaseAddress, (unsigned char *)&value);
+  bus_->Read(kUartBaseAddress, &value);
   ucr_ = value;
   return true;
 }
 
 bool UartControl::SetUartValue(uint16_t data) {
-  if (!wishbone_) return false;
+  if (!bus_)
+    return false;
   do {
     GetUartUCR();
   } while (ucr_ & UART_BUSY);
-  wishbone_->SpiWrite16(kUartBaseAddress + 1, data);
+  bus_->Write(kUartBaseAddress + 1, data);
   return true;
 }
 
 UartControl::UartControl() : ucr_(0x0) {}
 
-void UartControl::Setup(WishboneBus *wishbone) {
-  MatrixDriver::Setup(wishbone);
+void UartControl::Setup(MatrixIOBus *bus) {
+  MatrixDriver::Setup(bus);
   // TODO(andres.calderon@admobilize.com): avoid systems calls
   std::system("gpio edge 5 rising");
 
@@ -65,4 +68,4 @@ void UartControl::Setup(WishboneBus *wishbone) {
 
   pinMode(kUartIRQ, INPUT);
 }
-}  // namespace matrix_hal
+} // namespace matrix_hal

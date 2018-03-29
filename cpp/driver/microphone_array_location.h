@@ -18,9 +18,9 @@
 #ifndef CPP_DRIVER_MICARRAY_LOCATION_H_
 #define CPP_DRIVER_MICARRAY_LOCATION_H_
 
-#include <string>
 #include "./imu_data.h"
 #include "./matrix_driver.h"
+#include <string>
 
 namespace matrix_hal {
 
@@ -39,5 +39,5 @@ static float micarray_location[8][2] = {
     {48.5036755, -20.0908795}   /* M8 */
 };
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_MICARRAY_LOCATION_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_MICARRAY_LOCATION_H_

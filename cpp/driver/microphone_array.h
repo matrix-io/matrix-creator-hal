@@ -34,16 +34,16 @@ static const uint32_t MIC_sampling_frequencies[][3] = {
     {96000, 30, 9},  {0, 0, 0}};
 
 const uint16_t kMicarrayBufferSize = 4096;
-const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
+const uint16_t kMicrophoneArrayIRQ = 22; // GPIO06 - WiringPi:22
 const uint16_t kMicrophoneChannels = 8;
 
 class MicrophoneArray : public MatrixDriver {
- public:
+public:
   MicrophoneArray();
 
   ~MicrophoneArray();
 
-  void Setup(WishboneBus* wishbone);
+  void Setup(MatrixIOBus *wishbone);
   bool Read();
   uint32_t SamplingRate() { return sampling_frequency_; }
   uint16_t Gain() { return gain_; }
@@ -58,17 +58,17 @@ class MicrophoneArray : public MatrixDriver {
     return kMicarrayBufferSize / kMicrophoneChannels;
   }
 
-  int16_t& At(int16_t sample, int16_t channel) {
+  int16_t &At(int16_t sample, int16_t channel) {
     return delayed_data_[sample * kMicrophoneChannels + channel];
   }
 
-  int16_t& Beam(int16_t sample) { return beamformed_[sample]; }
+  int16_t &Beam(int16_t sample) { return beamformed_[sample]; }
 
   void CalculateDelays(float azimutal_angle, float polar_angle,
                        float radial_distance_mm = 100.0,
                        float sound_speed_mmseg = 320 * 1000.0);
 
- private:
+private:
   std::unique_lock<std::mutex> lock_;
   //  delay and sum beamforming result
   std::valarray<int16_t> beamformed_;
@@ -78,7 +78,7 @@ class MicrophoneArray : public MatrixDriver {
   uint32_t sampling_frequency_;
 
   // beamforming delay and sum support
-  std::valarray<CircularQueue<int16_t> > fifos_;
+  std::valarray<CircularQueue<int16_t>> fifos_;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_MICROPHONE_ARRAY_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_MICROPHONE_ARRAY_H_

@@ -21,7 +21,7 @@
 namespace matrix_hal {
 
 class IMUData {
- public:
+public:
   // Vertical axis (yaw)
   float yaw;
 
@@ -43,5 +43,5 @@ class IMUData {
   float mag_y;
   float mag_z;
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_IMU_DATA_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_IMU_DATA_H_

@@ -20,9 +20,8 @@
 
 namespace matrix_hal {
 
-template <class T>
-class CircularQueue {
- public:
+template <class T> class CircularQueue {
+public:
   CircularQueue() : fifo_size_(0), pointer_(0), fifo_(nullptr) {}
 
   ~CircularQueue() { delete[] fifo_; }
@@ -42,21 +41,21 @@ class CircularQueue {
   }
 
   // Simultaneous Push/Pop method
-  const T PushPop(const T& data) {
+  const T PushPop(const T &data) {
     if (fifo_size_ > 1) {
       fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
-      T& ret = fifo_[pointer_];
+      T &ret = fifo_[pointer_];
       pointer_ = (pointer_ + 1) % fifo_size_;
       return ret;
     }
     return data;
   }
 
- private:
+private:
   int fifo_size_;
   int pointer_;
-  T* fifo_;
+  T *fifo_;
 };
 
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_CIRCULAR_QUEUE_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_CIRCULAR_QUEUE_H_

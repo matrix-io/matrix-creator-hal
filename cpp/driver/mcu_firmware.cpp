@@ -22,13 +22,14 @@
 
 namespace matrix_hal {
 
-bool MCUFirmware::Read(MCUData* data) {
-  if (!wishbone_) return false;
+bool MCUFirmware::Read(MCUData *data) {
+  if (!bus_)
+    return false;
 
   // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetMCU >> 1),
-                     (unsigned char*)data, sizeof(MCUData));
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetMCU >> 1), (unsigned char *)data,
+             sizeof(MCUData));
 
   return true;
 }
-};  // namespace matrix_hal
+}; // namespace matrix_hal

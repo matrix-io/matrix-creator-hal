@@ -18,16 +18,16 @@
 #ifndef CPP_DRIVER_EVERLOOP_H_
 #define CPP_DRIVER_EVERLOOP_H_
 
-#include <string>
 #include "./everloop_image.h"
 #include "./matrix_driver.h"
+#include <string>
 
 namespace matrix_hal {
 
 class Everloop : public MatrixDriver {
- public:
+public:
   Everloop();
-  bool Write(const EverloopImage* led_image);
+  bool Write(const EverloopImage *led_image);
 };
-};      // namespace matrix_hal
-#endif  // CPP_DRIVER_EVERLOOP_H_
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_EVERLOOP_H_

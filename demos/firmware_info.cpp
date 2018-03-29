@@ -19,14 +19,15 @@
 #include <iostream>
 
 #include "../cpp/driver/fw_data.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/mcu_firmware.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::MCUFirmware mcu_firmware;
   mcu_firmware.Setup(&bus);

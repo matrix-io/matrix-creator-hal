@@ -5,26 +5,27 @@
 #include <gflags/gflags.h>
 #include <wiringPi.h>
 
-#include <unistd.h>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include <valarray>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 
 namespace hal = matrix_hal;
 
-int main(int argc, char* agrv[]) {
+int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -52,13 +53,13 @@ int main(int argc, char* agrv[]) {
 
     localAverage[j % 20] = instantE;
     avgEnergy = 0;
-    for (auto& data : localAverage) {
+    for (auto &data : localAverage) {
       avgEnergy = (avgEnergy + data);
     }
 
     avgEnergy = avgEnergy / 20;
 
-    for (auto& led : image1d.leds) {
+    for (auto &led : image1d.leds) {
       led.red = avgEnergy >> 24;
     }
     everloop.Write(&image1d);

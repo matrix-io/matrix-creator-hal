@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -15,21 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
+#ifndef CPP_DRIVER_BUS_H_
+#define CPP_DRIVER_BUS_H_
 
-#include "cpp/driver/creator_memory_map.h"
-#include "cpp/driver/pressure_sensor.h"
+#include <mutex>
+#include <stdint.h>
+#include <string>
 
 namespace matrix_hal {
 
-bool PressureSensor::Read(PressureData *data) {
-  if (!bus_)
-    return false;
+class Bus {
+public:
+  virtual ~Bus(){};
 
-  // TODO(andres.calderon@admobilize.com): error handler
-  bus_->Read(kMCUBaseAddress + (kMemoryOffsetPressure >> 1),
-             (unsigned char *)data, sizeof(PressureData));
+  virtual bool Init(std::string device_name = "") = 0;
 
-  return true;
-}
-}; // namespace matrix_hal
+  virtual bool Write(uint16_t add, unsigned char *data, int length) = 0;
+
+  virtual bool Read(uint16_t add, unsigned char *data, int length) = 0;
+
+  virtual void Close() = 0;
+
+protected:
+  std::string device_name_;
+  unsigned char rx_buffer_[12288];
+  unsigned char tx_buffer_[12288];
+  mutable std::mutex mutex_;
+};
+};     // namespace matrix_hal
+#endif // CPP_DRIVER_BUS_H_

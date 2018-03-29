@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 #include "../cpp/driver/gpio_control.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -30,13 +30,14 @@ const uint16_t kGPIOInputMode = 0;
 const uint16_t kGPIOPrescaler = 0x5;
 const uint16_t kPWMFunction = 1;
 
-const float kPWMPeriod = 0.02;  // Seconds
+const float kPWMPeriod = 0.02; // Seconds
 
 int main() {
   std::cout << "Set desired Duty cycle in percentage" << std::endl << std::endl;
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init())
+    return false;
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);
@@ -69,7 +70,8 @@ int main() {
     for (int k = 0; k < 4; k++)
       for (int c = 0; c < 4; c++) {
         c_percentage = (percentage - 10 * k - 5 * c);
-        if (c_percentage < 0) c_percentage = 100 + c_percentage;
+        if (c_percentage < 0)
+          c_percentage = 100 + c_percentage;
         duty_counter = (period_counter * c_percentage / 100);
 
         gpio.Bank(k).SetDuty(c, duty_counter);

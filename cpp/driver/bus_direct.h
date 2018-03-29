@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -15,18 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_UV_SENSOR_H_
-#define CPP_DRIVER_UV_SENSOR_H_
+#ifndef CPP_DRIVER_BUS_DIRECT_H_
+#define CPP_DRIVER_BUS_DIRECT_H_
 
-#include "./matrix_driver.h"
-#include "./uv_data.h"
+#include "./bus.h"
+#include <mutex>
+#include <stdint.h>
 #include <string>
 
 namespace matrix_hal {
 
-class UVSensor : public MatrixDriver {
+class BusDirect : public Bus {
 public:
-  bool Read(UVData *data);
+  BusDirect();
+  virtual ~BusDirect();
+
+  virtual bool Init(std::string device_name);
+
+  virtual bool Write(uint16_t add, unsigned char *data, int length);
+
+  virtual bool Read(uint16_t add, unsigned char *data, int length);
+
+  virtual void Close();
+
+private:
+  bool SpiTransfer(unsigned char *send_buffer, unsigned char *receive_buffer,
+                   unsigned int size);
+
+private:
+  int spi_fd_;
+  unsigned int spi_fifo_size_;
+  unsigned int spi_mode_;
+  unsigned int spi_bits_;
+  uint32_t spi_speed_;
+  unsigned int spi_delay_;
 };
 };     // namespace matrix_hal
-#endif // CPP_DRIVER_PRESSURE_SENSOR_H_
+#endif // CPP_DRIVER_BUS_DIRECT_H_
