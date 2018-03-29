@@ -31,8 +31,8 @@
 
 namespace matrix_hal {
 
-#define WR_VALUE 1
-#define RD_VALUE 2
+#define WR_VALUE 1200
+#define RD_VALUE 1201
 
 BusKernel::BusKernel() : regmap_fd_(0) {}
 
@@ -63,14 +63,16 @@ bool BusKernel::Init(std::string device_name) {
 bool BusKernel::Read(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  rx_buffer_[0] = add;
-  rx_buffer_[1] = length;
+  int32_t *buffer = (int32_t *)rx_buffer_;
+
+  buffer[0] = add;
+  buffer[1] = length;
 
   if (ioctl(regmap_fd_, RD_VALUE, rx_buffer_)) {
     return false;
   }
 
-  memcpy(data, &rx_buffer_[2], length);
+  memcpy(data, &buffer[2], length);
 
   return true;
 }
@@ -78,10 +80,12 @@ bool BusKernel::Read(uint16_t add, unsigned char *data, int length) {
 bool BusKernel::Write(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
-  tx_buffer_[0] = add;
-  tx_buffer_[1] = length;
+  int32_t *buffer = (int32_t *)tx_buffer_;
 
-  memcpy(&tx_buffer_[2], data, length);
+  buffer[0] = add;
+  buffer[1] = length;
+
+  memcpy(&buffer[2], data, length);
 
   if (ioctl(regmap_fd_, WR_VALUE, tx_buffer_)) {
     return false;
