@@ -43,7 +43,7 @@ public:
 
   ~MicrophoneArray();
 
-  void Setup(MatrixIOBus *wishbone);
+  void Setup(MatrixIOBus *bus);
   bool Read();
   uint32_t SamplingRate() { return sampling_frequency_; }
   uint16_t Gain() { return gain_; }

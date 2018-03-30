@@ -38,7 +38,7 @@ public:
 class GPIOControl : public MatrixDriver {
 public:
   GPIOControl();
-  void Setup(MatrixIOBus *wishbone);
+  void Setup(MatrixIOBus *bus);
   bool SetMode(unsigned char *pinList, int length, uint16_t mode);
   bool SetMode(uint16_t pin, uint16_t mode);
   bool SetFunction(uint16_t pin, uint16_t function);

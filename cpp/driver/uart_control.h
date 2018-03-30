@@ -26,7 +26,7 @@ namespace matrix_hal {
 class UartControl : public MatrixDriver {
 public:
   UartControl();
-  void Setup(MatrixIOBus *wishbone);
+  void Setup(MatrixIOBus *bus);
   uint16_t GetUartValue();
   bool GetUartUCR();
   bool SetUartValue(uint16_t data);

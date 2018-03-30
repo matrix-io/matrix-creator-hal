@@ -26,7 +26,7 @@ namespace matrix_hal {
 
 class MatrixDriver {
 public:
-  void Setup(MatrixIOBus *wishbone);
+  void Setup(MatrixIOBus *bus);
 
 protected:
   MatrixIOBus *bus_;

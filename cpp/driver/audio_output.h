@@ -46,7 +46,7 @@ public:
 
   ~AudioOutput();
 
-  void Setup(MatrixIOBus *wishbone);
+  void Setup(MatrixIOBus *bus);
 
   bool Mute();
   bool UnMute();

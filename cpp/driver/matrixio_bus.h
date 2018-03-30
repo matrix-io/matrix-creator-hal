@@ -18,6 +18,7 @@
 #ifndef CPP_DRIVER_WISHBONE_BUS_H_
 #define CPP_DRIVER_WISHBONE_BUS_H_
 
+#include "./bus.h"
 #include <mutex>
 #include <stdint.h>
 #include <string>
@@ -30,47 +31,38 @@ const int kMatrixVoiceNLeds = 18;
 const int kMatrixCreator = 0x05C344E8;
 const int kMatrixVoice = 0x6032BAD2;
 
-class WishboneBus {
+class MatrixIOBus {
 public:
-  WishboneBus();
+  MatrixIOBus();
 
-  bool SpiInit();
-  bool SpiWrite(uint16_t add, unsigned char *data, int length);
-  bool SpiWrite16(uint16_t add, uint16_t data);
-  bool GetMatrixName();
-  bool GetFPGAFrequency();
-  bool SpiReadBurst(uint16_t add, unsigned char *data, int length);
-  bool SpiWriteBurst(uint16_t add, unsigned char *data, int length);
-  bool SpiRead(uint16_t add, unsigned char *data, int length);
-  bool SpiRead16(
-      uint16_t add,
-      unsigned char *data); // TODO(andres.calderon):Change type to uint16_t
-  void SpiClose();
+  bool Init();
+
+  bool Write(uint16_t add, unsigned char *data, int length);
+
+  bool Read(uint16_t add, unsigned char *data, int length);
+
+  bool Write(uint16_t add, uint16_t data);
+
+  bool Read(uint16_t add, uint16_t *data);
+
   uint32_t FPGAClock() { return fpga_frequency_; }
+
   uint32_t MatrixName() { return matrix_name_; }
+
   uint32_t MatrixVersion() { return matrix_version_; }
 
   int MatrixLeds() { return matrix_leds_; }
 
 private:
-  bool SpiTransfer(unsigned char *send_buffer, unsigned char *receive_buffer,
-                   unsigned int size);
+  bool GetMatrixName();
+  bool GetFPGAFrequency();
 
 private:
-  std::string device_name_;
-  int spi_fd_;
-  unsigned int spi_fifo_size_;
-  unsigned int spi_mode_;
-  unsigned int spi_bits_;
-  uint32_t spi_speed_;
-  unsigned int spi_delay_;
-  unsigned char rx_buffer_[12000];
-  unsigned char tx_buffer_[12000];
   uint32_t fpga_frequency_; // Internal FPGA clock - DCM
   uint32_t matrix_name_;
   uint32_t matrix_version_;
   int matrix_leds_;
-  mutable std::mutex mutex_;
+  Bus *bus_driver_;
 };
 };     // namespace matrix_hal
 #endif // CPP_DRIVER_WISHBONE_BUS_H_
