@@ -23,13 +23,20 @@
 namespace matrix_hal {
 
 bool IMUSensor::Read(IMUData *data) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
+  union {
+    int *int_data;
+    float *float_data;
+  };
+
+  float_data = (float *)data;
 
   // TODO(andres.calderon@admobilize.com): error handler
   bus_->Read(kMCUBaseAddress + (kMemoryOffsetIMU >> 1), (unsigned char *)data,
              sizeof(IMUData));
 
+  for (uint16_t i = 0; i < sizeof(IMUData) / sizeof(int); i++)
+    float_data[i] = float(int_data[i]) / 1000.0;
   return true;
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal
