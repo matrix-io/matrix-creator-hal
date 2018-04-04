@@ -30,7 +30,8 @@ int main(int argc, char *agrv[]) {
   if (!bus.Init()) return false;
 
   if(!bus.IsDirectBus()) {
-    std::cerr << "Kernel Modules has been loaded. Use ALSA examples " << std::endl; 
+    std::cerr << "Kernel Modules has been loaded. Use ALSA implementation " << std::endl;
+    return false; 
   }
 
   hal::MicrophoneArray mics;
