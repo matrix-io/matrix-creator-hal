@@ -26,8 +26,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::MCUFirmware mcu_firmware;
   mcu_firmware.Setup(&bus);

@@ -3,11 +3,11 @@
  * All rights reserved.
  */
 
+#include <wiringPi.h>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <valarray>
-#include <wiringPi.h>
 
 #include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/uart_control.h"

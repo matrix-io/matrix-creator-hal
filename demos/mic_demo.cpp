@@ -25,8 +25,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -82,8 +81,7 @@ int main(int argc, char *agrv[]) {
 
   std::valarray<FIR> filter_bandpass(mics.Channels());
 
-  for (auto &fir : filter_bandpass)
-    fir.Setup(num_coeff);
+  for (auto &fir : filter_bandpass) fir.Setup(num_coeff);
 
   while (true) {
     mics.Read();

@@ -22,8 +22,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -33,8 +32,7 @@ int main() {
 
   hal::EverloopImage image1d(bus.MatrixLeds());
 
-  for (auto &led : image1d.leds)
-    led.red = 5;
+  for (auto &led : image1d.leds) led.red = 5;
 
   everloop.Write(&image1d);
 

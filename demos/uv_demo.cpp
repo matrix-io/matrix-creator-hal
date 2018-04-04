@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <unistd.h>
 #include <cstdlib>
 #include <iostream>
-#include <unistd.h>
 #include <valarray>
 
 #include "../cpp/driver/everloop.h"
@@ -60,8 +60,7 @@ int main() {
   };
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::UVSensor uv_sensor;
   uv_sensor.Setup(&bus);

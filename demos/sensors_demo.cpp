@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <unistd.h>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <unistd.h>
 
 #include "../cpp/driver/fw_data.h"
 #include "../cpp/driver/humidity_data.h"
@@ -36,8 +36,7 @@ namespace hal = matrix_hal;
 
 int main() {
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::IMUSensor imu_sensor;
   imu_sensor.Setup(&bus);

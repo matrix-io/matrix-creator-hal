@@ -27,8 +27,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -38,8 +37,7 @@ int main(int argc, char *agrv[]) {
 
   mics.SetSamplingRate(sampling_rate);
 
-  if (FLAGS_gain > 0)
-    mics.SetGain(FLAGS_gain);
+  if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
 
   mics.ReadConfValues();
   mics.ShowConfiguration();
@@ -67,8 +65,7 @@ int main(int argc, char *agrv[]) {
 
         hal::EverloopImage image(bus->MatrixLeds());
 
-        for (auto &led : image.leds)
-          led.red = 10;
+        for (auto &led : image.leds) led.red = 10;
         everloop.Write(&image);
 
         int sleep = int(1000.0 * seconds_to_record / image.leds.size());

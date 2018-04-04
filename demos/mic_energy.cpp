@@ -5,9 +5,9 @@
 #include <gflags/gflags.h>
 #include <wiringPi.h>
 
+#include <unistd.h>
 #include <iostream>
 #include <string>
-#include <unistd.h>
 #include <valarray>
 
 #include "../cpp/driver/everloop.h"
@@ -24,8 +24,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);

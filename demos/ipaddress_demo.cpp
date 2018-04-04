@@ -16,13 +16,13 @@
  */
 
 #include <arpa/inet.h>
-#include <cstring>
 #include <ifaddrs.h>
-#include <iostream>
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstring>
+#include <iostream>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -44,8 +44,7 @@ void SetNumber(int position, int value, hal::EverloopImage *image) {
 int main() {
   int last_integer = 0;
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
   hal::Everloop everloop;
   hal::EverloopImage image(bus.MatrixLeds());
 
@@ -77,8 +76,7 @@ int main() {
       }
     }
   }
-  if (ifaddr_struct != nullptr)
-    freeifaddrs(ifaddr_struct);
+  if (ifaddr_struct != nullptr) freeifaddrs(ifaddr_struct);
 
   for (hal::LedValue &led : image.leds) {
     led.red = 0;

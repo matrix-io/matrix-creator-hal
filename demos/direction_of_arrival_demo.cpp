@@ -31,8 +31,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);

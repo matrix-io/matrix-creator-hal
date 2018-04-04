@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include <unistd.h>
+#include <iostream>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -27,8 +27,7 @@ namespace hal = matrix_hal;
 int main() {
   hal::MatrixIOBus bus;
 
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::EverloopImage image1d(bus.MatrixLeds());
 

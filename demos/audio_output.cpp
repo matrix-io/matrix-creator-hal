@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
 #include <gflags/gflags.h>
+#include <fstream>
 #include <iostream>
 #include <valarray>
 
@@ -36,8 +36,7 @@ int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   std::ifstream is(FLAGS_raw_file);
 
@@ -52,17 +51,17 @@ int main(int argc, char *agrv[]) {
   }
 
   switch (FLAGS_output[0]) {
-  case 'h':
-  case 'H':
-    dac.SetOutputSelector(matrix_hal::kHeadPhone);
-    break;
-  case 's':
-  case 'S':
-    dac.SetOutputSelector(matrix_hal::kSpeaker);
-    break;
-  default:
-    std::cout << "Invalid Selection. Please try again" << std::endl;
-    return 1;
+    case 'h':
+    case 'H':
+      dac.SetOutputSelector(matrix_hal::kHeadPhone);
+      break;
+    case 's':
+    case 'S':
+      dac.SetOutputSelector(matrix_hal::kSpeaker);
+      break;
+    default:
+      std::cout << "Invalid Selection. Please try again" << std::endl;
+      return 1;
   }
 
   while (true) {

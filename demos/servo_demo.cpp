@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include <unistd.h>
+#include <iostream>
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
@@ -36,7 +36,7 @@ const uint16_t kPin0 = 0;
 const uint16_t kGPIOPrescaler = 0x5;
 const uint16_t kPWMFunction = 1;
 
-const float kPWMPeriod = 0.02; // Seconds
+const float kPWMPeriod = 0.02;  // Seconds
 
 /* Constants Values based on 9g ServoMotor Calibration */
 
@@ -47,8 +47,7 @@ int main() {
   std::cout << "Set desired Angle in degrees" << std::endl << std::endl;
 
   hal::MatrixIOBus bus;
-  if (!bus.Init())
-    return false;
+  if (!bus.Init()) return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
