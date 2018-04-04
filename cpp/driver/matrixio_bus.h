@@ -18,21 +18,21 @@
 #ifndef CPP_DRIVER_WISHBONE_BUS_H_
 #define CPP_DRIVER_WISHBONE_BUS_H_
 
-#include "./bus.h"
-#include <mutex>
 #include <stdint.h>
+#include <mutex>
 #include <string>
+#include "./bus.h"
 
 namespace matrix_hal {
 
-const uint32_t kFPGAClock = 50000000; // Physical OSC = 50MHz
+const uint32_t kFPGAClock = 50000000;  // Physical OSC = 50MHz
 const int kMatrixCreatorNLeds = 35;
 const int kMatrixVoiceNLeds = 18;
 const int kMatrixCreator = 0x05C344E8;
 const int kMatrixVoice = 0x6032BAD2;
 
 class MatrixIOBus {
-public:
+ public:
   MatrixIOBus();
 
   bool Init();
@@ -53,16 +53,16 @@ public:
 
   int MatrixLeds() { return matrix_leds_; }
 
-private:
+ private:
   bool GetMatrixName();
   bool GetFPGAFrequency();
 
-private:
-  uint32_t fpga_frequency_; // Internal FPGA clock - DCM
+ private:
+  uint32_t fpga_frequency_;  // Internal FPGA clock - DCM
   uint32_t matrix_name_;
   uint32_t matrix_version_;
   int matrix_leds_;
   Bus *bus_driver_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_WISHBONE_BUS_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_WISHBONE_BUS_H_

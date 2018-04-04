@@ -21,9 +21,9 @@
 namespace matrix_hal {
 
 class HumidityData {
-public:
+ public:
   float humidity;
   float temperature;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_HUMIDITY_DATA_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_HUMIDITY_DATA_H_

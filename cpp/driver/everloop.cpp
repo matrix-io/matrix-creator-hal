@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <unistd.h>
 #include <iostream>
 #include <string>
-#include <unistd.h>
 #include <valarray>
 
 #include "cpp/driver/creator_memory_map.h"
@@ -28,8 +28,7 @@ namespace matrix_hal {
 Everloop::Everloop() {}
 
 bool Everloop::Write(const EverloopImage *led_image) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
 
   std::valarray<unsigned char> write_data(led_image->leds.size() * 4);
 
@@ -44,4 +43,4 @@ bool Everloop::Write(const EverloopImage *led_image) {
   bus_->Write(kEverloopBaseAddress, &write_data[0], write_data.size());
   return true;
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal

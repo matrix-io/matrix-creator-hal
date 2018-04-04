@@ -28,4 +28,4 @@ bool DummySensor::Read(DummyData *dummy) {
   dummy->value = random_distribution_(random_engine_);
   return true;
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal

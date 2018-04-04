@@ -99,8 +99,7 @@ void DirectionOfArrival::Calculate() {
   for (int channel = 0; channel < 4; channel++) {
     if (getAbsDiff(current_index_[channel]) < getAbsDiff(index)) {
       perp = channel;
-      if (current_mag_[channel] > mag)
-        mag = current_mag_[channel];
+      if (current_mag_[channel] > mag) mag = current_mag_[channel];
       index = current_index_[channel];
     }
   }
@@ -118,4 +117,4 @@ void DirectionOfArrival::Calculate() {
   polar_angle_ = fabs(index) * M_PI / 2.0 / float(max_tof - 1);
 }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal

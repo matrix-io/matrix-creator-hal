@@ -33,10 +33,10 @@ const uint16_t kAudioOutputBaseAddress = 0x6000;
 
 /* MCU offsets map */
 const uint16_t kMemoryOffsetUV = 0x00;
-const uint16_t kMemoryOffsetPressure = 0x10;
-const uint16_t kMemoryOffsetHumidity = 0x20;
+const uint16_t kMemoryOffsetPressure = 0x04;
+const uint16_t kMemoryOffsetHumidity = 0x10;
 const uint16_t kMemoryOffsetIMU = 0x30;
 const uint16_t kMemoryOffsetMCU = 0x90;
 
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_CREATOR_MEMORY_MAP_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_CREATOR_MEMORY_MAP_H_

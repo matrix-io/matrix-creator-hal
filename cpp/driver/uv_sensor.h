@@ -18,15 +18,15 @@
 #ifndef CPP_DRIVER_UV_SENSOR_H_
 #define CPP_DRIVER_UV_SENSOR_H_
 
+#include <string>
 #include "./matrix_driver.h"
 #include "./uv_data.h"
-#include <string>
 
 namespace matrix_hal {
 
 class UVSensor : public MatrixDriver {
-public:
+ public:
   bool Read(UVData *data);
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_PRESSURE_SENSOR_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_PRESSURE_SENSOR_H_

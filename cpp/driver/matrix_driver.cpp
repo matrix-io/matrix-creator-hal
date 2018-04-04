@@ -23,4 +23,4 @@ namespace matrix_hal {
 
 void MatrixDriver::Setup(MatrixIOBus *bus) { bus_ = bus; }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal

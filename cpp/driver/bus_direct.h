@@ -18,15 +18,15 @@
 #ifndef CPP_DRIVER_BUS_DIRECT_H_
 #define CPP_DRIVER_BUS_DIRECT_H_
 
-#include "./bus.h"
-#include <mutex>
 #include <stdint.h>
+#include <mutex>
 #include <string>
+#include "./bus.h"
 
 namespace matrix_hal {
 
 class BusDirect : public Bus {
-public:
+ public:
   BusDirect();
   virtual ~BusDirect();
 
@@ -38,11 +38,11 @@ public:
 
   virtual void Close();
 
-private:
+ private:
   bool SpiTransfer(unsigned char *send_buffer, unsigned char *receive_buffer,
                    unsigned int size);
 
-private:
+ private:
   int spi_fd_;
   unsigned int spi_fifo_size_;
   unsigned int spi_mode_;
@@ -50,5 +50,5 @@ private:
   uint32_t spi_speed_;
   unsigned int spi_delay_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_BUS_DIRECT_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_BUS_DIRECT_H_

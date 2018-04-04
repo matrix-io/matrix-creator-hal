@@ -20,8 +20,9 @@
 
 namespace matrix_hal {
 
-template <class T> class CircularQueue {
-public:
+template <class T>
+class CircularQueue {
+ public:
   CircularQueue() : fifo_size_(0), pointer_(0), fifo_(nullptr) {}
 
   ~CircularQueue() { delete[] fifo_; }
@@ -51,11 +52,11 @@ public:
     return data;
   }
 
-private:
+ private:
   int fifo_size_;
   int pointer_;
   T *fifo_;
 };
 
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_CIRCULAR_QUEUE_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_CIRCULAR_QUEUE_H_

@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <wiringPi.h>
 #include <iostream>
 #include <string>
-#include <wiringPi.h>
 
 #include "cpp/driver/creator_memory_map.h"
 #include "cpp/driver/uart_control.h"
@@ -28,8 +28,7 @@ const uint16_t kUartIRQ = 5;
 const uint16_t UART_BUSY = 0x0010;
 
 uint16_t UartControl::GetUartValue() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   uint16_t value;
   if (waitForInterrupt(kUartIRQ, -1) > 0) {
     bus_->Read(kUartBaseAddress + 1, &value);
@@ -39,8 +38,7 @@ uint16_t UartControl::GetUartValue() {
 }
 
 bool UartControl::GetUartUCR() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   uint16_t value;
   bus_->Read(kUartBaseAddress, &value);
   ucr_ = value;
@@ -48,8 +46,7 @@ bool UartControl::GetUartUCR() {
 }
 
 bool UartControl::SetUartValue(uint16_t data) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   do {
     GetUartUCR();
   } while (ucr_ & UART_BUSY);
@@ -68,4 +65,4 @@ void UartControl::Setup(MatrixIOBus *bus) {
 
   pinMode(kUartIRQ, INPUT);
 }
-} // namespace matrix_hal
+}  // namespace matrix_hal

@@ -27,7 +27,7 @@ namespace matrix_hal {
 Cross-correlation between signals implemented in frequency domain.
 */
 class CrossCorrelation {
-public:
+ public:
   CrossCorrelation();
   ~CrossCorrelation();
   bool Init(int N);
@@ -35,7 +35,7 @@ public:
   void Exec(int16_t *a, int16_t *b);
   float *Result();
 
-private:
+ private:
   void Corr(float *out, float *x, float *y);
 
   int order_;
@@ -50,5 +50,5 @@ private:
   fftwf_plan inverse_plan_;
 };
 
-};     // namespace matrix_hal
-#endif // CPP_CROSS_CORRELATION_H_
+};      // namespace matrix_hal
+#endif  // CPP_CROSS_CORRELATION_H_

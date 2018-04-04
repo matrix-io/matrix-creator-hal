@@ -26,7 +26,7 @@
 namespace matrix_hal {
 
 class LedValue {
-public:
+ public:
   LedValue() {
     red = 0;
     green = 0;
@@ -41,10 +41,10 @@ public:
 };
 
 class EverloopImage {
-public:
+ public:
   EverloopImage(int nleds = kMatrixCreatorNLeds) { leds.resize(nleds); }
   std::vector<LedValue> leds;
 };
 
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_EVERLOOP_IMAGE_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_EVERLOOP_IMAGE_H_

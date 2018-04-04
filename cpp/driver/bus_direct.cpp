@@ -16,21 +16,21 @@
  */
 
 #include "cpp/driver/bus_direct.h"
-#include "cpp/driver/creator_memory_map.h"
 #include <errno.h>
 #include <fcntl.h>
-#include <iostream>
 #include <linux/spi/spidev.h>
 #include <linux/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <iostream>
+#include <string>
+#include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
 
@@ -40,16 +40,17 @@ struct hardware_address {
 };
 
 BusDirect::BusDirect()
-    : spi_fd_(0), spi_mode_(3), spi_bits_(8), spi_speed_(20000000),
+    : spi_fd_(0),
+      spi_mode_(3),
+      spi_bits_(8),
+      spi_speed_(20000000),
       spi_delay_(0) {}
 
 BusDirect::~BusDirect() {
-  if (spi_fd_)
-    Close();
+  if (spi_fd_) Close();
 }
 bool BusDirect::Init(std::string device_name) {
-  if (spi_fd_)
-    Close();
+  if (spi_fd_) Close();
 
   if (device_name.size() == 0)
     device_name_ = "/dev/spidev0.0";
@@ -151,4 +152,4 @@ bool BusDirect::Write(uint16_t add, unsigned char *data, int length) {
 }
 
 void BusDirect::Close(void) { close(spi_fd_); }
-}; // namespace matrix_hal
+};  // namespace matrix_hal

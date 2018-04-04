@@ -18,8 +18,8 @@
 #ifndef CPP_DRIVER_AUDIO_OUTPUT_H_
 #define CPP_DRIVER_AUDIO_OUTPUT_H_
 
-#include "./matrix_driver.h"
 #include <string>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
@@ -41,7 +41,7 @@ enum OutputSelector : uint16_t {
 };
 
 class AudioOutput : public MatrixDriver {
-public:
+ public:
   AudioOutput();
 
   ~AudioOutput();
@@ -66,11 +66,11 @@ public:
 
   std::valarray<uint16_t> write_data_;
 
-private:
+ private:
   MuteStatus mute_status_;
   int16_t volumen_percentage_;
   OutputSelector selector_hp_nspk_;
   uint32_t PCM_sampling_frequency_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_AUDIO_OUTPUT_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_AUDIO_OUTPUT_H_

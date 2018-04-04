@@ -17,14 +17,14 @@
 
 #ifndef CPP_DRIVER_UART_CONTROL_H_
 #define CPP_DRIVER_UART_CONTROL_H_
-#include "./matrix_driver.h"
 #include <cstdint>
 #include <vector>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
 class UartControl : public MatrixDriver {
-public:
+ public:
   UartControl();
   void Setup(MatrixIOBus *bus);
   uint16_t GetUartValue();
@@ -33,5 +33,5 @@ public:
   uint16_t ucr_;
 };
 
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_UART_CONTROL_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_UART_CONTROL_H_

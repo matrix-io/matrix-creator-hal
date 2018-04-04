@@ -18,15 +18,15 @@
 #ifndef CPP_DRIVER_BUS_KERNEL_H_
 #define CPP_DRIVER_BUS_KERNEL_H_
 
-#include "./bus.h"
-#include <mutex>
 #include <stdint.h>
+#include <mutex>
 #include <string>
+#include "./bus.h"
 
 namespace matrix_hal {
 
 class BusKernel : public Bus {
-public:
+ public:
   BusKernel();
   virtual ~BusKernel();
 
@@ -38,8 +38,8 @@ public:
 
   virtual void Close();
 
-private:
+ private:
   int regmap_fd_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_BUS_KERNEL_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_BUS_KERNEL_H_

@@ -17,14 +17,14 @@
 
 #ifndef CPP_DRIVER_GPIO_CONTROL_H_
 #define CPP_DRIVER_GPIO_CONTROL_H_
-#include "./matrix_driver.h"
 #include <cstdint>
 #include <vector>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
 class GPIOBank : public MatrixDriver {
-public:
+ public:
   GPIOBank();
   bool SetupTimer(uint16_t channel, uint16_t init_event, uint16_t final_event);
   bool SetPeriod(uint16_t period);
@@ -36,7 +36,7 @@ public:
 };
 
 class GPIOControl : public MatrixDriver {
-public:
+ public:
   GPIOControl();
   void Setup(MatrixIOBus *bus);
   bool SetMode(unsigned char *pinList, int length, uint16_t mode);
@@ -60,5 +60,5 @@ public:
   uint16_t prescaler_;
 };
 
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_GPIO_CONTROL_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_GPIO_CONTROL_H_

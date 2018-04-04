@@ -21,10 +21,10 @@
 namespace matrix_hal {
 
 class PressureData {
-public:
+ public:
   float altitude;
   float pressure;
   float temperature;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_PRESSURE_DATA_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_PRESSURE_DATA_H_

@@ -27,7 +27,7 @@
 namespace matrix_hal {
 
 class DirectionOfArrival {
-public:
+ public:
   DirectionOfArrival(MicrophoneArray &mics);
   bool Init();
 
@@ -37,7 +37,7 @@ public:
   float GetPolarAngle() { return polar_angle_; }
   int GetNearestMicrophone() { return mic_direction_; }
 
-private:
+ private:
   MicrophoneArray &mics_;
   int length_;
   CrossCorrelation *corr_;
@@ -52,5 +52,5 @@ private:
   float azimutal_angle_;
   float polar_angle_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DIRECTION_OF_ARRIVAL_H_
+};      // namespace matrix_hal
+#endif  // CPP_DIRECTION_OF_ARRIVAL_H_

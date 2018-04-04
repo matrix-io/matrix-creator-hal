@@ -16,23 +16,23 @@
  */
 
 #include "cpp/driver/matrixio_bus.h"
-#include "cpp/driver/bus_direct.h"
-#include "cpp/driver/bus_kernel.h"
-#include "cpp/driver/creator_memory_map.h"
 #include <errno.h>
 #include <fcntl.h>
-#include <iostream>
 #include <linux/spi/spidev.h>
 #include <linux/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <iostream>
+#include <string>
+#include "cpp/driver/bus_direct.h"
+#include "cpp/driver/bus_kernel.h"
+#include "cpp/driver/creator_memory_map.h"
 
 namespace matrix_hal {
 
@@ -45,8 +45,7 @@ MatrixIOBus::MatrixIOBus()
     : fpga_frequency_(0), matrix_name_(0), matrix_leds_(0), bus_driver_(NULL) {}
 
 bool MatrixIOBus::Init() {
-  if (bus_driver_)
-    delete bus_driver_;
+  if (bus_driver_) delete bus_driver_;
 
   Bus *bus_direct = new BusDirect();
 
@@ -113,4 +112,4 @@ bool MatrixIOBus::GetFPGAFrequency() {
   return true;
 }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal

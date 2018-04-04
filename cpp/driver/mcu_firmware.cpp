@@ -23,8 +23,7 @@
 namespace matrix_hal {
 
 bool MCUFirmware::Read(MCUData *data) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
 
   // TODO(andres.calderon@admobilize.com): error handler
   bus_->Read(kMCUBaseAddress + (kMemoryOffsetMCU >> 1), (unsigned char *)data,
@@ -32,4 +31,4 @@ bool MCUFirmware::Read(MCUData *data) {
 
   return true;
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal

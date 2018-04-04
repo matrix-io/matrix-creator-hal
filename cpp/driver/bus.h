@@ -18,14 +18,14 @@
 #ifndef CPP_DRIVER_BUS_H_
 #define CPP_DRIVER_BUS_H_
 
-#include <mutex>
 #include <stdint.h>
+#include <mutex>
 #include <string>
 
 namespace matrix_hal {
 
 class Bus {
-public:
+ public:
   virtual ~Bus(){};
 
   virtual bool Init(std::string device_name = "") = 0;
@@ -36,11 +36,11 @@ public:
 
   virtual void Close() = 0;
 
-protected:
+ protected:
   std::string device_name_;
   unsigned char rx_buffer_[12288];
   unsigned char tx_buffer_[12288];
   mutable std::mutex mutex_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_BUS_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_BUS_H_

@@ -18,18 +18,18 @@
 #ifndef CPP_DRIVER_MATRIX_DRIVER_H_
 #define CPP_DRIVER_MATRIX_DRIVER_H_
 
-#include "./matrixio_bus.h"
 #include <memory>
 #include <string>
+#include "./matrixio_bus.h"
 
 namespace matrix_hal {
 
 class MatrixDriver {
-public:
+ public:
   void Setup(MatrixIOBus *bus);
 
-protected:
+ protected:
   MatrixIOBus *bus_;
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_MATRIX_DRIVER_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_MATRIX_DRIVER_H_

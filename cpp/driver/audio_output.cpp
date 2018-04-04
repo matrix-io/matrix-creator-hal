@@ -25,8 +25,10 @@
 namespace matrix_hal {
 
 AudioOutput::AudioOutput()
-    : mute_status_(kUnMute), volumen_percentage_(48),
-      selector_hp_nspk_(kHeadPhone), PCM_sampling_frequency_(44100) {
+    : mute_status_(kUnMute),
+      volumen_percentage_(48),
+      selector_hp_nspk_(kHeadPhone),
+      PCM_sampling_frequency_(44100) {
   write_data_.resize(kMaxWriteLength);
 }
 
@@ -38,40 +40,35 @@ void AudioOutput::Setup(MatrixIOBus *bus) {
 }
 
 bool AudioOutput::Mute() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   bus_->Write(kConfBaseAddress + 10, kMute);
   mute_status_ = kMute;
   return true;
 }
 
 bool AudioOutput::UnMute() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   bus_->Write(kConfBaseAddress + 10, kUnMute);
   mute_status_ = kUnMute;
   return true;
 }
 
 bool AudioOutput::FIFOFlush() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   bus_->Write(kConfBaseAddress + 12, 0x0001);
   bus_->Write(kConfBaseAddress + 12, 0x0000);
   return true;
 }
 
 bool AudioOutput::SetOutputSelector(OutputSelector output_selector) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   bus_->Write(kConfBaseAddress + 11, output_selector);
   selector_hp_nspk_ = output_selector;
   return true;
 }
 
 bool AudioOutput::GetPCMSamplingFrequency() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   uint16_t PCM_constant;
   bus_->Read(kConfBaseAddress + 9, &PCM_constant);
   for (int i = 0;; i++) {
@@ -84,12 +81,10 @@ bool AudioOutput::GetPCMSamplingFrequency() {
 }
 
 bool AudioOutput::SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency) {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   uint16_t PCM_constant;
   for (int i = 0;; i++) {
-    if (PCM_sampling_frequencies[i][0] == 0)
-      return false;
+    if (PCM_sampling_frequencies[i][0] == 0) return false;
     if (PCM_sampling_frequency == PCM_sampling_frequencies[i][0]) {
       PCM_sampling_frequency_ = PCM_sampling_frequencies[i][0];
       PCM_constant = PCM_sampling_frequencies[i][1];
@@ -101,8 +96,7 @@ bool AudioOutput::SetPCMSamplingFrequency(uint32_t PCM_sampling_frequency) {
 }
 
 uint16_t AudioOutput::GetFIFOStatus() {
-  if (!bus_)
-    return false;
+  if (!bus_) return false;
   uint16_t write_pointer;
   uint16_t read_pointer;
   bus_->Read(kAudioOutputBaseAddress + 0x802, &read_pointer);
@@ -131,14 +125,12 @@ void AudioOutput::Write() {
 }
 
 bool AudioOutput::SetVolumen(int volumen_percentage) {
-  if (!bus_)
-    return false;
-  if (volumen_percentage > 100)
-    return false;
+  if (!bus_) return false;
+  if (volumen_percentage > 100) return false;
   uint16_t volumen_constant =
       (100 - volumen_percentage) * kMaxVolumenValue / 100;
   bus_->Write(kConfBaseAddress + 8, volumen_constant);
   return true;
 }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal

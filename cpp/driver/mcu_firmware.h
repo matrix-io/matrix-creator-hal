@@ -18,15 +18,15 @@
 #ifndef CPP_DRIVER_MCU_FIRMWARE_H_
 #define CPP_DRIVER_MCU_FIRMWARE_H_
 
+#include <string>
 #include "./fw_data.h"
 #include "./matrix_driver.h"
-#include <string>
 
 namespace matrix_hal {
 
 class MCUFirmware : public MatrixDriver {
-public:
+ public:
   bool Read(MCUData *data);
 };
-};     // namespace matrix_hal
-#endif // CPP_DRIVER_PRESSURE_SENSOR_H_
+};      // namespace matrix_hal
+#endif  // CPP_DRIVER_PRESSURE_SENSOR_H_

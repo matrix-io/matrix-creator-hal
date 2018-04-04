@@ -21,29 +21,28 @@
 namespace matrix_hal {
 
 CrossCorrelation::CrossCorrelation()
-    : order_(0), in_(NULL), A_(NULL), B_(NULL), C_(NULL), c_(NULL),
-      forward_plan_a_(NULL), forward_plan_b_(NULL), inverse_plan_(NULL) {}
+    : order_(0),
+      in_(NULL),
+      A_(NULL),
+      B_(NULL),
+      C_(NULL),
+      c_(NULL),
+      forward_plan_a_(NULL),
+      forward_plan_b_(NULL),
+      inverse_plan_(NULL) {}
 
 CrossCorrelation::~CrossCorrelation() { Release(); }
 
 void CrossCorrelation::Release() {
-  if (forward_plan_a_)
-    fftwf_destroy_plan(forward_plan_a_);
-  if (forward_plan_b_)
-    fftwf_destroy_plan(forward_plan_b_);
-  if (inverse_plan_)
-    fftwf_destroy_plan(inverse_plan_);
+  if (forward_plan_a_) fftwf_destroy_plan(forward_plan_a_);
+  if (forward_plan_b_) fftwf_destroy_plan(forward_plan_b_);
+  if (inverse_plan_) fftwf_destroy_plan(inverse_plan_);
 
-  if (in_)
-    fftwf_free(in_);
-  if (A_)
-    fftwf_free(A_);
-  if (B_)
-    fftwf_free(B_);
-  if (C_)
-    fftwf_free(C_);
-  if (c_)
-    fftwf_free(c_);
+  if (in_) fftwf_free(in_);
+  if (A_) fftwf_free(A_);
+  if (B_) fftwf_free(B_);
+  if (C_) fftwf_free(C_);
+  if (c_) fftwf_free(c_);
 }
 
 bool CrossCorrelation::Init(int N) {
@@ -54,38 +53,30 @@ bool CrossCorrelation::Init(int N) {
   imposed by any algorithm in FFTW (e.g. for SIMD acceleration).
   */
   in_ = (float *)fftwf_malloc(sizeof(float) * order_);
-  if (!in_)
-    return false;
+  if (!in_) return false;
 
   A_ = (float *)fftwf_malloc(sizeof(float) * order_);
-  if (!A_)
-    return false;
+  if (!A_) return false;
 
   B_ = (float *)fftwf_malloc(sizeof(float) * order_);
-  if (!B_)
-    return false;
+  if (!B_) return false;
 
   C_ = (float *)fftwf_malloc(sizeof(float) * order_);
-  if (!C_)
-    return false;
+  if (!C_) return false;
 
   c_ = (float *)fftwf_malloc(sizeof(float) * order_);
-  if (!c_)
-    return false;
+  if (!c_) return false;
 
   forward_plan_a_ =
       fftwf_plan_r2r_1d(order_, in_, A_, FFTW_R2HC, FFTW_ESTIMATE);
-  if (!forward_plan_a_)
-    return false;
+  if (!forward_plan_a_) return false;
 
   forward_plan_b_ =
       fftwf_plan_r2r_1d(order_, in_, B_, FFTW_R2HC, FFTW_ESTIMATE);
-  if (!forward_plan_b_)
-    return false;
+  if (!forward_plan_b_) return false;
 
   inverse_plan_ = fftwf_plan_r2r_1d(order_, C_, c_, FFTW_HC2R, FFTW_ESTIMATE);
-  if (!inverse_plan_)
-    return false;
+  if (!inverse_plan_) return false;
 
   return true;
 }
@@ -117,17 +108,17 @@ void CrossCorrelation::Exec(int16_t *a, int16_t *b) {
 void CrossCorrelation::Corr(float *out, float *x, float *y) {
   std::memset(reinterpret_cast<void *>(out), 0, order_ * sizeof(float));
 
-  out[0] = x[0] * y[0];                            // r0
-  out[order_ / 2] = x[order_ / 2] * y[order_ / 2]; // r(n/2)
+  out[0] = x[0] * y[0];                             // r0
+  out[order_ / 2] = x[order_ / 2] * y[order_ / 2];  // r(n/2)
 
   for (int j = 1; j < order_ / 2; j++) {
     float a = x[j];
     float b = x[order_ - j];
     float c = y[j];
     float d = -y[order_ - j];
-    out[j] += a * c - b * d;          // Re
-    out[order_ - j] += b * c + a * d; // Im
+    out[j] += a * c - b * d;           // Re
+    out[order_ - j] += b * c + a * d;  // Im
   }
 }
 
-}; // namespace matrix_hal
+};  // namespace matrix_hal
