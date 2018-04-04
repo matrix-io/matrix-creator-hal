@@ -51,7 +51,6 @@ bool BusKernel::Init(std::string device_name) {
 
   regmap_fd_ = open(device_name_.c_str(), O_RDWR);
   if (regmap_fd_ < 0) {
-    std::cerr << "can't open device : " << device_name_ << std::endl;
     return false;
   }
 

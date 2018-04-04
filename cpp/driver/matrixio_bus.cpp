@@ -42,7 +42,7 @@ struct hardware_address {
 };
 
 MatrixIOBus::MatrixIOBus()
-    : fpga_frequency_(0), matrix_name_(0), matrix_leds_(0), bus_driver_(NULL) {}
+    : fpga_frequency_(0), matrix_name_(0), matrix_leds_(0), bus_driver_(NULL), direct_nkernel(false) {}
 
 bool MatrixIOBus::Init() {
   if (bus_driver_) delete bus_driver_;
@@ -53,10 +53,16 @@ bool MatrixIOBus::Init() {
 
   if (bus_direct->Init()) {
     bus_driver_ = bus_direct;
+    direct_nkernel_ = true:
+    std::cout << "/dev/spidev0.0 was opened" << std::endl;
   } else if (bus_kernel->Init()) {
     bus_driver_ = bus_kernel;
-  } else
+    direct_nkernel_ = false;
+    std::cout << "/dev/matrixio_regmap was opened" << std::endl;
+  } else {
+    std::cerr << "can't open any device" << std::endl;
     return false;
+  }
 
   Write(12, 13);
   if (!GetMatrixName()) {

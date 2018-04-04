@@ -53,6 +53,8 @@ class MatrixIOBus {
 
   int MatrixLeds() { return matrix_leds_; }
 
+  bool IsDirectBus(){ return direct_nkernel_; }
+
  private:
   bool GetMatrixName();
   bool GetFPGAFrequency();
@@ -63,6 +65,7 @@ class MatrixIOBus {
   uint32_t matrix_version_;
   int matrix_leds_;
   Bus *bus_driver_;
+  bool direct_nkernel_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_WISHBONE_BUS_H_

@@ -61,7 +61,6 @@ bool BusDirect::Init(std::string device_name) {
 
   spi_fd_ = open(device_name_.c_str(), O_RDWR);
   if (spi_fd_ < 0) {
-    std::cerr << "can't open device : " << device_name_ << std::endl;
     return false;
   }
 
