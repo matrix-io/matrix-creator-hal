@@ -22,9 +22,9 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/uv_data.h"
 #include "../cpp/driver/uv_sensor.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 /* UV Index
 
@@ -59,8 +59,8 @@ int main() {
       {0.0, {0, 50, 0, 0}}    /* Green  "Low" */
   };
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
 
   hal::UVSensor uv_sensor;
   uv_sensor.Setup(&bus);
@@ -73,9 +73,9 @@ int main() {
 
   while (true) {
     uv_sensor.Read(&uv_data);
-    for (auto& uv_item : who_uv_table) {
+    for (auto &uv_item : who_uv_table) {
       if (uv_data.uv >= uv_item.limit) {
-        for (auto& led : image1d.leds) {
+        for (auto &led : image1d.leds) {
           led.red = uv_item.color.r;
           led.green = uv_item.color.g;
           led.blue = uv_item.color.b;

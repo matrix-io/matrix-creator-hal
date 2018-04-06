@@ -1,7 +1,7 @@
 # MATRIX Hardware Abstraction Layer (HAL)
 ![Build Status](https://drone.matrix.one/api/badges/matrix-io/matrix-creator-hal/status.svg)
 
-HAL is the lowest-level abstraction for the MATRIX Creator drivers. You can interface directly with HAL, or use the higher level components like MALOS, and the MATRIX OS itself.
+HAL is the lowest-level abstraction for the MATRIX Creator and MATRIX Voice drivers. You can interface directly with HAL, or use the higher level components like MALOS, and the MATRIX OS itself.
 
 ## Install
 ```

@@ -42,10 +42,10 @@ class CircularQueue {
   }
 
   // Simultaneous Push/Pop method
-  const T PushPop(const T& data) {
+  const T PushPop(const T &data) {
     if (fifo_size_ > 1) {
       fifo_[(pointer_ + fifo_size_ - 1) % fifo_size_] = data;
-      T& ret = fifo_[pointer_];
+      T &ret = fifo_[pointer_];
       pointer_ = (pointer_ + 1) % fifo_size_;
       return ret;
     }
@@ -55,7 +55,7 @@ class CircularQueue {
  private:
   int fifo_size_;
   int pointer_;
-  T* fifo_;
+  T *fifo_;
 };
 
 };      // namespace matrix_hal

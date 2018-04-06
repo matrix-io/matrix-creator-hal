@@ -26,7 +26,7 @@ namespace matrix_hal {
 
 class MCUFirmware : public MatrixDriver {
  public:
-  bool Read(MCUData* data);
+  bool Read(MCUData *data);
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_PRESSURE_SENSOR_H_

@@ -28,7 +28,7 @@ namespace matrix_hal {
 class DummySensor : public MatrixDriver {
  public:
   DummySensor();
-  bool Read(DummyData* dummy);
+  bool Read(DummyData *dummy);
 
  private:
   std::random_device random_device_;

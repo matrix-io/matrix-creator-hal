@@ -22,13 +22,20 @@
 
 namespace matrix_hal {
 
-bool UVSensor::Read(UVData* data) {
-  if (!wishbone_) return false;
+bool UVSensor::Read(UVData *data) {
+  if (!bus_) return false;
+  union {
+    int *int_data;
+    float *float_data;
+  };
+
+  float_data = (float *)data;
 
   // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetUV >> 1),
-                     (unsigned char*)data, sizeof(UVData));
-
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetUV >> 1), (unsigned char *)data,
+             sizeof(UVData));
+  for (uint16_t i = 0; i < sizeof(UVData) / sizeof(int); i++)
+    float_data[i] = float(int_data[i]) / 1000.0;
   return true;
 }
 };  // namespace matrix_hal

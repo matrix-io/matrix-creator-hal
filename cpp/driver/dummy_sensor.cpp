@@ -24,7 +24,7 @@ namespace matrix_hal {
 DummySensor::DummySensor()
     : random_engine_(random_device_()), random_distribution_(-1, 1) {}
 
-bool DummySensor::Read(DummyData* dummy) {
+bool DummySensor::Read(DummyData *dummy) {
   dummy->value = random_distribution_(random_engine_);
   return true;
 }

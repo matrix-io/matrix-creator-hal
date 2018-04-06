@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2016-2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -20,16 +20,16 @@
 
 #include <memory>
 #include <string>
-#include "./wishbone_bus.h"
+#include "./matrixio_bus.h"
 
 namespace matrix_hal {
 
 class MatrixDriver {
  public:
-  void Setup(WishboneBus* wishbone);
+  void Setup(MatrixIOBus *bus);
 
  protected:
-  WishboneBus* wishbone_;
+  MatrixIOBus *bus_;
 };
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MATRIX_DRIVER_H_

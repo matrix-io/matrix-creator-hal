@@ -15,14 +15,14 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -32,7 +32,7 @@ int main() {
 
   hal::EverloopImage image1d(bus.MatrixLeds());
 
-  for (auto& led : image1d.leds) led.red = 5;
+  for (auto &led : image1d.leds) led.red = 5;
 
   everloop.Write(&image1d);
 

@@ -52,8 +52,8 @@ MicrophoneArray::MicrophoneArray()
 
 MicrophoneArray::~MicrophoneArray() {}
 
-void MicrophoneArray::Setup(WishboneBus *wishbone) {
-  MatrixDriver::Setup(wishbone);
+void MicrophoneArray::Setup(MatrixIOBus *bus) {
+  MatrixDriver::Setup(bus);
 
   wiringPiSetup();
 
@@ -65,13 +65,13 @@ void MicrophoneArray::Setup(WishboneBus *wishbone) {
 //  Read audio from the FPGA and calculate beam using delay & sum method
 bool MicrophoneArray::Read() {
   // TODO(andres.calderon@admobilize.com): avoid double buffer
-  if (!wishbone_) return false;
+  if (!bus_) return false;
 
   irq_cv.wait(lock_);
 
-  if (!wishbone_->SpiReadBurst(kMicrophoneArrayBaseAddress,
-                               reinterpret_cast<unsigned char *>(&raw_data_[0]),
-                               sizeof(int16_t) * kMicarrayBufferSize)) {
+  if (!bus_->Read(kMicrophoneArrayBaseAddress,
+                  reinterpret_cast<unsigned char *>(&raw_data_[0]),
+                  sizeof(int16_t) * kMicarrayBufferSize)) {
     return false;
   }
 
@@ -127,16 +127,16 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
 }
 
 bool MicrophoneArray::GetGain() {
-  if (!wishbone_) return false;
+  if (!bus_) return false;
   uint16_t value;
-  wishbone_->SpiRead16(kConfBaseAddress + 0x07, (unsigned char *)&value);
+  bus_->Read(kConfBaseAddress + 0x07, &value);
   gain_ = value;
   return true;
 }
 
 bool MicrophoneArray::SetGain(uint16_t gain) {
-  if (!wishbone_) return false;
-  wishbone_->SpiWrite16(kConfBaseAddress + 0x07, gain);
+  if (!bus_) return false;
+  bus_->Write(kConfBaseAddress + 0x07, gain);
   gain_ = gain;
   return true;
 }
@@ -161,15 +161,15 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
 
   sampling_frequency_ = sampling_frequency;
   SetGain(MIC_gain);
-  wishbone_->SpiWrite16(kConfBaseAddress + 0x06, MIC_constant);
+  bus_->Write(kConfBaseAddress + 0x06, MIC_constant);
 
   return true;
 }
 
 bool MicrophoneArray::GetSamplingRate() {
-  if (!wishbone_) return false;
+  if (!bus_) return false;
   uint16_t value;
-  wishbone_->SpiRead16(kConfBaseAddress + 0x06, (unsigned char *)&value);
+  bus_->Read(kConfBaseAddress + 0x06, &value);
 
   for (int i = 0;; i++) {
     if (MIC_sampling_frequencies[i][0] == 0) return false;

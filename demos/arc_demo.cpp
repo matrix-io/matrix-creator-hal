@@ -20,14 +20,14 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
 int main() {
-  hal::WishboneBus bus;
+  hal::MatrixIOBus bus;
 
-  if (!bus.SpiInit()) return false;
+  if (!bus.Init()) return false;
 
   hal::Everloop everloop;
   hal::EverloopImage image1d(bus.MatrixLeds());
@@ -37,7 +37,7 @@ int main() {
   unsigned counter = 0;
 
   while (1) {
-    for (hal::LedValue& led : image1d.leds) {
+    for (hal::LedValue &led : image1d.leds) {
       led.red = 0;
       led.green = 0;
       led.blue = static_cast<int>(std::sin(counter / 128.0) * 7.0) + 8;

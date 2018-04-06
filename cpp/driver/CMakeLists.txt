@@ -31,11 +31,13 @@ set(matrix_creator_hal_src
   microphone_array.cpp
   pressure_sensor.cpp
   uv_sensor.cpp
-  wishbone_bus.cpp
+  matrixio_bus.cpp
   cross_correlation.cpp
   direction_of_arrival.cpp
   uart_control.cpp
   audio_output.cpp
+  bus_direct.cpp
+  bus_kernel.cpp
 )
 
 add_library(matrix_creator_hal SHARED ${matrix_creator_hal_src})
@@ -65,7 +67,10 @@ set (matrix_creator_hal_headers
   pressure_sensor.h
   uv_data.h             
   uv_sensor.h       
-  wishbone_bus.h
+  matrixio_bus.h
+  bus.h
+  bus_direct.h
+  bus_kernel.h
   cross_correlation.h
   direction_of_arrival.h
   uart_control.h

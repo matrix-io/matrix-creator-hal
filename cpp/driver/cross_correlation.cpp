@@ -52,19 +52,19 @@ bool CrossCorrelation::Init(int N) {
   guarantee that the returned pointer obeys any special alignment restrictions
   imposed by any algorithm in FFTW (e.g. for SIMD acceleration).
   */
-  in_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  in_ = (float *)fftwf_malloc(sizeof(float) * order_);
   if (!in_) return false;
 
-  A_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  A_ = (float *)fftwf_malloc(sizeof(float) * order_);
   if (!A_) return false;
 
-  B_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  B_ = (float *)fftwf_malloc(sizeof(float) * order_);
   if (!B_) return false;
 
-  C_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  C_ = (float *)fftwf_malloc(sizeof(float) * order_);
   if (!C_) return false;
 
-  c_ = (float*)fftwf_malloc(sizeof(float) * order_);
+  c_ = (float *)fftwf_malloc(sizeof(float) * order_);
   if (!c_) return false;
 
   forward_plan_a_ =
@@ -81,9 +81,9 @@ bool CrossCorrelation::Init(int N) {
   return true;
 }
 
-float* CrossCorrelation::Result() { return c_; }
+float *CrossCorrelation::Result() { return c_; }
 
-void CrossCorrelation::Exec(int16_t* a, int16_t* b) {
+void CrossCorrelation::Exec(int16_t *a, int16_t *b) {
   for (int i = 0; i < order_; i++) {
     in_[i] = a[i];
   }
@@ -105,8 +105,8 @@ void CrossCorrelation::Exec(int16_t* a, int16_t* b) {
   }
 }
 
-void CrossCorrelation::Corr(float* out, float* x, float* y) {
-  std::memset(reinterpret_cast<void*>(out), 0, order_ * sizeof(float));
+void CrossCorrelation::Corr(float *out, float *x, float *y) {
+  std::memset(reinterpret_cast<void *>(out), 0, order_ * sizeof(float));
 
   out[0] = x[0] * y[0];                             // r0
   out[order_ / 2] = x[order_ / 2] * y[order_ / 2];  // r(n/2)

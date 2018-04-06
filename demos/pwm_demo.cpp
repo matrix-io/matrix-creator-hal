@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "../cpp/driver/gpio_control.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -35,8 +35,8 @@ const float kPWMPeriod = 0.02;  // Seconds
 int main() {
   std::cout << "Set desired Duty cycle in percentage" << std::endl << std::endl;
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
 
   hal::GPIOControl gpio;
   gpio.Setup(&bus);

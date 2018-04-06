@@ -25,7 +25,7 @@
 
 namespace matrix_hal {
 
-DirectionOfArrival::DirectionOfArrival(MicrophoneArray& mics) : mics_(mics) {}
+DirectionOfArrival::DirectionOfArrival(MicrophoneArray &mics) : mics_(mics) {}
 
 bool DirectionOfArrival::Init() {
   length_ = mics_.NumberOfSamples();
@@ -68,7 +68,7 @@ void DirectionOfArrival::Calculate() {
     // Calculate the cross correlation
     corr_->Exec(buffer_2D_[channel + 4], buffer_2D_[channel]);
 
-    float* c = corr_->Result();
+    float *c = corr_->Result();
 
     // Find the sample index of the highest peak (beginning of the window)
     int index = 0;

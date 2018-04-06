@@ -21,7 +21,7 @@
 #include <valarray>
 
 #include "../cpp/driver/audio_output.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 DEFINE_int32(
     sampling_frequency, 44100,
@@ -35,8 +35,8 @@ namespace hal = matrix_hal;
 int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
 
   std::ifstream is(FLAGS_raw_file);
 

@@ -21,11 +21,11 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cout << "Device has not been specified" << std::endl
               << "Usage:" << std::endl
@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
             << "Press \"u\" to Volume UP " << std::endl
             << "Press \"d\" to Volume Down" << std::endl;
 
-  hal::WishboneBus bus;
+  hal::MatrixIOBus bus;
 
-  if (!bus.SpiInit()) return false;
+  if (!bus.Init()) return false;
 
   hal::Everloop everloop;
   hal::EverloopImage image1d;
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     switch (std::getchar()) {
       case 'p':
         std::cout << "Power \n";
-        for (hal::LedValue& led : image1d.leds) {
+        for (hal::LedValue &led : image1d.leds) {
           led.red = 0;
           led.green = 0;
           led.blue = 0;
@@ -64,12 +64,12 @@ int main(int argc, char* argv[]) {
         everloop.Write(&image1d);
         cmd = "irsend SEND_ONCE " + irdevice + " KEY_POWER";
         system(cmd.c_str());
-        for (auto& led : image1d.leds) {
+        for (auto &led : image1d.leds) {
           led.red = 20;
           everloop.Write(&image1d);
           usleep(90000);
         }
-        for (auto& led : image1d.leds) {
+        for (auto &led : image1d.leds) {
           led.red = 0;
           led.green = 0;
           led.blue = 0;

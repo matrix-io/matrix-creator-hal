@@ -46,7 +46,7 @@ class AudioOutput : public MatrixDriver {
 
   ~AudioOutput();
 
-  void Setup(WishboneBus* wishbone);
+  void Setup(MatrixIOBus *bus);
 
   bool Mute();
   bool UnMute();

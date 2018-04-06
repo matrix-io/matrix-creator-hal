@@ -14,8 +14,8 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
+#include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
-#include "../cpp/driver/wishbone_bus.h"
 
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
@@ -26,8 +26,13 @@ namespace hal = matrix_hal;
 int main(int argc, char *agrv[]) {
   google::ParseCommandLineFlags(&argc, &agrv, true);
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
+
+  if(!bus.IsDirectBus()) {
+    std::cerr << "Kernel Modules has been loaded. Use ALSA implementation " << std::endl;
+    return false; 
+  }
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
@@ -58,7 +63,7 @@ int main(int argc, char *agrv[]) {
   }
 
   std::thread et(
-      [seconds_to_record](hal::WishboneBus *bus) {
+      [seconds_to_record](hal::MatrixIOBus *bus) {
 
         hal::Everloop everloop;
         everloop.Setup(bus);

@@ -22,13 +22,19 @@
 
 namespace matrix_hal {
 
-bool PressureSensor::Read(PressureData* data) {
-  if (!wishbone_) return false;
+bool PressureSensor::Read(PressureData *data) {
+  if (!bus_) return false;
+  union {
+    int *int_data;
+    float *float_data;
+  };
 
+  float_data = (float *)data;
   // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetPressure >> 1),
-                     (unsigned char*)data, sizeof(PressureData));
-
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetPressure >> 1),
+             (unsigned char *)data, sizeof(PressureData));
+  for (uint16_t i = 0; i < sizeof(PressureData) / sizeof(int); i++)
+    float_data[i] = float(int_data[i]) / 1000.0;
   return true;
 }
 };  // namespace matrix_hal

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2016-2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -21,7 +21,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "./wishbone_bus.h"
+#include "./matrixio_bus.h"
 
 namespace matrix_hal {
 

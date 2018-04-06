@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -15,18 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_HUMIDITY_SENSOR_H_
-#define CPP_DRIVER_HUMIDITY_SENSOR_H_
+#ifndef CPP_DRIVER_BUS_H_
+#define CPP_DRIVER_BUS_H_
 
+#include <stdint.h>
+#include <mutex>
 #include <string>
-#include "./humidity_data.h"
-#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
-class HumiditySensor : public MatrixDriver {
+class Bus {
  public:
-  bool Read(HumidityData *data);
+  virtual ~Bus(){};
+
+  virtual bool Init(std::string device_name = "") = 0;
+
+  virtual bool Write(uint16_t add, unsigned char *data, int length) = 0;
+
+  virtual bool Read(uint16_t add, unsigned char *data, int length) = 0;
+
+  virtual void Close() = 0;
+
+ protected:
+  std::string device_name_;
+  unsigned char rx_buffer_[12288];
+  unsigned char tx_buffer_[12288];
+  mutable std::mutex mutex_;
 };
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_HUMIDITY_SENSOR_H_
+#endif  // CPP_DRIVER_BUS_H_

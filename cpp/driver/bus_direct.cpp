@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2016-2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cpp/driver/wishbone_bus.h"
+#include "cpp/driver/bus_direct.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/spi/spidev.h>
@@ -39,22 +39,28 @@ struct hardware_address {
   uint16_t reg : 15;
 };
 
-WishboneBus::WishboneBus()
-    : device_name_("/dev/spidev0.0"),
+BusDirect::BusDirect()
+    : spi_fd_(0),
       spi_mode_(3),
       spi_bits_(8),
       spi_speed_(20000000),
-      spi_delay_(0),
-      fpga_frequency_(0),
-      matrix_name_(0),
-      matrix_leds_(0) {}
+      spi_delay_(0) {}
 
-bool WishboneBus::SpiInit() {
+BusDirect::~BusDirect() {
+  if (spi_fd_) Close();
+}
+bool BusDirect::Init(std::string device_name) {
+  if (spi_fd_) Close();
+
+  if (device_name.size() == 0)
+    device_name_ = "/dev/spidev0.0";
+  else
+    device_name_ = device_name;
+
   std::unique_lock<std::mutex> lock(mutex_);
 
   spi_fd_ = open(device_name_.c_str(), O_RDWR);
   if (spi_fd_ < 0) {
-    std::cerr << "can't open device" << std::endl;
     return false;
   }
 
@@ -94,25 +100,11 @@ bool WishboneBus::SpiInit() {
     return false;
   }
 
-  /*
-   * set FPGA frequency
-   */
-  lock.unlock();
-  if (!GetMatrixName()) {
-    return false;
-  }
-
-  if (!GetFPGAFrequency()) {
-    std::cerr << "can't get FPGA frequency" << std::endl;
-    return false;
-  }
-
   return true;
 }
 
-bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
-                              unsigned char *receive_buffer,
-                              unsigned int size) {
+bool BusDirect::SpiTransfer(unsigned char *send_buffer,
+                            unsigned char *receive_buffer, unsigned int size) {
   spi_ioc_transfer tr;
   memset(&tr, 0, sizeof(tr));
 
@@ -130,31 +122,7 @@ bool WishboneBus::SpiTransfer(unsigned char *send_buffer,
   return true;
 }
 
-bool WishboneBus::SpiWrite16(uint16_t add, uint16_t data) {
-  std::unique_lock<std::mutex> lock(mutex_);
-
-  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
-  hw_addr->reg = add;
-  hw_addr->readnwrite = 0;
-
-  uint8_t *p = (uint8_t *)&data;
-
-  tx_buffer_[2] = p[0];
-  tx_buffer_[3] = p[1];
-
-  return SpiTransfer(tx_buffer_, rx_buffer_, 4);
-}
-
-bool WishboneBus::SpiWrite(uint16_t add, unsigned char *data, int length) {
-  uint16_t *words = reinterpret_cast<uint16_t *>(data);
-
-  for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiWrite16(add + w, words[w])) return false;
-  }
-  return true;
-}
-
-bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
+bool BusDirect::Read(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
   hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
@@ -168,7 +136,7 @@ bool WishboneBus::SpiReadBurst(uint16_t add, unsigned char *data, int length) {
   return false;
 }
 
-bool WishboneBus::SpiWriteBurst(uint16_t add, unsigned char *data, int length) {
+bool BusDirect::Write(uint16_t add, unsigned char *data, int length) {
   std::unique_lock<std::mutex> lock(mutex_);
 
   hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
@@ -182,55 +150,5 @@ bool WishboneBus::SpiWriteBurst(uint16_t add, unsigned char *data, int length) {
   return false;
 }
 
-bool WishboneBus::SpiRead(uint16_t add, unsigned char *data, int length) {
-  uint16_t *words = reinterpret_cast<uint16_t *>(data);
-
-  for (uint16_t w = 0; w < (length / 2); w++) {
-    if (!SpiRead16(add + w, (unsigned char *)&words[w])) return false;
-  }
-  return true;
-}
-
-bool WishboneBus::SpiRead16(uint16_t add, unsigned char *data) {
-  std::unique_lock<std::mutex> lock(mutex_);
-
-  const int length = 2;
-
-  hardware_address *hw_addr = reinterpret_cast<hardware_address *>(tx_buffer_);
-  hw_addr->reg = add;
-  hw_addr->readnwrite = 1;
-
-  if (SpiTransfer(tx_buffer_, rx_buffer_, length + 2)) {
-    memcpy(data, &rx_buffer_[2], length);
-    return true;
-  }
-  return false;
-}
-
-bool WishboneBus::GetMatrixName() {
-  uint32_t data[2];
-  if (!SpiReadBurst(kConfBaseAddress, (unsigned char *)&data, sizeof(data)))
-    return false;
-  matrix_name_ = data[0];
-  if (matrix_name_ == kMatrixCreator)
-    matrix_leds_ = kMatrixCreatorNLeds;
-  else if (matrix_name_ == kMatrixVoice)
-    matrix_leds_ = kMatrixVoiceNLeds;
-  else {
-    std::cerr << "MATRIX device has not been detected" << std::endl;
-    return false;
-  }
-  matrix_version_ = data[1];
-  return true;
-}
-
-bool WishboneBus::GetFPGAFrequency() {
-  uint16_t values[2];
-  if (!SpiRead(kConfBaseAddress + 4, (unsigned char *)values, sizeof(values)))
-    return false;
-  fpga_frequency_ = (kFPGAClock * values[1]) / values[0];
-  return true;
-}
-
-void WishboneBus::SpiClose(void) { close(spi_fd_); }
+void BusDirect::Close(void) { close(spi_fd_); }
 };  // namespace matrix_hal

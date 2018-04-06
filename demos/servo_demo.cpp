@@ -23,7 +23,7 @@
 #include "../cpp/driver/gpio_control.h"
 #include "../cpp/driver/imu_data.h"
 #include "../cpp/driver/imu_sensor.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -46,8 +46,8 @@ const int kServoOffset = 1800;
 int main() {
   std::cout << "Set desired Angle in degrees" << std::endl << std::endl;
 
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
@@ -75,7 +75,7 @@ int main() {
     std::cout << " Angle :";
     std::cin >> angle;
     std::cout << std::endl;
-    for (hal::LedValue& led : image1d.leds) {
+    for (hal::LedValue &led : image1d.leds) {
       led.red = 0;
       led.blue = 0;
     }

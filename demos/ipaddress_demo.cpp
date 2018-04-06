@@ -26,7 +26,7 @@
 
 #include "../cpp/driver/everloop.h"
 #include "../cpp/driver/everloop_image.h"
-#include "../cpp/driver/wishbone_bus.h"
+#include "../cpp/driver/matrixio_bus.h"
 
 namespace hal = matrix_hal;
 
@@ -43,8 +43,8 @@ void SetNumber(int position, int value, hal::EverloopImage *image) {
 
 int main() {
   int last_integer = 0;
-  hal::WishboneBus bus;
-  if (!bus.SpiInit()) return false;
+  hal::MatrixIOBus bus;
+  if (!bus.Init()) return false;
   hal::Everloop everloop;
   hal::EverloopImage image(bus.MatrixLeds());
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2016-2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -21,6 +21,6 @@
 
 namespace matrix_hal {
 
-void MatrixDriver::Setup(WishboneBus* wishbone) { wishbone_ = wishbone; }
+void MatrixDriver::Setup(MatrixIOBus *bus) { bus_ = bus; }
 
 };  // namespace matrix_hal

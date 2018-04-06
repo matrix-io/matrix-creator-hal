@@ -22,12 +22,20 @@
 
 namespace matrix_hal {
 
-bool HumiditySensor::Read(HumidityData* data) {
-  if (!wishbone_) return false;
+bool HumiditySensor::Read(HumidityData *data) {
+  if (!bus_) return false;
+  union {
+    int *int_data;
+    float *float_data;
+  };
 
-  // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetHumidity >> 1),
-                     (unsigned char*)data, sizeof(HumidityData));
+  float_data = (float *)data;
+
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetHumidity >> 1),
+             (unsigned char *)data, sizeof(HumidityData));
+
+  for (uint16_t i = 0; i < sizeof(HumidityData) / sizeof(int); i++)
+    float_data[i] = float(int_data[i]) / 1000.0;
 
   return true;
 }

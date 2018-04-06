@@ -22,13 +22,18 @@
 
 namespace matrix_hal {
 
-bool IMUSensor::Read(IMUData* data) {
-  if (!wishbone_) return false;
+bool IMUSensor::Read(IMUData *data) {
+  if (!bus_) return false;
+  union {
+    int *int_data;
+    float *float_data;
+  };
 
-  // TODO(andres.calderon@admobilize.com): error handler
-  wishbone_->SpiRead(kMCUBaseAddress + (kMemoryOffsetIMU >> 1),
-                     (unsigned char*)data, sizeof(IMUData));
+  bus_->Read(kMCUBaseAddress + (kMemoryOffsetIMU >> 1), (unsigned char *)data,
+             sizeof(IMUData));
 
+  for (float_data = &data->accel_x; float_data <= &data->mag_z; float_data++)
+    *float_data = float(*int_data) / 1000.0;
   return true;
 }
 };  // namespace matrix_hal
