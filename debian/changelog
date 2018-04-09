@@ -1,6 +1,7 @@
 libmatrixio-creator-hal (0.3.1) unstable; urgency=medium
 
   * Kernel Modules compatibility: Major changes in the library in order to be compatible with the matrixio-kernel-modules.
+  * Bug Fix: Noise in Microphone array signals.
 
  -- Admobilize <info@admobilize.com>  Fri, 6 Apr 2018 18:00:00 +0000
 

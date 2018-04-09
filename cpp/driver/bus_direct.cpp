@@ -43,7 +43,7 @@ BusDirect::BusDirect()
     : spi_fd_(0),
       spi_mode_(3),
       spi_bits_(8),
-      spi_speed_(20000000),
+      spi_speed_(15000000),
       spi_delay_(0) {}
 
 BusDirect::~BusDirect() {
