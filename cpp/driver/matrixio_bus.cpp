@@ -90,7 +90,7 @@ bool MatrixIOBus::Write(uint16_t add, uint16_t data) {
 }
 
 bool MatrixIOBus::Read(uint16_t add, uint16_t *data) {
-  return bus_driver_->Read(add, (unsigned char *)data, sizeof(data));
+  return bus_driver_->Read(add, (unsigned char *)data, sizeof(*data));
 }
 
 bool MatrixIOBus::GetMatrixName() {
