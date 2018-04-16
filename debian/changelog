@@ -1,3 +1,9 @@
+libmatrixio-creator-hal (0.3.2) unstable; urgency=medium
+
+  * fixed the stack buffer overflow in the bus read (@cmetz)
+
+ -- Admobilize <info@admobilize.com>  Mon,  Apr 16 2018 15:00:00 +0000
+ 
 libmatrixio-creator-hal (0.3.1) unstable; urgency=medium
 
   * Kernel Modules compatibility: Major changes in the library in order to be compatible with the matrixio-kernel-modules.
