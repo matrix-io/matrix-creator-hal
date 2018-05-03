@@ -60,6 +60,10 @@ void MicrophoneArray::Setup(MatrixIOBus *bus) {
   pinMode(kMicrophoneArrayIRQ, INPUT);
   ReadConfValues();
   wiringPiISR(kMicrophoneArrayIRQ, INT_EDGE_BOTH, &irq_callback);
+
+  bus_->Write(kMicrophoneArrayBaseAddress,
+              reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
+              fir_coeff_.size());
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -193,4 +197,15 @@ void MicrophoneArray::ShowConfiguration() {
   std::cout << "Gain : " << gain_ << std::endl;
 }
 
+bool MicrophoneArray::SetFIRCoeff(const std::valarray<int16_t> custom_fir) {
+  if (custom_fir.size() == kNumberFIRTaps) {
+    fir_coeff_ = custom_fir;
+    return bus_->Write(kMicrophoneArrayBaseAddress,
+                       reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
+                       fir_coeff_.size());
+  } else {
+    std::cout << "Size FIR Filter must be : " << kNumberFIRTaps << std::endl;
+    return false;
+  }
+}
 };  // namespace matrix_hal

@@ -26,8 +26,9 @@ int main(int argc, char *agrv[]) {
   hal::MatrixIOBus bus;
   if (!bus.Init()) return false;
 
-  if(!bus.IsDirectBus()) {
-    std::cerr << "Kernel Modules has been loaded. Use ALSA examples " << std::endl; 
+  if (!bus.IsDirectBus()) {
+    std::cerr << "Kernel Modules has been loaded. Use ALSA examples "
+              << std::endl;
   }
 
   hal::MicrophoneArray mics;
