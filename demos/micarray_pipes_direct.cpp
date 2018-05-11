@@ -24,6 +24,11 @@ int main() {
   hal::MatrixIOBus bus;
   if (!bus.Init()) return false;
 
+  if(!bus.IsDirectBus()) {
+    std::cerr << "Kernel Modules has been loaded. Use ALSA implementation " << std::endl;
+    return false; 
+  }
+
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
 
