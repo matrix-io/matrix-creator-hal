@@ -22,7 +22,6 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 #include <valarray>
 
@@ -46,6 +45,8 @@ MicrophoneArray::MicrophoneArray()
   fifos_.resize(kMicrophoneChannels);
 
   beamformed_.resize(NumberOfSamples());
+
+  fir_coeff_.resize(kNumberFIRTaps);
 
   CalculateDelays(0.0, 0.0);
 }
@@ -147,23 +148,27 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   if (sampling_frequency == 0) {
-    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
+    std::cerr << "Bad Configuration, sampling frequency must be greather than 0"
               << std::endl;
     return false;
   }
 
   uint16_t MIC_gain, MIC_constant;
   for (int i = 0;; i++) {
-    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (MIC_sampling_frequencies[i][0] == 0) {
+      std::cerr << "Unsoported sampling frequency, it must be: 8000, 12000, "
+                   "16000, 22050, 24000, 32000, 44100, 48000, 96000"
+                << std::endl;
+      return false;
+    }
     if (sampling_frequency == MIC_sampling_frequencies[i][0]) {
-      sampling_frequency_ = MIC_sampling_frequencies[i][0];
+      sampling_frequency_ = sampling_frequency;
       MIC_constant = MIC_sampling_frequencies[i][1];
       MIC_gain = MIC_sampling_frequencies[i][2];
       break;
     }
   }
-
-  sampling_frequency_ = sampling_frequency;
+  SelectFIRCoeff(sampling_frequency_);
   SetGain(MIC_gain);
   bus_->Write(kConfBaseAddress + 0x06, MIC_constant);
 
@@ -197,15 +202,41 @@ void MicrophoneArray::ShowConfiguration() {
   std::cout << "Gain : " << gain_ << std::endl;
 }
 
-bool MicrophoneArray::SetFIRCoeff(const std::valarray<int16_t> custom_fir) {
+bool MicrophoneArray::SetFIRCoeff() {
+  return bus_->Write(kMicrophoneArrayBaseAddress,
+                     reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
+                     fir_coeff_.size());
+}
+
+bool MicrophoneArray::SetCustomFIRCoeff(
+    const std::valarray<int16_t> custom_fir) {
   if (custom_fir.size() == kNumberFIRTaps) {
     fir_coeff_ = custom_fir;
-    return bus_->Write(kMicrophoneArrayBaseAddress,
-                       reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
-                       fir_coeff_.size());
+    return SetFIRCoeff();
   } else {
     std::cout << "Size FIR Filter must be : " << kNumberFIRTaps << std::endl;
     return false;
   }
 }
+
+bool MicrophoneArray::SelectFIRCoeff(uint32_t sampling_frequency) {
+  if (sampling_frequency == 0) {
+    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
+              << std::endl;
+    return false;
+  }
+
+  for (int i = 0;; i++) {
+    if (FIR_Coeff[i][0] == 0) {
+      std::cerr << "Unsoported sampling frequency, it must be: 8000, 12000, 
+          16000,
+          22050, 24000, 32000, 44100, 48000,
+          96000 " << std::endl;
+          return false;
+    }
+    if (FIR_Coeff[i][0] == sampling_frequency) {
+      fir_coeff_ = FIR_Coeff[i][1];
+      return SetFIRCoeff();
+    }
+  }
 };  // namespace matrix_hal

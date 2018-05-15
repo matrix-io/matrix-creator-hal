@@ -36,7 +36,7 @@ static const uint32_t MIC_sampling_frequencies[][3] = {
 const uint16_t kMicarrayBufferSize = 4096;
 const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
 const uint16_t kMicrophoneChannels = 8;
-const uint16_t kNumberFIRTaps = 16;
+const uint16_t kNumberFIRTaps = 128;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -77,20 +77,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
-  std::valarray<int16_t> fir_coeff_ = {
-      -66,   -66,    -90,    33,    70,    -53,   -79,   80,     131,    -40,
-      -85,   132,    188,    -84,   -170,  132,   196,   -220,   -345,   109,
-      216,   -355,   -483,   220,   419,   -339,  -469,  538,    804,    -268,
-      -488,  809,    1058,   -506,  -906,  733,   976,   -1155,  -1674,  563,
-      993,   -1670,  -2154,  1041,  1850,  -1485, -1998, 2361,   3492,   -1125,
-      -2142, 3489,   4791,   -2149, -4410, 3175,  5203,  -5485,  -10220, 1777,
-      7856,  -9552,  -23683, -2362, 32767, 32767, -2362, -23683, -9552,  7856,
-      1777,  -10220, -5485,  5203,  3175,  -4410, -2149, 4791,   3489,   -2142,
-      -1125, 3492,   2361,   -1998, -1485, 1850,  1041,  -2154,  -1670,  993,
-      563,   -1674,  -1155,  976,   733,   -906,  -506,  1058,   809,    -488,
-      -268,  804,    538,    -469,  -339,  419,   220,   -483,   -355,   216,
-      109,   -345,   -220,   196,   132,   -170,  -84,   188,    132,    -85,
-      -40,   131,    80,     -79,   -53,   70,    33,    -90};
+  std::valarray<int16_t> fir_coeff_;
   int16_t gain_;
   uint32_t sampling_frequency_;
 
