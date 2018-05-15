@@ -54,6 +54,9 @@ class MicrophoneArray : public MatrixDriver {
   bool SetGain(uint16_t gain);
   void ReadConfValues();
   void ShowConfiguration();
+  bool SetFIRCoeff();
+  bool SetCustomFIRCoeff(const std::valarray<int16_t> custom_fir);
+  bool SelectFIRCoeff(uint32_t sampling_frequency);
   uint16_t Channels() { return kMicrophoneChannels; }
   uint32_t NumberOfSamples() {
     return kMicarrayBufferSize / kMicrophoneChannels;

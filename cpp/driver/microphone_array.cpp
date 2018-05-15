@@ -22,10 +22,12 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <valarray>
 
 #include "cpp/driver/creator_memory_map.h"
+#include "cpp/driver/fir_coeff.h"
 #include "cpp/driver/microphone_array.h"
 #include "cpp/driver/microphone_array_location.h"
 
@@ -60,7 +62,7 @@ void MicrophoneArray::Setup(MatrixIOBus *bus) {
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
   wiringPiISR(kMicrophoneArrayIRQ, INT_EDGE_BOTH, &irq_callback);
-   
+
   ReadConfValues();
   SelectFIRCoeff(sampling_frequency_);
 }
@@ -225,16 +227,16 @@ bool MicrophoneArray::SelectFIRCoeff(uint32_t sampling_frequency) {
   }
 
   for (int i = 0;; i++) {
-    if (FIR_Coeff[i][0] == 0) {
-      std::cerr << "Unsoported sampling frequency, it must be: 8000, 12000, 
-          16000,
-          22050, 24000, 32000, 44100, 48000,
-          96000 " << std::endl;
-          return false;
+    if (FIR_Coeff[i].rate_ == 0) {
+      std::cerr << "Unsoported sampling frequency, it must be: 8000, 12000, "
+                   "16000, 22050, 24000, 32000, 44100, 48000, 96000 "
+                << std::endl;
+      return false;
     }
-    if (FIR_Coeff[i][0] == sampling_frequency) {
-      fir_coeff_ = FIR_Coeff[i][1];
+    if (FIR_Coeff[i].rate_ == sampling_frequency) {
+      fir_coeff_ = FIR_Coeff[i].coeff_;
       return SetFIRCoeff();
     }
   }
+}
 };  // namespace matrix_hal
