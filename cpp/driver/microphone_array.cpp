@@ -59,12 +59,10 @@ void MicrophoneArray::Setup(MatrixIOBus *bus) {
   wiringPiSetup();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
-  ReadConfValues();
   wiringPiISR(kMicrophoneArrayIRQ, INT_EDGE_BOTH, &irq_callback);
-
-  bus_->Write(kMicrophoneArrayBaseAddress,
-              reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
-              fir_coeff_.size());
+   
+  ReadConfValues();
+  SelectFIRCoeff(sampling_frequency_);
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
