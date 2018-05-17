@@ -27,6 +27,11 @@ namespace matrix_hal {
 class MatrixDriver {
  public:
   void Setup(MatrixIOBus *bus);
+  uint32_t FPGAClock() { return bus_->FPGAClock(); }
+  uint32_t MatrixName() { return bus_->MatrixName(); }
+  uint32_t MatrixVersion() { return bus_->MatrixVersion(); }
+  int MatrixLeds() { return bus_->MatrixLeds(); }
+  bool IsDirectBus() { return bus_->IsDirectBus(); }
 
  protected:
   MatrixIOBus *bus_;
