@@ -18,6 +18,8 @@
 #include "../cpp/driver/microphone_array.h"
 #include "../cpp/driver/microphone_core.h"
 
+#include "./band_pass_coeff.h"
+
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
 DEFINE_int32(gain, -1, "Microphone Gain");
@@ -51,6 +53,7 @@ int main(int argc, char *agrv[]) {
   // Microphone Core Init
   hal::MicrophoneCore mic_core(mics);
   mic_core.Setup(&bus);
+  mic_core.SelectFIRCoeff(&FIR_bandpass[0]);
 
   int16_t buffer[mics.Channels() + 1]
                 [mics.SamplingRate() + mics.NumberOfSamples()];

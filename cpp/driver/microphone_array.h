@@ -29,14 +29,13 @@
 namespace matrix_hal {
 
 static const uint32_t MIC_sampling_frequencies[][3] = {
-    {8000, 374, 0},  {12000, 249, 2}, {16000, 186, 3}, {22050, 135, 5},
-    {24000, 124, 5}, {32000, 92, 6},  {44100, 67, 7},  {48000, 61, 7},
-    {96000, 30, 9},  {0, 0, 0}};
+    {8000, 374, 0},  {12000, 249, 2}, {16000, 186, 4}, {22050, 135, 5},
+    {24000, 124, 5}, {32000, 92, 6},  {44100, 67, 7},  {48000, 61, 8},
+    {96000, 30, 10}, {0, 0, 0}};
 
 const uint16_t kMicarrayBufferSize = 4096;
 const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
 const uint16_t kMicrophoneChannels = 8;
-const uint16_t kNumberFIRTaps = 128;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -54,9 +53,6 @@ class MicrophoneArray : public MatrixDriver {
   bool SetGain(uint16_t gain);
   void ReadConfValues();
   void ShowConfiguration();
-  bool SetFIRCoeff();
-  bool SetCustomFIRCoeff(const std::valarray<int16_t> custom_fir);
-  bool SelectFIRCoeff(uint32_t sampling_frequency);
   uint16_t Channels() { return kMicrophoneChannels; }
   uint32_t NumberOfSamples() {
     return kMicarrayBufferSize / kMicrophoneChannels;
@@ -71,8 +67,6 @@ class MicrophoneArray : public MatrixDriver {
   void CalculateDelays(float azimutal_angle, float polar_angle,
                        float radial_distance_mm = 100.0,
                        float sound_speed_mmseg = 320 * 1000.0);
-
-  bool SetFIRCoeff(const std::valarray<int16_t> custom_fir);
 
  private:
   std::unique_lock<std::mutex> lock_;

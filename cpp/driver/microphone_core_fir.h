@@ -1,13 +1,9 @@
 #include <valarray>
+#include "cpp/driver/microphone_core.h"
 
-#include "cpp/driver/microphone_array.h"
+namespace matrix_hal {
 
-struct FIRCoeff {
-  uint32_t rate_;
-  std::valarray<int16_t> coeff_;
-};
-
-FIRCoeff FIR_Coeff[] = {
+FIRCoeff FIR_default[] = {
     {8000,
      {-26,   -2,    -26,  -1,    -17,   -19,   0,     -30,  1,     -13,   -24,
       14,    -33,   10,   5,     -23,   51,    -20,   37,   53,    -12,   116,
@@ -124,3 +120,4 @@ FIRCoeff FIR_Coeff[] = {
       -98,   -86,   -29, 19,   23,   -10,   -48,  -56,  -32, 1,     13,    1,
       -19,   -31,   -25, -7,   4,    4,     -6,   -18}},
     {0, {0}}};
+};
