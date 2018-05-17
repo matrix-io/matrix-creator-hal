@@ -41,28 +41,8 @@ int main(int argc, char *agrv[]) {
   int sampling_rate = FLAGS_sampling_frequency;
   int seconds_to_record = FLAGS_duration;
 
-  const std::valarray<int16_t> custom_fir = {
-      -1944,
-  -1944,
-  -3412,
-  -6052,
-  -6768,
-  -1845,
-  9484,
-  23276,
-  32767,
-  32767,
-  23276,
-  9484,
-  -1845,
-  -6768,
-  -6052,
-  -3412};
-
   mics.SetSamplingRate(sampling_rate);
   
-  //mics.SetFIRCoeff(custom_fir);
-
   if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
 
   mics.ReadConfValues();

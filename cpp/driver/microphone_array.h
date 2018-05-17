@@ -36,7 +36,6 @@ static const uint32_t MIC_sampling_frequencies[][3] = {
 const uint16_t kMicarrayBufferSize = 4096;
 const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
 const uint16_t kMicrophoneChannels = 8;
-const uint16_t kNumberFIRTaps = 128;
 
 class MicrophoneArray : public MatrixDriver {
  public:
@@ -56,6 +55,7 @@ class MicrophoneArray : public MatrixDriver {
   void ShowConfiguration();
   bool SetFIRCoeff();
   bool SetCustomFIRCoeff(const std::valarray<int16_t> custom_fir);
+  bool SetCustomFIRCoeff(FIRCoeff *FIR_coeff);
   bool SelectFIRCoeff(uint32_t sampling_frequency);
   uint16_t Channels() { return kMicrophoneChannels; }
   uint32_t NumberOfSamples() {
