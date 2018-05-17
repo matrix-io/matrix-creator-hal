@@ -58,8 +58,9 @@ void MicrophoneArray::Setup(MatrixIOBus *bus) {
   wiringPiSetup();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);
-  ReadConfValues();
   wiringPiISR(kMicrophoneArrayIRQ, INT_EDGE_BOTH, &irq_callback);
+
+  ReadConfValues();
 }
 
 //  Read audio from the FPGA and calculate beam using delay & sum method
@@ -143,23 +144,26 @@ bool MicrophoneArray::SetGain(uint16_t gain) {
 
 bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
   if (sampling_frequency == 0) {
-    std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
+    std::cerr << "Bad Configuration, sampling frequency must be greather than 0"
               << std::endl;
     return false;
   }
 
   uint16_t MIC_gain, MIC_constant;
   for (int i = 0;; i++) {
-    if (MIC_sampling_frequencies[i][0] == 0) return false;
+    if (MIC_sampling_frequencies[i][0] == 0) {
+      std::cerr << "Unsoported sampling frequency, it must be: 8000, 12000, "
+                   "16000, 22050, 24000, 32000, 44100, 48000, 96000"
+                << std::endl;
+      return false;
+    }
     if (sampling_frequency == MIC_sampling_frequencies[i][0]) {
-      sampling_frequency_ = MIC_sampling_frequencies[i][0];
+      sampling_frequency_ = sampling_frequency;
       MIC_constant = MIC_sampling_frequencies[i][1];
       MIC_gain = MIC_sampling_frequencies[i][2];
       break;
     }
   }
-
-  sampling_frequency_ = sampling_frequency;
   SetGain(MIC_gain);
   bus_->Write(kConfBaseAddress + 0x06, MIC_constant);
 
@@ -192,5 +196,4 @@ void MicrophoneArray::ShowConfiguration() {
   std::cout << "Sampling Frequency: " << sampling_frequency_ << std::endl;
   std::cout << "Gain : " << gain_ << std::endl;
 }
-
 };  // namespace matrix_hal

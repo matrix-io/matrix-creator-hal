@@ -42,7 +42,11 @@ struct hardware_address {
 };
 
 MatrixIOBus::MatrixIOBus()
-    : fpga_frequency_(0), matrix_name_(0), matrix_leds_(0), bus_driver_(NULL), direct_nkernel_(false) {}
+    : fpga_frequency_(0),
+      matrix_name_(0),
+      matrix_leds_(0),
+      bus_driver_(NULL),
+      direct_nkernel_(false) {}
 
 bool MatrixIOBus::Init() {
   if (bus_driver_) delete bus_driver_;
