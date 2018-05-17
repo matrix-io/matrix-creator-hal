@@ -8,7 +8,6 @@
 #include "cpp/driver/microphone_core.h"
 #include "cpp/driver/microphone_core_fir.h"
 
-
 namespace matrix_hal {
 
 MicrophoneCore::MicrophoneCore(MicrophoneArray &mics) : mics_(mics) {
@@ -19,7 +18,7 @@ MicrophoneCore::~MicrophoneCore() {}
 
 void MicrophoneCore::Setup(MatrixIOBus *bus) {
   MatrixDriver::Setup(bus);
-  SelectFIRCoeff(&FIR_default[0]); 
+  SelectFIRCoeff(&FIR_default[0]);
 }
 
 bool MicrophoneCore::SetFIRCoeff() {
@@ -34,15 +33,14 @@ bool MicrophoneCore::SetCustomFIRCoeff(
     fir_coeff_ = custom_fir;
     return SetFIRCoeff();
   } else {
-    std::cout << "Size FIR Filter must be : " << kNumberFIRTaps << std::endl;
+    std::cerr << "Size FIR Filter must be : " << kNumberFIRTaps << std::endl;
     return false;
   }
 }
 
 bool MicrophoneCore::SelectFIRCoeff(FIRCoeff *FIR_coeff) {
-
-      uint32_t sampling_frequency = mics_.SamplingRate();	
-if (sampling_frequency == 0) {
+  uint32_t sampling_frequency = mics_.SamplingRate();
+  if (sampling_frequency == 0) {
     std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
               << std::endl;
     return false;
@@ -57,13 +55,13 @@ if (sampling_frequency == 0) {
     }
     if (FIR_coeff[i].rate_ == sampling_frequency) {
       if (FIR_coeff[i].coeff_.size() == kNumberFIRTaps) {
-        std::cout << "Size FIR Filter must be : " << kNumberFIRTaps
-                  << std::endl;
-        return false;
+        fir_coeff_ = FIR_coeff[i].coeff_;
+        return SetFIRCoeff();
+      } else {
+        std::cerr << "Size FIR Filter must be : " << kNumberFIRTaps << "---"
+                  << FIR_coeff[i].coeff_.size() << std::endl;
       }
-      fir_coeff_ = FIR_coeff[i].coeff_;
-      return SetFIRCoeff();
     }
   }
 }
-}; // namespace matrix_hal
+};  // namespace matrix_hal
