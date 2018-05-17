@@ -16,6 +16,7 @@
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
+#include "../cpp/driver/microphone_core.h"
 
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
 DEFINE_int32(duration, 5, "Interrupt after N seconds");
@@ -35,20 +36,21 @@ int main(int argc, char *agrv[]) {
     return false;
   }
 
-  hal::MicrophoneArray mics;
-  mics.Setup(&bus);
-
   int sampling_rate = FLAGS_sampling_frequency;
   int seconds_to_record = FLAGS_duration;
 
+  // Microhone Array Configuration
+  hal::MicrophoneArray mics;
+  mics.Setup(&bus);
   mics.SetSamplingRate(sampling_rate);
-  
   if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
-
-  mics.ReadConfValues();
+  
   mics.ShowConfiguration();
-
   std::cout << "Duration : " << seconds_to_record << "s" << std::endl;
+
+  //Microphone Core Init
+  hal::MicrophoneCore mic_core(mics);
+  mic_core.Setup(&bus);
 
   int16_t buffer[mics.Channels() + 1]
                 [mics.SamplingRate() + mics.NumberOfSamples()];
