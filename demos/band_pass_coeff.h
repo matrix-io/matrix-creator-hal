@@ -1,8 +1,6 @@
-#include "cpp/driver/microphone_core.h"
+#include "../cpp/driver/microphone_core.h"
 
-namespace hal = matrix_hal;
-
-hal::FIRCoeff FIR_bandpass[] = {
+matrix_hal::FIRCoeff FIR_bandpass[] = {
     {8000,
      {-16,  -22,   -16,   6,    -1,   -3,   27,   25,    -7,    0,    7,
       -38,  -45,   9,     2,    -16,  56,   80,   -8,    -10,   30,   -77,
