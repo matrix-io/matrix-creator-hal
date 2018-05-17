@@ -53,10 +53,6 @@ class MicrophoneArray : public MatrixDriver {
   bool SetGain(uint16_t gain);
   void ReadConfValues();
   void ShowConfiguration();
-  bool SetFIRCoeff();
-  bool SetCustomFIRCoeff(const std::valarray<int16_t> custom_fir);
-  bool SetCustomFIRCoeff(FIRCoeff *FIR_coeff);
-  bool SelectFIRCoeff(uint32_t sampling_frequency);
   uint16_t Channels() { return kMicrophoneChannels; }
   uint32_t NumberOfSamples() {
     return kMicarrayBufferSize / kMicrophoneChannels;
@@ -71,8 +67,6 @@ class MicrophoneArray : public MatrixDriver {
   void CalculateDelays(float azimutal_angle, float polar_angle,
                        float radial_distance_mm = 100.0,
                        float sound_speed_mmseg = 320 * 1000.0);
-
-  bool SetFIRCoeff(const std::valarray<int16_t> custom_fir);
 
  private:
   std::unique_lock<std::mutex> lock_;

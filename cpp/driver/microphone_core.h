@@ -37,18 +37,16 @@ const uint16_t kNumberFIRTaps = 128;
 
 class MicrophoneCore : public MatrixDriver {
  public:
-  MicrophoneCore();
-
+  MicrophoneCore(MicrophoneArray &mics);
   ~MicrophoneCore();
   void Setup(MatrixIOBus *bus);
   bool SetFIRCoeff();
   bool SetCustomFIRCoeff(const std::valarray<int16_t> custom_fir);
-  bool SetCustomFIRCoeff(FIRCoeff *FIR_coeff);
-  bool SelectFIRCoeff(uint32_t sampling_frequency);
+  bool SelectFIRCoeff(FIRCoeff *FIR_coeff);
   bool SetFIRCoeff(const std::valarray<int16_t> custom_fir);
 
  private:
-  MicrophoneArray *mics_;
+  MicrophoneArray &mics_;
   std::valarray<int16_t> fir_coeff_;
 };
 };      // namespace matrix_hal

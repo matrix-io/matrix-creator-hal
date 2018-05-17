@@ -1,7 +1,10 @@
+#include <unistd.h>
+#include <iostream>
+#include <string>
 #include <valarray>
 
 #include "cpp/driver/creator_memory_map.h"
-#include "cpp/driver/fir_coeff.h"
+#include "cpp/driver/microphone_array.h"
 #include "cpp/driver/microphone_core.h"
 #include "cpp/driver/microphone_core_fir.h"
 
@@ -16,11 +19,11 @@ MicrophoneCore::~MicrophoneCore() {}
 
 void MicrophoneCore::Setup(MatrixIOBus *bus) {
   MatrixDriver::Setup(bus);
-  SetCustomFIRCoeff(&FIR_default[0]);
+  SelectFIRCoeff(&FIR_default[0]); 
 }
 
 bool MicrophoneCore::SetFIRCoeff() {
-  return bus_->Write(kMicrophoneCoreBaseAddress,
+  return bus_->Write(kMicrophoneArrayBaseAddress,
                      reinterpret_cast<unsigned char *>(&fir_coeff_[0]),
                      fir_coeff_.size());
 }
@@ -36,13 +39,10 @@ bool MicrophoneCore::SetCustomFIRCoeff(
   }
 }
 
-bool MicrophoneCore::SetCustomFIRCoeff(FIRCoeff *FIR_coeff) {
-  SelectFIRCoeff(FIR_coeff, mics_.SamplingRate());
-}
+bool MicrophoneCore::SelectFIRCoeff(FIRCoeff *FIR_coeff) {
 
-bool MicrophoneCore::SelectFIRCoeff(FIRCoeff *FIR_coeff,
-                                    uint32_t sampling_frequency) {
-  if (sampling_frequency == 0) {
+      uint32_t sampling_frequency = mics_.SamplingRate();	
+if (sampling_frequency == 0) {
     std::cerr << "Bad Configuration, sampling_frequency must be greather than 0"
               << std::endl;
     return false;

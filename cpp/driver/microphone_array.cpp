@@ -27,7 +27,6 @@
 #include <valarray>
 
 #include "cpp/driver/creator_memory_map.h"
-#include "cpp/driver/fir_coeff.h"
 #include "cpp/driver/microphone_array.h"
 #include "cpp/driver/microphone_array_location.h"
 
@@ -165,7 +164,6 @@ bool MicrophoneArray::SetSamplingRate(uint32_t sampling_frequency) {
       break;
     }
   }
-  SelectFIRCoeff(sampling_frequency_);
   SetGain(MIC_gain);
   bus_->Write(kConfBaseAddress + 0x06, MIC_constant);
 
