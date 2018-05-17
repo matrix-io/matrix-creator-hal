@@ -44,11 +44,11 @@ int main(int argc, char *agrv[]) {
   mics.Setup(&bus);
   mics.SetSamplingRate(sampling_rate);
   if (FLAGS_gain > 0) mics.SetGain(FLAGS_gain);
-  
+
   mics.ShowConfiguration();
   std::cout << "Duration : " << seconds_to_record << "s" << std::endl;
 
-  //Microphone Core Init
+  // Microphone Core Init
   hal::MicrophoneCore mic_core(mics);
   mic_core.Setup(&bus);
 
