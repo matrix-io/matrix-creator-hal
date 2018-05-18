@@ -53,7 +53,7 @@ class MatrixIOBus {
 
   int MatrixLeds() { return matrix_leds_; }
 
-  bool IsDirectBus(){ return direct_nkernel_; }
+  bool IsDirectBus() { return direct_nkernel_; }
 
  private:
   bool GetMatrixName();

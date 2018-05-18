@@ -29,9 +29,9 @@
 namespace matrix_hal {
 
 static const uint32_t MIC_sampling_frequencies[][3] = {
-    {8000, 374, 0},  {12000, 249, 2}, {16000, 186, 3}, {22050, 135, 5},
-    {24000, 124, 5}, {32000, 92, 6},  {44100, 67, 7},  {48000, 61, 7},
-    {96000, 30, 9},  {0, 0, 0}};
+    {8000, 374, 0},  {12000, 249, 2}, {16000, 186, 4}, {22050, 135, 5},
+    {24000, 124, 5}, {32000, 92, 6},  {44100, 67, 7},  {48000, 61, 8},
+    {96000, 30, 10}, {0, 0, 0}};
 
 const uint16_t kMicarrayBufferSize = 4096;
 const uint16_t kMicrophoneArrayIRQ = 22;  // GPIO06 - WiringPi:22
@@ -74,6 +74,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> beamformed_;
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
+  std::valarray<int16_t> fir_coeff_;
   int16_t gain_;
   uint32_t sampling_frequency_;
 

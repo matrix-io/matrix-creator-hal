@@ -29,6 +29,7 @@ set(matrix_creator_hal_src
   matrix_driver.cpp
   mcu_firmware.cpp
   microphone_array.cpp
+  microphone_core.cpp
   pressure_sensor.cpp
   uv_sensor.cpp
   matrixio_bus.cpp
@@ -61,7 +62,9 @@ set (matrix_creator_hal_headers
   imu_sensor.h        
   matrix_driver.h     
   mcu_firmware.h
-  microphone_array.h  
+  microphone_array.h 
+  microphone_core.h
+  microphone_core_fir.h 
   microphone_array_location.h
   pressure_data.h
   pressure_sensor.h
