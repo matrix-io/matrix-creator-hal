@@ -51,6 +51,7 @@ class DirectionOfArrival {
   uint16_t mic_direction_;
   float azimutal_angle_;
   float polar_angle_;
+  float micarray_location_[][];
 };
 };      // namespace matrix_hal
 #endif  // CPP_DIRECTION_OF_ARRIVAL_H_

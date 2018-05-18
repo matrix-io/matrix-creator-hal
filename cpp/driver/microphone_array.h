@@ -46,6 +46,7 @@ class MicrophoneArray : public MatrixDriver {
   void Setup(MatrixIOBus *bus);
   bool Read();
   uint32_t SamplingRate() { return sampling_frequency_; }
+  uint32_t MatrixDevice() { return matrix_device_; }
   uint16_t Gain() { return gain_; }
   bool SetSamplingRate(uint32_t sampling_frequency);
   bool GetSamplingRate();
@@ -75,6 +76,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> raw_data_;
   std::valarray<int16_t> delayed_data_;
   std::valarray<int16_t> fir_coeff_;
+  uint32_t matrix_device_;
   int16_t gain_;
   uint32_t sampling_frequency_;
 

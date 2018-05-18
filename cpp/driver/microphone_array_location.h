@@ -19,25 +19,45 @@
 #define CPP_DRIVER_MICARRAY_LOCATION_H_
 
 #include <string>
-#include "./imu_data.h"
+
 #include "./matrix_driver.h"
+#include "cpp/driver/matrixio_bus.h"
+#include "cpp/driver/microphone_array.h"
 
 namespace matrix_hal {
+
+struct MicarrayLocation {
+  uint32_t device_;
+  float location_[][];
+};
 
 /*
   x,y  position in milimeters
  */
 
-static float micarray_location[8][2] = {
-    {20.0908795, -48.5036755},  /* M1 */
-    {-20.0908795, -48.5036755}, /* M2 */
-    {-48.5036755, -20.0908795}, /* M3 */
-    {-48.5036755, 20.0908795},  /* M4 */
-    {-20.0908795, 48.5036755},  /* M5 */
-    {20.0908795, 48.5036755},   /* M6 */
-    {48.5036755, 20.0908795},   /* M7 */
-    {48.5036755, -20.0908795}   /* M8 */
-};
+MicarrayLocation matrix_devices[] = {{kMatrixCreator,
+                                      {
+                                          {20.0908795, -48.5036755},  /* M1 */
+                                          {-20.0908795, -48.5036755}, /* M2 */
+                                          {-48.5036755, -20.0908795}, /* M3 */
+                                          {-48.5036755, 20.0908795},  /* M4 */
+                                          {-20.0908795, 48.5036755},  /* M5 */
+                                          {20.0908795, 48.5036755},   /* M6 */
+                                          {48.5036755, 20.0908795},   /* M7 */
+                                          {48.5036755, -20.0908795}   /* M8 */
+                                      }},
+                                     {kMatrixVoice,
+                                      {
+                                          {0.00, 0.00},    /* M1 */
+                                          {-38.13, 3.58},  /* M2 */
+                                          {-20.98, 32.04}, /* M3 */
+                                          {11.97, 36.38},  /* M4 */
+                                          {35.91, 13.32},  /* M5 */
+                                          {32.81, -19.77}, /* M6 */
+                                          {5.00, -37.97},  /* M7 */
+                                          {-26.57, -27.58} /* M8 */
+                                      }},
+                                     {0, {{0}, {0}}}};
 
 };      // namespace matrix_hal
 #endif  // CPP_DRIVER_MICARRAY_LOCATION_H_

@@ -45,6 +45,8 @@ class CrossCorrelation {
   float *C_;
   float *c_;
 
+  micarray_location
+
   fftwf_plan forward_plan_a_;
   fftwf_plan forward_plan_b_;
   fftwf_plan inverse_plan_;

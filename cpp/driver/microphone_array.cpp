@@ -38,7 +38,7 @@ void irq_callback(void) { irq_cv.notify_all(); }
 namespace matrix_hal {
 
 MicrophoneArray::MicrophoneArray()
-    : lock_(irq_m), gain_(3), sampling_frequency_(16000) {
+    : lock_(irq_m), matrix_device_(0),gain_(3), sampling_frequency_(16000) {
   raw_data_.resize(kMicarrayBufferSize);
 
   delayed_data_.resize(kMicarrayBufferSize);
@@ -55,6 +55,8 @@ MicrophoneArray::~MicrophoneArray() {}
 void MicrophoneArray::Setup(MatrixIOBus *bus) {
   MatrixDriver::Setup(bus);
 
+  matrix_device_ = bus->MatrixName();
+  
   wiringPiSetup();
 
   pinMode(kMicrophoneArrayIRQ, INPUT);

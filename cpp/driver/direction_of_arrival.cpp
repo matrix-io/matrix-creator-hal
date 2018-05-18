@@ -41,6 +41,9 @@ bool DirectionOfArrival::Init() {
   for (uint16_t c = 0; c < mics_.Channels(); c++) {
     buffer_2D_[c] = &buffer_1D_[c * mics_.NumberOfSamples()];
   }
+
+  SelectMicarrayLocation(&matrix_devices[0]);
+
   return true;
 }
 
@@ -112,9 +115,24 @@ void DirectionOfArrival::Calculate() {
 
   // Calculate the physical angle
   mic_direction_ = dir;
-  azimutal_angle_ = atan2(micarray_location[mic_direction_][1],
-                          micarray_location[mic_direction_][0]);
+  azimutal_angle_ = atan2(micarray_location_[mic_direction_][1],
+                          micarray_location_[mic_direction_][0]);
   polar_angle_ = fabs(index) * M_PI / 2.0 / float(max_tof - 1);
 }
+
+bool DirectionOfArrival::SelectMicarrayLocation(
+    MicarrayLocation *micarray_location) {
+  uint32_t matrix_device;
+  matrix_device = mics_.MatrixDevice();
+
+  for (int i = 0;; i++) {
+    if (micarray_location[i].device_ == 0) {
+      return false;
+    }
+    if (FIR_coeff[i].device_ == matrix_device) {
+      micarray_location_= micarray_location[i].location__;
+      return true;
+    }
+  }
 
 };  // namespace matrix_hal
