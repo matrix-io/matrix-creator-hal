@@ -14,6 +14,7 @@
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
+#include "../cpp/driver/microphone_core.h"
 #include "./fir.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
@@ -31,18 +32,21 @@ int main(int argc, char *agrv[]) {
     std::cerr << "Kernel Modules has been loaded. Use ALSA examples "
               << std::endl;
   }
+  int sampling_rate = FLAGS_sampling_frequency;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
   hal::MicrophoneArray mics;
   mics.Setup(&bus);
-
-  hal::EverloopImage image1d(bus.MatrixLeds());
-
-  int sampling_rate = FLAGS_sampling_frequency;
   mics.SetSamplingRate(sampling_rate);
   mics.ShowConfiguration();
+
+  // Microphone Core Init
+  hal::MicrophoneCore mic_core(mics);
+  mic_core.Setup(&bus);
+
+  hal::EverloopImage image1d(bus.MatrixLeds());
 
   std::valarray<int> lookup(mics.Channels());
   if (bus.MatrixName() == matrix_hal::kMatrixCreator)
