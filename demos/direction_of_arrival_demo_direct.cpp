@@ -18,6 +18,7 @@
 #include "../cpp/driver/everloop_image.h"
 #include "../cpp/driver/matrixio_bus.h"
 #include "../cpp/driver/microphone_array.h"
+#include "../cpp/driver/microphone_core.h"
 
 DEFINE_bool(big_menu, true, "Include 'advanced' options in the menu listing");
 DEFINE_int32(sampling_frequency, 16000, "Sampling Frequency");
@@ -38,17 +39,20 @@ int main(int argc, char *agrv[]) {
               << std::endl;
   }
 
-  hal::MicrophoneArray mics;
-  mics.Setup(&bus);
+  int sampling_rate = FLAGS_sampling_frequency;
 
   hal::Everloop everloop;
   everloop.Setup(&bus);
 
   hal::EverloopImage image1d(bus.MatrixLeds());
 
-  int sampling_rate = FLAGS_sampling_frequency;
+  hal::MicrophoneArray mics;
+  mics.Setup(&bus);
   mics.SetSamplingRate(sampling_rate);
   mics.ShowConfiguration();
+
+  hal::MicrophoneCore mic_core(mics);
+  mic_core.Setup(&bus);
 
   hal::DirectionOfArrival doa(mics);
   doa.Init();
