@@ -39,6 +39,7 @@ set(matrix_creator_hal_src
   audio_output.cpp
   bus_direct.cpp
   bus_kernel.cpp
+  zwave_gpio.cpp
 )
 
 add_library(matrix_creator_hal SHARED ${matrix_creator_hal_src})
@@ -78,6 +79,7 @@ set (matrix_creator_hal_headers
   direction_of_arrival.h
   uart_control.h
   audio_output.h
+  zwave_gpio.h
 )
 
 install (TARGETS matrix_creator_hal DESTINATION lib)
