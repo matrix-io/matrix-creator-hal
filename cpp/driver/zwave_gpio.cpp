@@ -23,7 +23,7 @@
 
 namespace matrix_hal {
 
-ZwaveGPIO::ZwaveGPIO() data_(0), control_(0x2) {} // NRESET = 1
+ZwaveGPIO::ZwaveGPIO(): data_(0), control_(0x2) {} // NRESET = 1
 
 void ZwaveGPIO::Setup(MatrixIOBus *bus) {
   MatrixDriver::Setup(bus);
@@ -53,7 +53,7 @@ bool ZwaveGPIO::SetControl(uint16_t pin , uint16_t value) {
 uint16_t ZwaveGPIO::GetMISO() {
   uint32_t mask = 0x1 << Data::MISO;
 
-  bus_->Read(kZwaveGPIOBaseAddress, data_);
+  bus_->Read(kZwaveGPIOBaseAddress, &data_);
   return (data_ & mask) >> Data::MISO;
 }
 
