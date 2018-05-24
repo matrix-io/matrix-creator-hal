@@ -23,40 +23,38 @@
 
 namespace matrix_hal {
 
-ZwaveGPIO::ZwaveGPIO() {}
+ZwaveGPIO::ZwaveGPIO() data_(0), control_(0x2) {} // NRESET = 1
 
 void ZwaveGPIO::Setup(MatrixIOBus *bus) {
   MatrixDriver::Setup(bus);
   bus_->Write(kZwaveGPIOBaseAddress + 1, control_);
 }
 
-bool ZwaveGPIO::SetProgramMode(uint8_t mode) {
-  control_.direction = mode;
-  bus_->Write(kZwaveGPIOBaseAddress + 1, control_);
+bool ZwaveGPIO::SetData(uint16_t pin , uint16_t value) {
+   if (!bus_) return false;
+
+  uint32_t mask = 1 << pin;
+
+  data_ = value << pin | (data_ & ~mask);
+
+  return bus_->Write(kZwaveGPIOBaseAddress, data_);
 }
 
-bool ZwaveGPIO::SetReset(uint8_t nreset) {
-  control_.nreset= nreset;
-  bus_->Write(kZwaveGPIOBaseAddress + 1, control_);
+bool ZwaveGPIO::SetControl(uint16_t pin , uint16_t value) {
+   if (!bus_) return false;
+
+  uint32_t mask = 1 << pin;
+
+  control_ = value << pin | (control_ & ~mask);
+
+  return bus_->Write(kZwaveGPIOBaseAddress, control_);
 }
 
-bool ZwaveGPIO::SetMOSI(uint8_t value) {
-  data_.mosi = value;
-  bus_->Write(kZwaveGPIOBaseAddress, data_);
-}
+uint16_t ZwaveGPIO::GetMISO() {
+  uint32_t mask = 0x1 << Data::MISO;
 
-bool ZwaveGPIO::SetSCK(uint8_t value) {
-  data_.sck = value;
-  bus_->Write(kZwaveGPIOBaseAddress, data_);
-}
-
-bool ZwaveGPIO::SetCS(uint8_t value) {
-  data_.cs = value;
-  bus_->Write(kZwaveGPIOBaseAddress, data_);
-}
-
-bool ZwaveGPIO::GetMISO(uint8_t value) {
   bus_->Read(kZwaveGPIOBaseAddress, data_);
+  return (data_ & mask) >> Data::MISO;
 }
 
 

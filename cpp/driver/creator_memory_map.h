@@ -30,6 +30,7 @@ const uint16_t kEverloopBaseAddress = 0x3000;
 const uint16_t kGPIOBaseAddress = 0x4000;
 const uint16_t kMCUBaseAddress = 0x5000;
 const uint16_t kAudioOutputBaseAddress = 0x6000;
+const uint16_t kZwaveGPIOBaseAddress = 0x7000;
 
 /* MCU offsets map */
 const uint16_t kMemoryOffsetUV = 0x00;

@@ -23,27 +23,16 @@
 
 namespace matrix_hal {
 
-struct ZwaveData {
-  ZwaveData() {
-    cs = 0;
-    sck = 0;
-    mosi = 0;
-    miso = 0;
-  };
-
-  uint8_t cs : 1;
-  uint8_t sck : 1;
-  uint8_t mosi : 1;
-  uint8_t miso : 1;
+enum Data : uint16_t {
+  CS = 0,
+  SCK = 1,
+  MOSI = 2,
+  MISO = 3,
 };
 
-struct ZwaveControl {
-  ZwaveControl() {
-    direction = 0;
-    nreset = 1;
-  };
-  uint8_t direction : 1;
-  uint8_t nreset : 1;
+enum Control : uint16_t {
+  MODE = 0,
+  NRESET = 1,
 };
 
 class ZwaveGPIO : public MatrixDriver {
@@ -52,16 +41,13 @@ class ZwaveGPIO : public MatrixDriver {
   ~ZwaveGPIO();
 
   void Setup(MatrixIOBus *bus);
-  bool SetProgramMode(uint8_t mode);
-  bool SetMOSI(uint8_t value);
-  bool SetSCK(uint8_t value);
-  bool SetCS(uint8_t value);
-  uint8_t MISO(){return data_.miso};
-
+  bool SetControl(uint8_t mode);
+  bool SetData(uint8_t value);
+  bool GetMISO();
 
  private:
-  ZwaveData data_;
-  ZwaveControl control_;
+  uint16_t data_;
+  uint16_t control_;
 };
 
 };      // namespace matrix_hal
