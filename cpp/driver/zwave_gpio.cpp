@@ -56,6 +56,4 @@ uint16_t ZwaveGPIO::GetMISO() {
   bus_->Read(kZwaveGPIOBaseAddress, &data_);
   return (data_ & mask) >> Data::MISO;
 }
-
-
 };  // namespace matrix_hal

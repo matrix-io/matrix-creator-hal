@@ -23,14 +23,14 @@
 
 namespace matrix_hal {
 
-enum Data : uint16_t {
+enum ZwaveData : uint16_t {
   CS = 0,
   SCK = 1,
   MOSI = 2,
   MISO = 3,
 };
 
-enum Control : uint16_t {
+enum ZwaveControl : uint16_t {
   MODE = 0,
   NRESET = 1,
 };
@@ -38,7 +38,6 @@ enum Control : uint16_t {
 class ZwaveGPIO : public MatrixDriver {
  public:
   ZwaveGPIO();
-  ~ZwaveGPIO();
 
   void Setup(MatrixIOBus *bus);
   bool SetControl(uint16_t pin , uint16_t value);
