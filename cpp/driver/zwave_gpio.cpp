@@ -47,13 +47,13 @@ bool ZwaveGPIO::SetControl(uint16_t pin, uint16_t value) {
 
   control_ = value << pin | (control_ & ~mask);
 
-  return bus_->Write(kZwaveGPIOBaseAddress, control_);
+  return bus_->Write(kZwaveGPIOBaseAddress + 1, control_);
 }
 
 uint16_t ZwaveGPIO::GetMISO() {
-  uint32_t mask = 0x1 << Data::MISO;
+  uint32_t mask = 0x1 << ZwaveData::MISO;
 
   bus_->Read(kZwaveGPIOBaseAddress, &data_);
-  return (data_ & mask) >> Data::MISO;
+  return (data_ & mask) >> ZwaveData::MISO;
 }
 };  // namespace matrix_hal
