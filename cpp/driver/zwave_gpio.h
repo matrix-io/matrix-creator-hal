@@ -40,8 +40,8 @@ class ZwaveGPIO : public MatrixDriver {
   ZwaveGPIO();
 
   void Setup(MatrixIOBus *bus);
-  bool SetControl(uint16_t pin , uint16_t value);
-  bool SetData(uint16_t pin , uint16_t value);
+  bool SetControl(uint16_t pin, uint16_t value);
+  bool SetData(uint16_t pin, uint16_t value);
   uint16_t GetMISO();
 
  private:
