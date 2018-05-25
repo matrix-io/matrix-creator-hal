@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <Admobilize>
+ * Copyright 2018 <Admobilize>
  * MATRIX Labs  [http://creator.matrix.one]
  * This file is part of MATRIX Creator HAL
  *
@@ -15,29 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPP_DRIVER_CREATOR_MEMORY_MAP_H_
-#define CPP_DRIVER_CREATOR_MEMORY_MAP_H_
-
-#include <string>
+#ifndef CPP_DRIVER_GPIO_CONTROL_H_
+#define CPP_DRIVER_ZWAVE_GPIO_H_
+#include <cstdint>
+#include <vector>
+#include "./matrix_driver.h"
 
 namespace matrix_hal {
 
-/* FPGA Wishbone address map */
-const uint16_t kConfBaseAddress = 0x0000;
-const uint16_t kUartBaseAddress = 0x1000;
-const uint16_t kMicrophoneArrayBaseAddress = 0x2000;
-const uint16_t kEverloopBaseAddress = 0x3000;
-const uint16_t kGPIOBaseAddress = 0x4000;
-const uint16_t kMCUBaseAddress = 0x5000;
-const uint16_t kAudioOutputBaseAddress = 0x6000;
-const uint16_t kZwaveGPIOBaseAddress = 0x7000;
+enum ZwaveData : uint16_t {
+  CS = 0,
+  SCK = 1,
+  MOSI = 2,
+  MISO = 3,
+};
 
-/* MCU offsets map */
-const uint16_t kMemoryOffsetUV = 0x00;
-const uint16_t kMemoryOffsetPressure = 0x04;
-const uint16_t kMemoryOffsetHumidity = 0x10;
-const uint16_t kMemoryOffsetIMU = 0x30;
-const uint16_t kMemoryOffsetMCU = 0x90;
+enum ZwaveControl : uint16_t {
+  MODE = 0,
+  NRESET = 1,
+};
+
+class ZwaveGPIO : public MatrixDriver {
+ public:
+  ZwaveGPIO();
+
+  void Setup(MatrixIOBus *bus);
+  bool SetControl(uint16_t pin, uint16_t value);
+  bool SetData(uint16_t pin, uint16_t value);
+  uint16_t GetMISO();
+
+ private:
+  uint16_t data_;
+  uint16_t control_;
+};
 
 };      // namespace matrix_hal
-#endif  // CPP_DRIVER_CREATOR_MEMORY_MAP_H_
+#endif  // CPP_DRIVER_ZWAVE_GPIO_H_
