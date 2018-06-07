@@ -132,6 +132,80 @@ uint16_t GPIOControl::GetGPIOValues() {
   return value;
 }
 
+void GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
+  // Servo constants based on 9g ServoMotor Calibration
+  const int ServoRatio = 37.7;
+  const int ServoOffset = 1800;
+
+  const int FPGAClock = 150000000;
+  const uint16_t GPIOPrescaler = 0x5;
+  const float period_seconds = 0.02;
+  uint16_t duty_counter;
+  uint16_t bank;
+  uint16_t channel;
+  uint32_t period_counter = (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+
+  if (pin <= 3) {
+    bank = 0;
+    channel = pin;
+  }
+  else if (pin <= 7) {
+    bank = 1;
+    channel = pin % 4;
+  }
+  else if (pin <= 11) {
+    bank = 2;
+    channel = pin % 4;
+  }
+  else if (pin <= 15) {
+    bank = 3;
+    channel = pin % 4;
+  }
+  else {
+    return;
+  }
+
+  SetPrescaler(bank, GPIOPrescaler);
+  banks_[bank].SetPeriod(period_counter);
+  duty_counter = (ServoRatio * angle) + ServoOffset;
+  banks_[bank].SetDuty(channel, duty_counter);
+}
+
+void GPIOControl::SimpleSetPWM(float frequency, float percentage, uint16_t pin) {
+  const int FPGAClock = 150000000;
+  const uint16_t GPIOPrescaler = 0x5;
+  float period_seconds = 1 / frequency;
+  uint16_t duty_counter;
+  uint16_t bank;
+  uint16_t channel;
+  uint32_t period_counter = (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+
+  if (pin <= 3) {
+    bank = 0;
+    channel = pin;
+  }
+  else if (pin <= 7) {
+    bank = 1;
+    channel = pin % 4;
+  }
+  else if (pin <= 11) {
+    bank = 2;
+    channel = pin % 4;
+  }
+  else if (pin <= 15) {
+    bank = 3;
+    channel = pin % 4;
+  }
+  else {
+    return;
+  }
+  
+  SetPrescaler(bank, GPIOPrescaler);
+  banks_[bank].SetPeriod(period_counter);
+  duty_counter = (period_counter * percentage) / 100;
+  banks_[bank].SetDuty(channel, duty_counter);
+}
+
 uint16_t GPIOControl::GetIRValue() {
   if (!bus_) return false;
   uint16_t value;
