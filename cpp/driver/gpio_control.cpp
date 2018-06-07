@@ -48,7 +48,8 @@ bool GPIOBank::SetDuty(uint16_t channel, uint16_t duty) {
 uint16_t GPIOBank::GetTimerCounter(uint16_t channel) {
   if (!bus_) return false;
   uint16_t counter;
-  return bus_->Read(mem_offset_ + 2 + channel, &counter);
+  bus_->Read(mem_offset_ + 2 + channel, &counter);
+  return counter;
 }
 
 GPIOControl::GPIOControl()
