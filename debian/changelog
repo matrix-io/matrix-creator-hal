@@ -1,4 +1,10 @@
-libmatrixio-creator-hal (0.3.5) unstable; urgency=medium
+libmatrixio-creator-hal (0.3.6) unstable; urgency=medium
+
+  * Add simple PWM functions
+
+ -- Admobilize <info@admobilize.com>  Thu, 7 June 2018 15:00:00 +0000
+ 
+ libmatrixio-creator-hal (0.3.5) unstable; urgency=medium
 
   * Fix getTimerCounter return bug
 
