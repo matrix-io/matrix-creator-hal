@@ -2,7 +2,7 @@ libmatrixio-creator-hal (0.3.5) unstable; urgency=medium
 
   * Fix getTimerCounter return bug
 
- -- Admobilize <info@admobilize.com>  Thu, 7 June 2018 15:00:00 +0000
+ -- Admobilize <info@admobilize.com>  Thu, 7 Sep 2017 15:51:50 +0000
 
 libmatrixio-creator-hal (0.3.4) unstable; urgency=medium
 
