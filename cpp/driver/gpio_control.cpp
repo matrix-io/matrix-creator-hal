@@ -167,7 +167,7 @@ bool GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
   if (!bus_) return false;
   if (pin > 15) return false;
 
-  // Servo constants based on 9g ServoMotor Calibration
+  // Servo constants based on SG90 9g Micro Servo
   const int ServoRatio = 37.7;
   const int ServoOffset = 1800;
 
