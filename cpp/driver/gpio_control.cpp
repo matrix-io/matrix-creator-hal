@@ -163,7 +163,7 @@ void GPIOControl::Setup(MatrixIOBus *bus) {
   }
 }
 
-bool GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
+bool GPIOControl::Set9GServoAngle(float angle, uint16_t pin) {
   if (!bus_) return false;
   if (pin > 15) return false;
 
@@ -171,11 +171,35 @@ bool GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
   const int ServoRatio = 37.7;
   const int ServoOffset = 1800;
 
-  const int FPGAClock = 150000000;
+  // We choose a prescaler of 32 to work with a lower frequency
+  // FPGA clock is being divided by 32
+  // 32 = (1 << 5)
   const uint16_t GPIOPrescaler = 0x5;
-  const float period_seconds = 0.02;  // Servo wants 50Hz
+
+  // We need 50Hz for servo, so 1 / 50Hz = 0.02 sec
+  // from : https://en.wikipedia.org/wiki/Servo_(radio_control)
+  const float period_seconds = 0.02;
+
+  /* Getting period_counter to generate 50Hz:
+
+  FPGAClock = 150000000
+  FPGAClockAfterPrescaler = 150000000 / 32 = 4687500
+
+  Period counter required for 50Hz
+  period_counter = 0.02 / ( 1 / 4687500 ) = 93750
+
+  FPGA firmware need only half of the period counter
+  half_period_counter = period_counter / 2 = 46875
+
+  When all math is combined you get
+  final_period_counter =
+      (period_seconds * FPGAClock / ((1 << GPIOPrescaler) * 2);
+
+  */
   uint32_t period_counter =
-      (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+      (period_seconds * bus_->FPGAClock()) / ((1 << GPIOPrescaler) * 2);
+
+  // Using servo parameters to get duty
   uint16_t duty_counter = (ServoRatio * angle) + ServoOffset;
 
   uint16_t bank = pin / 4;
@@ -188,16 +212,34 @@ bool GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
   return (b1 && b2 && b3);
 }
 
-bool GPIOControl::SimpleSetPWM(float frequency, float percentage,
-                               uint16_t pin) {
+bool GPIOControl::SetPWM(float frequency, float percentage, uint16_t pin) {
   if (!bus_) return false;
   if (pin > 15) return false;
 
-  const int FPGAClock = 150000000;
+  // We choose a prescaler of 32 to work with a lower frequency
+  // FPGA clock is being divided by 32
+  // 32 = (1 << 5)
   const uint16_t GPIOPrescaler = 0x5;
   float period_seconds = 1 / frequency;
+
+  /* Getting period_counter to generate desired frequency:
+
+  FPGAClock = 150000000
+  FPGAClockAfterPrescaler = 150000000 / 32 = 4687500
+
+  Period counter required for desired frequency
+  period_counter = period_seconds / ( 1 / 4687500 )
+
+  FPGA firmware need only half of the period counter
+  half_period_counter = period_counter / 2
+
+  When all math is combined you get
+  final_period_counter =
+      (period_seconds * FPGAClock / ((1 << GPIOPrescaler) * 2);
+
+  */
   uint32_t period_counter =
-      (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+      (period_seconds * bus_->FPGAClock()) / ((1 << GPIOPrescaler) * 2);
   uint16_t duty_counter = (period_counter * percentage) / 100;
 
   uint16_t bank = pin / 4;

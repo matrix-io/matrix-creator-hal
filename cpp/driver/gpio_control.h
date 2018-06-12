@@ -53,8 +53,8 @@ class GPIOControl : public MatrixDriver {
   bool SetPrescaler(uint16_t bank, uint16_t prescaler);
   GPIOBank &Bank(uint16_t bank) { return banks_[bank]; }
 
-  bool SimpleServoAngle(float angle, uint16_t pin);
-  bool SimpleSetPWM(float frequency, float percentage, uint16_t pin);
+  bool Set9GServoAngle(float angle, uint16_t pin);
+  bool SetPWM(float frequency, float percentage, uint16_t pin);
 
   std::vector<GPIOBank> banks_;
   uint16_t mode_;
