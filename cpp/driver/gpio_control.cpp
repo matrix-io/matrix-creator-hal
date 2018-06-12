@@ -163,4 +163,51 @@ void GPIOControl::Setup(MatrixIOBus *bus) {
   }
 }
 
+bool GPIOControl::SimpleServoAngle(float angle, uint16_t pin) {
+  if (!bus_) return false;
+  if (pin > 15) return false;
+
+  // Servo constants based on 9g ServoMotor Calibration
+  const int ServoRatio = 37.7;
+  const int ServoOffset = 1800;
+
+  const int FPGAClock = 150000000;
+  const uint16_t GPIOPrescaler = 0x5;
+  const float period_seconds = 0.02;  // Servo wants 50Hz
+  uint32_t period_counter =
+      (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+  uint16_t duty_counter = (ServoRatio * angle) + ServoOffset;
+
+  uint16_t bank = pin / 4;
+  uint16_t channel = pin % 4;
+
+  bool b1 = SetPrescaler(bank, GPIOPrescaler);
+  bool b2 = Bank(bank).SetPeriod(period_counter);
+  bool b3 = Bank(bank).SetDuty(channel, duty_counter);
+
+  return (b1 && b2 && b3);
+}
+
+bool GPIOControl::SimpleSetPWM(float frequency, float percentage,
+                               uint16_t pin) {
+  if (!bus_) return false;
+  if (pin > 15) return false;
+
+  const int FPGAClock = 150000000;
+  const uint16_t GPIOPrescaler = 0x5;
+  float period_seconds = 1 / frequency;
+  uint32_t period_counter =
+      (period_seconds * FPGAClock) / ((1 << GPIOPrescaler) * 2);
+  uint16_t duty_counter = (period_counter * percentage) / 100;
+
+  uint16_t bank = pin / 4;
+  uint16_t channel = pin % 4;
+
+  bool b1 = SetPrescaler(bank, GPIOPrescaler);
+  bool b2 = Bank(bank).SetPeriod(period_counter);
+  bool b3 = Bank(bank).SetDuty(channel, duty_counter);
+
+  return (b1 && b2 && b3);
+}
+
 };  // namespace matrix_hal
