@@ -212,6 +212,55 @@ bool GPIOControl::Set9GServoAngle(float angle, uint16_t pin) {
   return (b1 && b2 && b3);
 }
 
+bool GPIOControl::SetServoAngle(float angle, float min_pulse_ms, uint16_t pin) {
+  if (!bus_) return false;
+  if (pin > 15) return false;
+
+  // We choose a prescaler of 32 to work with a lower frequency
+  // FPGA clock is being divided by 32
+  // 32 = (1 << 5)
+  const uint16_t GPIOPrescaler = 0x5;
+
+  // We need 50Hz for servo, so 1 / 50Hz = 0.02 sec
+  // from : https://en.wikipedia.org/wiki/Servo_(radio_control)
+  const float period_seconds = 0.02;
+
+  /* Getting period_counter to generate 50Hz:
+
+  FPGAClock = 150000000
+  FPGAClockAfterPrescaler = 150000000 / 32 = 4687500
+
+  Period counter required for 50Hz
+  period_counter = 0.02 / ( 1 / 4687500 ) = 93750
+
+  FPGA firmware need only half of the period counter
+  half_period_counter = period_counter / 2 = 46875
+
+  When all math is combined you get
+  final_period_counter =
+      (period_seconds * FPGAClock / ((1 << GPIOPrescaler) * 2);
+
+  */
+  uint32_t period_counter =
+      (period_seconds * bus_->FPGAClock()) / ((1 << GPIOPrescaler) * 2);
+
+  uint32_t ServoMiddle = period_counter * 0.075;
+  uint32_t ServoOffset = (period_counter) * (min_pulse_ms / 20);
+  float ServoRatio = (ServoMiddle - ServoOffset) / 90;
+
+  // Using servo parameters to get duty
+  uint16_t duty_counter = (ServoRatio * angle) + ServoOffset;
+
+  uint16_t bank = pin / 4;
+  uint16_t channel = pin % 4;
+
+  bool b1 = SetPrescaler(bank, GPIOPrescaler);
+  bool b2 = Bank(bank).SetPeriod(period_counter);
+  bool b3 = Bank(bank).SetDuty(channel, duty_counter);
+
+  return (b1 && b2 && b3);
+}
+
 bool GPIOControl::SetPWM(float frequency, float percentage, uint16_t pin) {
   if (!bus_) return false;
   if (pin > 15) return false;

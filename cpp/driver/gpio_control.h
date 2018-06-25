@@ -54,6 +54,7 @@ class GPIOControl : public MatrixDriver {
   GPIOBank &Bank(uint16_t bank) { return banks_[bank]; }
 
   bool Set9GServoAngle(float angle, uint16_t pin);
+  bool SetServoAngle(float angle, float min_pulse_ms, uint16_t pin);
   bool SetPWM(float frequency, float percentage, uint16_t pin);
 
   std::vector<GPIOBank> banks_;
