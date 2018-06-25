@@ -168,7 +168,7 @@ bool GPIOControl::Set9GServoAngle(float angle, uint16_t pin) {
   if (pin > 15) return false;
 
   // Servo constants based on SG90 9g Micro Servo
-  const int ServoRatio = 37.7;
+  const float ServoRatio = 37.7;
   const int ServoOffset = 1800;
 
   // We choose a prescaler of 32 to work with a lower frequency
@@ -244,8 +244,10 @@ bool GPIOControl::SetServoAngle(float angle, float min_pulse_ms, uint16_t pin) {
   uint32_t period_counter =
       (period_seconds * bus_->FPGAClock()) / ((1 << GPIOPrescaler) * 2);
 
+  // Servo pulse width is symmetrical, with 1.5ms as neutral position
+  // 1.5ms / 20ms = 0.075
   uint32_t ServoMiddle = period_counter * 0.075;
-  uint32_t ServoOffset = (period_counter) * (min_pulse_ms / 20);
+  uint32_t ServoOffset = period_counter * (min_pulse_ms / 20);
   float ServoRatio = (ServoMiddle - ServoOffset) / 90;
 
   // Using servo parameters to get duty
