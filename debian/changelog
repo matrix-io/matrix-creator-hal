@@ -1,3 +1,9 @@
+libmatrixio-creator-hal (0.3.6) unstable; urgency=medium
+
+  * Add easy to use PWM functions in GPIOControl
+
+ -- Admobilize <info@admobilize.com>  Fri, 29 Jun 2018 15:51:50 +0000
+
 libmatrixio-creator-hal (0.3.5) unstable; urgency=medium
 
   * Fix getTimerCounter return bug
