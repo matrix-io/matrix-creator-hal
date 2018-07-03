@@ -1,5 +1,5 @@
 #include <valarray>
-#include "cpp/driver/microphone_core.h"
+#include "./microphone_core.h"
 
 namespace matrix_hal {
 
