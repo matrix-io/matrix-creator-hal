@@ -2,7 +2,7 @@
 
 ![Build Status](https://drone.matrix.one/api/badges/matrix-io/matrix-creator-hal/status.svg)
 
-MATRIX Hardware Abstraction Layer (HAL) is an open source library for directly interfacing with the MATRIX device. MATRIX HAL consists of driver files written in C++ which enable the user to write low level programs in C++.
+[MATRIX Hardware Abstraction Layer (HAL)](https://matrix-io.github.io/matrix-documentation/matrix-hal/overview/) is an open source library for directly interfacing with the MATRIX Creator and MATRIX Voice. MATRIX HAL consists of driver files written in C++ which enable the user to write low level programs in C++.
 
 ## Install from Package
 
@@ -18,6 +18,12 @@ sudo apt-get upgrade
 # Install MATRIX HAL Packages
 sudo apt-get install matrixio-creator-init libmatrixio-creator-hal libmatrixio-creator-hal-dev
 ```
+
+### Helpful Information
+
+MATRIX HAL header files are installed in /usr/include/matrix_hal.
+
+The compiled MATRIX HAL library file is installed in /usr/lib/libmatrix_creator_hal.so.
 
 ## Install from Source
 
@@ -46,15 +52,20 @@ cmake ..
 make -j4 && sudo make install
 ```
 
-## Examples
+### Helpful Information
+MATRIX HAL header files are installed in /usr/local/include/matrix_hal.
 
-Learn HAL with thoroughly commented examples.
+The compiled MATRIX HAL library file is installed in /usr/local/lib/libmatrix_creator_hal.so.
 
-[Examples](https://github.com/matrix-io/matrix-hal-examples)
+## References and Examples
+
+[Function References](https://matrix-io.github.io/matrix-documentation/matrix-hal/reference/)
+
+[Examples](https://matrix-io.github.io/matrix-documentation/matrix-hal/examples/)
 
 ## Demos
 
-Run some of the demos below.
+These demos are only availiable if you downloaded HAL from source.
 
 ```
 # Should already be in ~/matrix-creator-hal/build
