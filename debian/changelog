@@ -1,3 +1,9 @@
+libmatrixio-creator-hal (0.3.7) unstable; urgency=medium
+
+  * Added fix to memory leak in MatrixIOBus::Init().
+
+ -- Admobilize <info@admobilize.com>  Fri, 19 Jul 2018 15:51:50 +0000
+
 libmatrixio-creator-hal (0.3.6) unstable; urgency=medium
 
   * Add easy to use PWM functions in GPIOControl
