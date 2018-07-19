@@ -58,12 +58,16 @@ bool MatrixIOBus::Init() {
   if (bus_direct->Init()) {
     bus_driver_ = bus_direct;
     direct_nkernel_ = true;
+    delete bus_kernel;
     std::cout << "INFO: [/dev/spidev0.0] was opened" << std::endl;
   } else if (bus_kernel->Init()) {
     bus_driver_ = bus_kernel;
     direct_nkernel_ = false;
+    delete bus_direct;
     std::cout << "INFO: [/dev/matrixio_regmap] was opened" << std::endl;
   } else {
+    delete bus_kernel;
+    delete bus_direct;
     std::cerr << "can't open any device" << std::endl;
     return false;
   }
