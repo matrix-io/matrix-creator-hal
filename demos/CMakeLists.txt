@@ -98,6 +98,12 @@ add_executable(audio_output audio_output.cpp)
   target_link_libraries(audio_output ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(audio_output ${GFLAGS_LIB})
 
+add_executable(audio_output_setup audio_output_setup.cpp)
+  set_property(TARGET audio_output_setup PROPERTY CXX_STANDARD 11)
+  target_link_libraries(audio_output_setup matrix_creator_hal)
+  target_link_libraries(audio_output_setup ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(audio_output_setup ${GFLAGS_LIB})
+
 add_executable(micarray_pipes_direct micarray_pipes_direct.cpp)
   set_property(TARGET micarray_pipes_direct PROPERTY CXX_STANDARD 11)
   target_link_libraries(micarray_pipes_direct matrix_creator_hal)
