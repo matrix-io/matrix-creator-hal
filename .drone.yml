@@ -7,7 +7,6 @@ pipeline:
     privileged: true
     commands:
       - curl https://apt.matrix.one/doc/apt-key.gpg | apt-key add -
-      - echo "deb http://raspbian.raspberrypi.org/raspbian/ ${CODENAME} main contrib non-free rpi" > /etc/apt/sources.list.d/rpi.list
       - apt-get update
       - apt-get install --yes libfftw3-dev wiringpi libgflags-dev
       - debuild -us -uc -b
@@ -81,9 +80,9 @@ matrix:
     - CODENAME: stretch
       DISTRIBUTION: raspbian
       ARCHITECTURE: armhf
-      IMAGE_TAG: 1d4798c3 
+      IMAGE_TAG: 84d9bfb7 
 
     - CODENAME: buster
       DISTRIBUTION: raspbian
       ARCHITECTURE: armhf
-      IMAGE_TAG: 1d4798c3
+      IMAGE_TAG: 84d9bfb7
