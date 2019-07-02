@@ -111,9 +111,17 @@ void MicrophoneArray::CalculateDelays(float azimutal_angle, float polar_angle,
 
   // sorted distances from source position to each microphone
   for (int c = 0; c < kMicrophoneChannels; c++) {
-    const float distance = std::sqrt(
-        std::pow(micarray_location[c][0] - x, 2.0) +
-        std::pow(micarray_location[c][1] - y, 2.0) + std::pow(z, 2.0));
+    // Use Proper Micarray Location (Creator or Voice)
+    float distance = 0;
+    if (MatrixLeds() == 18)
+      distance = std::sqrt(std::pow(micarray_location_voice[c][0] - x, 2.0) +
+                           std::pow(micarray_location_voice[c][1] - y, 2.0) +
+                           std::pow(z, 2.0));
+    else
+      distance = std::sqrt(std::pow(micarray_location_creator[c][0] - x, 2.0) +
+                           std::pow(micarray_location_creator[c][1] - y, 2.0) +
+                           std::pow(z, 2.0));
+
     distance_map[distance] = c;
   }
 

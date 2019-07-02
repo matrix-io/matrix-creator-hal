@@ -112,8 +112,12 @@ void DirectionOfArrival::Calculate() {
 
   // Calculate the physical angle
   mic_direction_ = dir;
-  azimutal_angle_ = atan2(micarray_location[mic_direction_][1],
-                          micarray_location[mic_direction_][0]);
+  if (mics_.MatrixLeds() == 18)
+    azimutal_angle_ = atan2(micarray_location_voice[mic_direction_][1],
+                            micarray_location_voice[mic_direction_][0]);
+  else
+    azimutal_angle_ = atan2(micarray_location_creator[mic_direction_][1],
+                            micarray_location_creator[mic_direction_][0]);
   polar_angle_ = fabs(index) * M_PI / 2.0 / float(max_tof - 1);
 }
 

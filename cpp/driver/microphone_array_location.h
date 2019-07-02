@@ -28,7 +28,7 @@ namespace matrix_hal {
   x,y  position in milimeters
  */
 
-static float micarray_location[8][2] = {
+static float micarray_location_creator[8][2] = {
     {20.0908795, -48.5036755},  /* M1 */
     {-20.0908795, -48.5036755}, /* M2 */
     {-48.5036755, -20.0908795}, /* M3 */
@@ -37,6 +37,17 @@ static float micarray_location[8][2] = {
     {20.0908795, 48.5036755},   /* M6 */
     {48.5036755, 20.0908795},   /* M7 */
     {48.5036755, -20.0908795}   /* M8 */
+};
+
+static float micarray_location_voice[8][2] = {
+    {00.00, 00.00},  /* M1 */
+    {-38.13, 3.58},  /* M2 */
+    {-20.98, 32.04}, /* M3 */
+    {11.97, 36.38},  /* M4 */
+    {35.91, 13.32},  /* M5 */
+    {32.81, -19.77}, /* M6 */
+    {5.00, -37.97},  /* M7 */
+    {-26.57, -27.58} /* M8 */
 };
 
 };      // namespace matrix_hal

@@ -28,6 +28,8 @@ class MatrixDriver {
  public:
   void Setup(MatrixIOBus *bus);
 
+  int MatrixLeds() { return bus_->MatrixLeds(); }
+
  protected:
   MatrixIOBus *bus_;
 };
