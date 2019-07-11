@@ -38,6 +38,9 @@ sudo apt-get upgrade
 
 # Install MATRIX HAL Packages and Build Prerequisites
 sudo apt-get install cmake g++ git libfftw3-dev wiringpi libgflags-dev matrixio-creator-init
+
+# Reboot your Pi
+sudo reboot
 ```
 
 ### Build Intructions
