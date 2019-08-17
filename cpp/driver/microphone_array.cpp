@@ -37,17 +37,20 @@ void irq_callback(void) { irq_cv.notify_all(); }
 
 namespace matrix_hal {
 
-MicrophoneArray::MicrophoneArray()
-    : lock_(irq_m), gain_(3), sampling_frequency_(16000) {
+MicrophoneArray::MicrophoneArray(bool enable_beamforming)
+    : lock_(irq_m), gain_(3), sampling_frequency_(16000), enable_beamforming_(enable_beamforming) {
   raw_data_.resize(kMicarrayBufferSize);
 
-  delayed_data_.resize(kMicarrayBufferSize);
+  if (enable_beamforming_)
+  {
+    delayed_data_.resize(kMicarrayBufferSize);
 
-  fifos_.resize(kMicrophoneChannels);
+    fifos_.resize(kMicrophoneChannels);
 
-  beamformed_.resize(NumberOfSamples());
+    beamformed_.resize(NumberOfSamples());
 
-  CalculateDelays(0.0, 0.0);
+    CalculateDelays(0.0, 0.0);
+  }
 }
 
 MicrophoneArray::~MicrophoneArray() {}
@@ -76,18 +79,21 @@ bool MicrophoneArray::Read() {
     return false;
   }
 
-  for (uint32_t s = 0; s < NumberOfSamples(); s++) {
-    int sum = 0;
-    for (int c = 0; c < kMicrophoneChannels; c++) {
-      // delaying data for beamforming 'delay & sum' algorithm
-      delayed_data_[s * kMicrophoneChannels + c] =
-          fifos_[c].PushPop(raw_data_[c * NumberOfSamples() + s]);
+  if (enable_beamforming_)
+  {
+    for (uint32_t s = 0; s < NumberOfSamples(); s++) {
+      int sum = 0;
+      for (int c = 0; c < kMicrophoneChannels; c++) {
+        // delaying data for beamforming 'delay & sum' algorithm
+        delayed_data_[s * kMicrophoneChannels + c] =
+            fifos_[c].PushPop(raw_data_[c * NumberOfSamples() + s]);
 
-      // accumulation data for beamforming 'delay & sum' algorithm
-      sum += delayed_data_[s * kMicrophoneChannels + c];
+        // accumulation data for beamforming 'delay & sum' algorithm
+        sum += delayed_data_[s * kMicrophoneChannels + c];
+      }
+
+      beamformed_[s] = std::min(INT16_MAX, std::max(sum, INT16_MIN));
     }
-
-    beamformed_[s] = std::min(INT16_MAX, std::max(sum, INT16_MIN));
   }
   return true;
 }

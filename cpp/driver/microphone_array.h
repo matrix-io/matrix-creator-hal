@@ -39,7 +39,7 @@ const uint16_t kMicrophoneChannels = 8;
 
 class MicrophoneArray : public MatrixDriver {
  public:
-  MicrophoneArray();
+  MicrophoneArray(bool enable_beamforming = true);
 
   ~MicrophoneArray();
 
@@ -58,10 +58,17 @@ class MicrophoneArray : public MatrixDriver {
     return kMicarrayBufferSize / kMicrophoneChannels;
   }
 
+  int16_t &Raw(int16_t sample, int16_t channel) {
+    return raw_data_[channel * NumberOfSamples() + sample];
+  }
+
   int16_t &At(int16_t sample, int16_t channel) {
+    if (!enable_beamforming_)
+      return Raw(sample, channel);
     return delayed_data_[sample * kMicrophoneChannels + channel];
   }
 
+  //call at own peril if beamforming is disabled
   int16_t &Beam(int16_t sample) { return beamformed_[sample]; }
 
   void CalculateDelays(float azimutal_angle, float polar_angle,
@@ -77,6 +84,7 @@ class MicrophoneArray : public MatrixDriver {
   std::valarray<int16_t> fir_coeff_;
   int16_t gain_;
   uint32_t sampling_frequency_;
+  bool enable_beamforming_;
 
   // beamforming delay and sum support
   std::valarray<CircularQueue<int16_t>> fifos_;

@@ -63,6 +63,13 @@ add_executable(micarray_recorder_direct micarray_recorder_direct.cpp)
   target_link_libraries(micarray_recorder_direct ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
   target_link_libraries(micarray_recorder_direct ${GFLAGS_LIB})
 
+add_executable(micarray_raw_recorder_direct micarray_raw_recorder_direct.cpp)
+  set_property(TARGET micarray_raw_recorder_direct PROPERTY CXX_STANDARD 11)
+  target_link_libraries(micarray_raw_recorder_direct matrix_creator_hal)
+  target_link_libraries(micarray_raw_recorder_direct ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(micarray_raw_recorder_direct ${WIRINGPI_LIB} ${WIRINGPI_DEV_LIB} ${CRYPT_LIB})
+  target_link_libraries(micarray_raw_recorder_direct ${GFLAGS_LIB})
+
 add_executable(mic_demo_fir_direct mic_demo_fir_direct.cpp)
   set_property(TARGET mic_demo_fir_direct PROPERTY CXX_STANDARD 11)
   target_link_libraries(mic_demo_fir_direct matrix_creator_hal)
